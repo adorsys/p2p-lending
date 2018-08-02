@@ -12,7 +12,8 @@
   "dependencies": {
     "ganache-cli": "^6.1.6",
     "mocha": "^5.2.0",
+    "openzeppelin-solidity": "^1.11.0",
     "solc": "^0.4.24",
-    "web3": "^1.0.0-beta.26"
+    "web3": "^1.0.0-beta.35"
   }
 }

@@ -14,7 +14,7 @@ beforeEach(async () => {
   accounts = await web3.eth.getAccounts();
 
   contract = await new web3.eth.Contract(JSON.parse(interface))
-    .deploy({ data: bytecode, arguments: ['Hi there!'] })
+    .deploy({ data: bytecode, arguments: [] })
     .send({ from: accounts[0], gas: '1000000' });
 });
 
@@ -23,14 +23,28 @@ describe('Base Contract', () => {
       assert.ok(contract.options.address);
   });
 
-  it('has a default message', async () => {
-    const message = await contract.methods.message().call();
-    assert.equal(message, 'Hi there!');
+  it('has no contracts for an address', async () => {
+    const lendingRequest = await contract.methods.lendingRequests(accounts[0]).call();
+    assert.equal(lendingRequest.amount, 0);
   });
 
-  it('can change the message', async () => {
-    await contract.methods.setMessage('ok').send({ from: accounts[0] });
-    const message = await contract.methods.message().call();
-    assert.equal(message, 'ok');
+  it('can create lendingRequest', async () => {
+    const deployed = await contract.methods.ask(500, 510, "Glühalm").send({from: accounts[0], gas: '1000000'});
+    assert.notEqual(deployed, null);
+
+    const lendingRequest = await contract.methods.lendingRequests(accounts[0]).call();
+    assert.equal(lendingRequest.amount, 500);
+    assert.equal(lendingRequest.paybackAmount, 510);
+    assert.equal(lendingRequest.asker, accounts[0]);
+  });
+
+  it("can't lend wrong amount", async () => {
+    await contract.methods.ask(500, 510, "Glühalm").send({from: accounts[0], gas: '1000000'});
+
+    const deployed = await contract.methods.lend(accounts[0]).send({from: accounts[1], gas: '1000000', value: 500});
+    assert.notEqual(deployed, null);
+
+    const lendingRequest = await contract.methods.lendingRequests(accounts[0]).call();
+    assert.equal(lendingRequest.lent, true);
   });
 });
