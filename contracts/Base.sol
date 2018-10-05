@@ -1,4 +1,5 @@
 pragma solidity ^0.4.17;
+pragma experimental ABIEncoderV2;
 
 /**
  * @title Ownable
@@ -65,6 +66,7 @@ contract Ownable {
 contract Base is Ownable {
 
     uint contractFee = 1000;
+    uint lendingRequestCount = 0;
 
     struct LendingRequest {
         address asker;
@@ -77,15 +79,37 @@ contract Base is Ownable {
         uint creationTime;
     }
 
-    mapping(address => LendingRequest) public lendingRequests;
+    mapping(address => uint[]) private userRequests;
+    LendingRequest[] public lendingRequests;
 
-    function Base() public payable {
+    constructor() public {
     }
 
-    function ask(uint amount, uint paybackAmount, string purpose) public {
+    function getUserRequests() public view returns (uint[]) {
+        return userRequests[msg.sender];
+    }
+
+    function getLendingRequests() public view returns (LendingRequest[]) {
+        return lendingRequests;
+    }
+
+    function getLendingRequestsByUser(address user) public view returns (LendingRequest[]) {
+        uint[] memory myRequests = userRequests[user];
+        LendingRequest[] memory fullRequests = new LendingRequest[](myRequests.length);
+        for (uint i = 0; i < myRequests.length; i++) {
+            fullRequests[i] = lendingRequests[myRequests[i]];
+        }
+        return fullRequests;
+    }
+
+    function getMyLendingRequests() public view returns (LendingRequest[]) {
+        getLendingRequestsByUser(msg.sender);
+    }
+
+    function ask(uint amount, uint paybackAmount, string purpose) public returns (uint contractId ){
         require(amount > 0);
         require(paybackAmount > amount + contractFee);
-        require(lendingRequests[msg.sender].amount == 0);
+        require(userRequests[msg.sender].length == 0);
 
         LendingRequest memory request = LendingRequest({
             asker: msg.sender,
@@ -98,27 +122,29 @@ contract Base is Ownable {
             creationTime: now
             });
 
-        lendingRequests[msg.sender] = request;
+        userRequests[msg.sender].push(lendingRequestCount);
+        lendingRequests.push(request);
+        lendingRequestCount++;
+        return lendingRequestCount;
     }
 
-    function lend(address asker) public payable {
-        require(lendingRequests[asker].asker != msg.sender);
-        require(!lendingRequests[asker].lent);
-        require(lendingRequests[asker].amount == msg.value);
+    function lend(uint id) public payable {
+        require(lendingRequests[id].asker != msg.sender);
+        require(!lendingRequests[id].lent);
+        require(lendingRequests[id].amount == msg.value);
 
-        /// Bad practice to directly send as side effect (see Withdrawal Pattern)
-        asker.transfer(msg.value);
-        lendingRequests[asker].lent = true;
+        lendingRequests[id].asker.transfer(msg.value);
+        lendingRequests[id].lent = true;
     }
 
-    function settle() public payable {
-        require(lendingRequests[msg.sender].lent);
-        require(!lendingRequests[msg.sender].settled);
-        require(lendingRequests[msg.sender].paybackAmount == msg.value);
+    function settle(uint id) public payable {
+        require(lendingRequests[id].lent);
+        require(!lendingRequests[id].settled);
+        require(lendingRequests[id].lender != msg.sender);
+        require(lendingRequests[id].paybackAmount == msg.value);
 
-        /// Bad practice to directly send as side effect (see Withdrawal Pattern)
-        lendingRequests[msg.sender].lender.transfer(msg.value - contractFee);
-        lendingRequests[msg.sender].settled = true;
+        lendingRequests[id].lender.transfer(msg.value - contractFee);
+        lendingRequests[id].settled = true;
     }
 
     function contractFees() public view returns (uint contractfees) {
@@ -126,6 +152,6 @@ contract Base is Ownable {
     }
 
     function withdrawFees() public onlyOwner {
-      owner.transfer(address(this).balance);
+        owner.transfer(address(this).balance);
     }
 }

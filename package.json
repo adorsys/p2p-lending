@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha",
+    "compile": "node compile.js",
     "deploy": "node deploy.js"
   },
   "keywords": [],
