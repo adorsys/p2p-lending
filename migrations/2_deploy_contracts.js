@@ -1,12 +1,12 @@
-var Base = artifacts.require("./Base.sol");
-var LendingBoard = artifacts.require("./Lending_board.sol");
+const Base = artifacts.require("./Base.sol");
+const LendingBoard = artifacts.require("./Lending_board.sol");
 
 module.exports = function (deployer) {
     deployer.deploy(Base)
         .then(function () {
-            var minQuorum = 1;
-            var minsForDebate = 0;
-            var majorityMargin = 50;
+            const minQuorum = 1;
+            const minsForDebate = 0;
+            const majorityMargin = 50;
             return deployer.deploy(LendingBoard, minQuorum, minsForDebate, majorityMargin, Base.address);
         });
 };
