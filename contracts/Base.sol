@@ -26,7 +26,15 @@ contract Base is Ownable {
         public {
     }
 
-    function getUserRequests() public view returns (uint[]) {
+    /**
+     * @notice Will return all lending requests of the caller
+     */
+
+    function getUserRequests() 
+        public 
+        view 
+        returns (uint[]) {
+            
         return userRequests[msg.sender];
     }
 
@@ -50,6 +58,10 @@ contract Base is Ownable {
     // function getMyLendingRequests() public view returns (LendingRequest[]) {
     //     return getLendingRequestsByUser(msg.sender);
     // }
+
+    /**
+     * @notice Will return the ID of the first unsettled lending request if one exists
+     */
 
     function getMyFirstUnsettledLendingRequest()
         public
@@ -102,7 +114,14 @@ contract Base is Ownable {
         contractFee = _fee;
     }
 
-    function ask(uint amount, uint paybackAmount, string purpose) public returns (uint contractId ){
+    /**
+     * @notice Creates a lending request for the amount you specified
+     */
+
+    function ask(uint amount, uint paybackAmount, string purpose)
+        public 
+        returns (uint) {
+
         require(amount > 0, "you need to ask for money");
         require(paybackAmount >= amount + contractFee, "minimum amount is amount + contractFee");
         // require(userRequests[msg.sender].length == 0, "you already have an open request");
@@ -125,7 +144,14 @@ contract Base is Ownable {
         return lendingRequestCount;
     }
 
-    function lend(uint id) public payable {
+    /**
+     * @notice Lend the amount of ether you send to the lending request with the ID you specified
+     */
+
+    function lend(uint id) 
+        public 
+        payable {
+
         require(lendingRequests[id].asker != msg.sender, "you cannot lend money to yourself");
         require(!lendingRequests[id].lent, "request was already served");
         require(lendingRequests[id].amount == msg.value, "provided amount has to be equal to the amount asked for");
@@ -134,7 +160,14 @@ contract Base is Ownable {
         lendingRequests[id].lent = true;
     }
 
-    function settle(uint id) public payable {
+    /**
+     * @notice settle the lending request with the ID you specified
+     */
+
+    function settle(uint id) 
+        public 
+        payable {
+
         require(lendingRequests[id].lent, "cannot be settled before money was lent");
         require(!lendingRequests[id].settled, "was already settled");
         require(lendingRequests[id].lender != msg.sender, "no lending money to yourself");
@@ -144,11 +177,22 @@ contract Base is Ownable {
         lendingRequests[id].settled = true;
     }
 
-    function contractFees() public view returns (uint contractfees) {
+    function contractFees() 
+        public 
+        view 
+        returns (uint) {
+
         return address(this).balance;
     }
 
-    function withdrawFees() public onlyOwner {
+    /**
+     * @dev should be called before relinquishing the contract
+     */
+
+    function withdrawFees() 
+        public 
+        onlyOwner {
+
         owner.transfer(address(this).balance);
     }
 }

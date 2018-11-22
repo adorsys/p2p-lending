@@ -61,6 +61,7 @@ contract lending_board is Ownable {
     // modifier so that only stakeholders can vote and create new proposals
     modifier onlyMembers {
         require(memberID[msg.sender] != 0, "Not A Member");
+        // code with modifier gets pasted to _ position
         _;
     }
 
