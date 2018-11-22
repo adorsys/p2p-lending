@@ -1,72 +1,12 @@
-pragma solidity ^0.4.4;
-pragma experimental ABIEncoderV2;
+pragma solidity ^0.4.22;
+// pragma experimental ABIEncoderV2;
 
-/**
- * @title Ownable
- * @dev The Ownable contract has an owner address, and provides basic authorization control
- * functions, this simplifies the implementation of "user permissions".
- */
-contract Ownable {
-  address public owner;
-
-
-  event OwnershipRenounced(address indexed previousOwner);
-  event OwnershipTransferred(
-    address indexed previousOwner,
-    address indexed newOwner
-  );
-
-
-  /**
-   * @dev The Ownable constructor sets the original `owner` of the contract to the sender
-   * account.
-   */
-  constructor() public {
-    owner = msg.sender;
-  }
-
-  /**
-   * @dev Throws if called by any account other than the owner.
-   */
-  modifier onlyOwner() {
-    require(msg.sender == owner);
-    _;
-  }
-
-  /**
-   * @dev Allows the current owner to relinquish control of the contract.
-   * @notice Renouncing to ownership will leave the contract without an owner.
-   * It will not be possible to call the functions with the `onlyOwner`
-   * modifier anymore.
-   */
-  function renounceOwnership() public onlyOwner {
-    emit OwnershipRenounced(owner);
-    owner = address(0);
-  }
-
-  /**
-   * @dev Allows the current owner to transfer control of the contract to a newOwner.
-   * @param _newOwner The address to transfer ownership to.
-   */
-  function transferOwnership(address _newOwner) public onlyOwner {
-    _transferOwnership(_newOwner);
-  }
-
-  /**
-   * @dev Transfers control of the contract to a newOwner.
-   * @param _newOwner The address to transfer ownership to.
-   */
-  function _transferOwnership(address _newOwner) internal {
-    require(_newOwner != address(0));
-    emit OwnershipTransferred(owner, _newOwner);
-    owner = _newOwner;
-  }
-}
+import "./Ownable.sol";
 
 contract Base is Ownable {
 
-    uint contractFee = 1000;
-    uint lendingRequestCount = 0;
+    uint256 public contractFee = 1000;
+    uint256 lendingRequestCount = 0;
 
     struct LendingRequest {
         address asker;
@@ -82,34 +22,91 @@ contract Base is Ownable {
     mapping(address => uint[]) private userRequests;
     LendingRequest[] public lendingRequests;
 
-    constructor() public {
+    constructor() 
+        public {
     }
 
     function getUserRequests() public view returns (uint[]) {
         return userRequests[msg.sender];
     }
 
-    function getLendingRequests() public view returns (LendingRequest[]) {
-        return lendingRequests;
-    }
+    /*
+        Handle Requests in Webinterface - do not use as database
+    */
 
-    function getLendingRequestsByUser(address user) public view returns (LendingRequest[]) {
-        uint[] memory myRequests = userRequests[user];
-        LendingRequest[] memory fullRequests = new LendingRequest[](myRequests.length);
-        for (uint i = 0; i < myRequests.length; i++) {
-            fullRequests[i] = lendingRequests[myRequests[i]];
+    // function getLendingRequests() public view returns (LendingRequest[]) {
+    //     return lendingRequests;
+    // }
+
+    // function getLendingRequestsByUser(address user) public view returns (LendingRequest[]) {
+    //     uint[] memory myRequests = userRequests[user];
+    //     LendingRequest[] memory fullRequests = new LendingRequest[](myRequests.length);
+    //     for (uint i = 0; i < myRequests.length; i++) {
+    //         fullRequests[i] = lendingRequests[myRequests[i]];
+    //     }
+    //     return fullRequests;
+    // }
+
+    // function getMyLendingRequests() public view returns (LendingRequest[]) {
+    //     return getLendingRequestsByUser(msg.sender);
+    // }
+
+    function getMyFirstUnsettledLendingRequest()
+        public
+        view
+        returns (uint256 result) {
+        
+        uint256[] memory myRequests = getUserRequests();
+        require(hasUnsettledRequests(), "you have no unsettled requests");
+
+        
+        for (uint256 i = 0; i < myRequests.length; i++) {
+            if (!lendingRequests[i].settled) {
+                result = i;
+                break;
+            }
         }
-        return fullRequests;
+
+        return result;
     }
 
-    function getMyLendingRequests() public view returns (LendingRequest[]) {
-        getLendingRequestsByUser(msg.sender);
+    function hasUnsettledRequests()
+        internal
+        view
+        returns (bool) {
+        
+        uint256[] memory myRequests = getUserRequests();
+        bool unsettled = false;
+
+        if (lendingRequests.length == 0 || myRequests.length == 0) {
+            return false;
+        }
+
+        for (uint256 i = 0; i < myRequests.length; i++) {
+            if (!lendingRequests[i].settled) {
+                unsettled = true;
+                break;
+            }
+        }
+        return unsettled;
+    }
+
+    /**
+     * @dev Allows the lending board to set the contract fee - has to be deployed by the same address
+     */
+
+    function setContractFee(uint256 _fee)
+        public 
+        onlyOwner {
+        
+        contractFee = _fee;
     }
 
     function ask(uint amount, uint paybackAmount, string purpose) public returns (uint contractId ){
-        require(amount > 0);
-        require(paybackAmount > amount + contractFee);
-        require(userRequests[msg.sender].length == 0);
+        require(amount > 0, "you need to ask for money");
+        require(paybackAmount >= amount + contractFee, "minimum amount is amount + contractFee");
+        // require(userRequests[msg.sender].length == 0, "you already have an open request");
+        require(!hasUnsettledRequests(), "you have an unsettled request");
 
         LendingRequest memory request = LendingRequest({
             asker: msg.sender,
@@ -129,19 +126,19 @@ contract Base is Ownable {
     }
 
     function lend(uint id) public payable {
-        require(lendingRequests[id].asker != msg.sender);
-        require(!lendingRequests[id].lent);
-        require(lendingRequests[id].amount == msg.value);
+        require(lendingRequests[id].asker != msg.sender, "you cannot lend money to yourself");
+        require(!lendingRequests[id].lent, "request was already served");
+        require(lendingRequests[id].amount == msg.value, "provided amount has to be equal to the amount asked for");
 
         lendingRequests[id].asker.transfer(msg.value);
         lendingRequests[id].lent = true;
     }
 
     function settle(uint id) public payable {
-        require(lendingRequests[id].lent);
-        require(!lendingRequests[id].settled);
-        require(lendingRequests[id].lender != msg.sender);
-        require(lendingRequests[id].paybackAmount == msg.value);
+        require(lendingRequests[id].lent, "cannot be settled before money was lent");
+        require(!lendingRequests[id].settled, "was already settled");
+        require(lendingRequests[id].lender != msg.sender, "no lending money to yourself");
+        require(lendingRequests[id].paybackAmount == msg.value, "payback amount has to be equal to the amount agreed upon");
 
         lendingRequests[id].lender.transfer(msg.value - contractFee);
         lendingRequests[id].settled = true;
