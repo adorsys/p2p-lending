@@ -1,15 +1,7 @@
-pragma solidity ^0.4.22;
+pragma solidity >=0.4.22;
 import "./Ownable.sol";
-import "./string_utils.sol";
 
-contract Base {
-
-    function setContractFee(uint256) public pure returns (uint256) {}
-
-    function contractFee() public pure returns (uint256) {}
-}
-
-contract lending_board is Ownable {
+contract LendingBoard is Ownable {
 
     // variables and events
 
@@ -20,11 +12,9 @@ contract lending_board is Ownable {
     uint256 public numProposals;
     mapping (address => uint256) private memberID;
     Member[] public members;
-    Base private lC;
-    string_utils private utils;
     uint256[] public openProposals;
     uint256 public numOpenProposals;
-
+    uint256 public contractFee;
 
     event ProposalAdded(uint256 ProposalID, string description);
     event Voted(uint256 ProposalID, bool position, address voter);
@@ -45,6 +35,7 @@ contract lending_board is Ownable {
         uint256 proposedFee;
         address memberAddress;
         string memberName;
+        uint8 fnNumber;
     }
 
     struct Member {
@@ -55,56 +46,60 @@ contract lending_board is Ownable {
     struct Vote {
         bool inSupport;
         address voter;
-        string justification;
     }
 
     // modifier so that only stakeholders can vote and create new proposals
     modifier onlyMembers {
-        require(memberID[msg.sender] != 0, "Not A Member");
-        // code with modifier gets pasted to _ position
-        _;
+        uint256 mID = memberID[msg.sender];
+
+        if (mID == 0) {
+            require(msg.sender == owner, "you are not the owner or a member of the contract");
+            _;
+        } else {
+            require(memberID[msg.sender] != 0, "Not A Member");
+            // code with modifier gets pasted to _ position
+            _;
+        }
+        
     }
 
-    constructor(
-        uint256 _minQuorum, uint256 _minsForDebate, 
-        uint8 _majorityMargin, address _contractAddr) 
+    constructor
+    (
+        // uint256 _minQuorum, uint256 _minsForDebate, uint8 _majorityMargin
+    ) 
         public {
 
-        changeVotingRules(_minQuorum, _minsForDebate, _majorityMargin);
-        require(_contractAddr != 0, "Provide a valid address to the lending contract");
-        setBaseAddress(_contractAddr);
-        utils = new string_utils();
-        // openProposals.push(2**256 - 1);
-
-        // dummy member so contract owner is also a member as onlyMembers checks against 0
-        addMember(0, "0xd3adb33f");
+        // changeVotingRules(_minQuorum, _minsForDebate, _majorityMargin);
+        changeVotingRules(1, 0, 50);
+        contractFee = 1000;
         // add owner as founder
-        addMember(owner, "founder");
+        members.push(Member({
+            member: owner,
+            name: "owner"
+        }));
+        // addMember(owner, "founder");
     }
 
     /**
-     * Specify the address of the contract
+     * sets the contract fee in the base p2p-lending contract
      *
-     * @param _addr address of the deployed smart contract
+     * @param _fee the new fee in the base p2p-lending contract
+     * @return the changed fee
      */
 
-    function setBaseAddress(address _addr) 
-        public 
-        onlyOwner {
-            
-        require(_addr != 0, "provide a valid address");
-        lC = Base(_addr);
+    function setFee(uint256 _fee) 
+        private {
+        
+        contractFee = _fee;
     }
 
     /**
      * changes the contract proposedFee in the Base contract of p2p_lending
      *
-     * @param _proposalID Id of the proposal to check against if valid change
      */
 
     function changeContractFee(uint256 _proposalID) 
-        private 
-        view {
+        private {
 
         Proposal storage p = Proposals[_proposalID];
         require(p.proposedFee != 0, "contract fee cannot be 0");
@@ -121,7 +116,7 @@ contract lending_board is Ownable {
      */
 
     function addMember(
-        address _targetMember, string _memberName) 
+        address _targetMember, string memory _memberName) 
         private 
         onlyOwner {
             
@@ -189,7 +184,7 @@ contract lending_board is Ownable {
     }
 
     function createProposalStump(
-        string _proposalDescription, address _author)
+        string memory _proposalDescription, address _author)
         private
         onlyMembers
         returns (uint256 proposalID) {
@@ -210,22 +205,24 @@ contract lending_board is Ownable {
     /**
      * Add proposal using the (if aviailiable) empty slots in Proposals
      *
-     * @param _proposalDescription Description of proposal
      * @param _proposedFee amount the transaction fee to borrow money should be changed to
      */
 
-    function newProposal(
-        string _proposalDescription, uint256 _proposedFee)
+    function newFeeProposal
+    (
+        uint256 _proposedFee
+    )
         public 
         onlyMembers 
         returns (uint256 proposalID) {
 
-        proposalID = createProposalStump(_proposalDescription, msg.sender);
+        proposalID = createProposalStump("Change Contract Fee", msg.sender);
         Proposal storage p = Proposals[proposalID];
 
         p.proposedFee = _proposedFee;
+        p.fnNumber = 0;
 
-        emit ProposalAdded(proposalID, _proposalDescription);
+        emit ProposalAdded(proposalID, "Change Contract Fee");
         openProposals.push(proposalID);
         numProposals++;
         numOpenProposals++;
@@ -233,19 +230,26 @@ contract lending_board is Ownable {
         return proposalID;
     }
 
-    function newProposal(
-        string _proposalDescription, 
-        address _targetAddress, string _memberName
-        )
+    function newMemberProposal
+    ( 
+        address _targetAddress, string memory _memberName, uint8 _fnNumber
+    )
         public
         onlyMembers
         returns (uint256 proposalID) {
         
+        string memory _proposalDescription = "Add Member";
+
+        if (_fnNumber == 2) {
+            _proposalDescription = "Remove Member";
+        }
+
         proposalID = createProposalStump(_proposalDescription, msg.sender);
         Proposal storage p = Proposals[proposalID];
 
         p.memberAddress = _targetAddress;
         p.memberName = _memberName;
+        p.fnNumber = _fnNumber;
 
         emit ProposalAdded(proposalID, _proposalDescription);
         openProposals.push(proposalID);
@@ -303,19 +307,19 @@ contract lending_board is Ownable {
             // execute proposals
             // proposal to change contract proposedFee
 
-            if (utils.compareStrings(p.description, "change fee")) {
+            if (p.fnNumber == 0) {
                 changeContractFee(_proposalNumber);
             }
 
             // proposal to add a new member to the board
 
-            else if (utils.compareStrings(p.description, "add member")) {
+            else if (p.fnNumber == 1) {
                 addMember(p.memberAddress, p.memberName);
             }
 
             // proposal to remove a given member from the board
 
-            else if (utils.compareStrings(p.description, "remove member")) {
+            else if (p.fnNumber == 2) {
                 removeMember(p.memberAddress);
             }
 
@@ -364,35 +368,5 @@ contract lending_board is Ownable {
         
         executeProposal(proposalID);
         numOpenProposals--;
-    }
-
-    /**
-     * sets the contract fee in the base p2p-lending contract
-     *
-     * @param _fee the new fee in the base p2p-lending contract
-     * @return the changed fee
-     */
-
-    function setFee(uint256 _fee) 
-        private 
-        view 
-        returns (uint256 result) {
-
-        lC.setContractFee(_fee);
-        return _fee;
-    }
-
-    /**
-     * get the current fee in the base p2p-lending contract
-     *
-     * @return current fee in the base p2p-lending contract
-     */
-
-    function getFee() 
-        public 
-        view 
-        returns (uint256 result) {
-
-        return lC.contractFee();
     }
 }

@@ -1,18 +1,23 @@
-pragma solidity ^0.4.22;
+pragma solidity >=0.4.22;
 // pragma experimental ABIEncoderV2;
 
 import "./Ownable.sol";
 
+contract LendingBoard {
+    function contractFee() public pure returns(uint256) {}
+}
+
 contract Base is Ownable {
 
-    uint256 public contractFee = 1000;
+    uint256 contractFee;
     uint256 lendingRequestCount = 0;
+    LendingBoard board;
 
     struct LendingRequest {
-        address asker;
+        address payable asker;
         uint amount;
         uint paybackAmount;
-        address lender;
+        address payable lender;
         bool settled;
         string purpose;
         bool lent;
@@ -22,9 +27,13 @@ contract Base is Ownable {
     mapping(address => uint[]) private userRequests;
     LendingRequest[] public lendingRequests;
 
-    constructor() 
+    constructor(LendingBoard _address) 
         public {
+
+        board = _address;
+        contractFee = board.contractFee();
     }
+
 
     /**
      * @notice Will return all lending requests of the caller
@@ -33,7 +42,7 @@ contract Base is Ownable {
     function getUserRequests() 
         public 
         view 
-        returns (uint[]) {
+        returns (uint[] memory) {
             
         return userRequests[msg.sender];
     }
@@ -118,7 +127,7 @@ contract Base is Ownable {
      * @notice Creates a lending request for the amount you specified
      */
 
-    function ask(uint amount, uint paybackAmount, string purpose)
+    function ask(uint amount, uint paybackAmount, string memory purpose)
         public 
         returns (uint) {
 
@@ -131,7 +140,7 @@ contract Base is Ownable {
             asker: msg.sender,
             amount: amount,
             paybackAmount: paybackAmount,
-            lender: 0,
+            lender: address(0),
             settled: false,
             purpose: purpose,
             lent: false,

@@ -1,4 +1,4 @@
-pragma solidity ^0.4.22;
+pragma solidity >=0.4.22;
 
 /**
  * @title Ownable
@@ -6,7 +6,7 @@ pragma solidity ^0.4.22;
  * functions, this simplifies the implementation of "user permissions".
  */
 contract Ownable {
-    address public owner;
+    address payable owner;
 
 
     event OwnershipRenounced(address indexed previousOwner);
@@ -47,7 +47,7 @@ contract Ownable {
    * @dev Allows the current owner to transfer control of the contract to a newOwner.
    * @param _newOwner The address to transfer ownership to.
    */
-    function transferOwnership(address _newOwner) public onlyOwner {
+    function transferOwnership(address payable _newOwner) public onlyOwner {
         _transferOwnership(_newOwner);
     }
 
@@ -55,7 +55,7 @@ contract Ownable {
    * @dev Transfers control of the contract to a newOwner.
    * @param _newOwner The address to transfer ownership to.
    */
-    function _transferOwnership(address _newOwner) internal {
+    function _transferOwnership(address payable _newOwner) internal {
         require(_newOwner != address(0), "use renounceOwnership instead");
         emit OwnershipTransferred(owner, _newOwner);
         owner = _newOwner;

@@ -1,4 +1,4 @@
-pragma solidity ^0.4.18;
+pragma solidity >=0.4.18;
 
 contract string_utils {
     bytes1[] private _rBytes;
@@ -13,10 +13,10 @@ contract string_utils {
      * @return string in upper case
      */
 
-    function upper(string _base) 
+    function upper(string memory _base) 
         internal
         pure 
-        returns (string) {
+        returns (string memory) {
         bytes memory _baseBytes = bytes(_base);
         for (uint i = 0; i < _baseBytes.length; i++) {
             _baseBytes[i] = _upper(_baseBytes[i]);
@@ -46,9 +46,9 @@ contract string_utils {
         return _b1;
     }
 
-    function removeBlanks(string _s1)
+    function removeBlanks(string memory _s1)
         public
-        returns (string) {
+        returns (string memory) {
             
         bytes memory _sBytes = bytes(_s1);
 
@@ -59,7 +59,7 @@ contract string_utils {
         }
         bytes memory _rString = new bytes(_rBytes.length);
 
-        for(i = 0; i < _rString.length; i++) {
+        for(uint256 i = 0; i < _rString.length; i++) {
             _rString[i] = _rBytes[i];
         }
 
@@ -81,7 +81,7 @@ contract string_utils {
         }
     }
 
-    function compareStrings(string _s1, string _s2)
+    function compareStrings(string memory _s1, string memory _s2)
         public
         returns (bool) {
 
