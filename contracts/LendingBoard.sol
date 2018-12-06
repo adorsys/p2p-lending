@@ -17,7 +17,7 @@ contract LendingBoard is Ownable {
     uint256 public contractFee;
 
     event ProposalAdded(uint256 ProposalID, string description);
-    event Voted(uint256 ProposalID, bool position, address voter);
+    event Voted(uint256 ProposalID, bool stanceOnProposal, address voter);
     event ProposalTallied(uint256 proposalID, uint256 result, uint256 quorum, bool active);
     event MembershipChanged(address member, bool isMember);
     event ChangeOfRules(uint256 newMinimumQuorum, uint256 newDebatingPeriodInMinutes, int newMajorityMargin);
@@ -88,7 +88,8 @@ contract LendingBoard is Ownable {
      */
 
     function setFee(uint256 _fee) 
-        private {
+        private
+        onlyMembers {
         
         contractFee = _fee;
     }
@@ -99,7 +100,8 @@ contract LendingBoard is Ownable {
      */
 
     function changeContractFee(uint256 _proposalID) 
-        private {
+        private 
+        onlyMembers {
 
         Proposal storage p = Proposals[_proposalID];
         require(p.proposedFee != 0, "contract fee cannot be 0");
@@ -118,7 +120,7 @@ contract LendingBoard is Ownable {
     function addMember(
         address _targetMember, string memory _memberName) 
         private 
-        onlyOwner {
+        onlyMembers {
             
         uint256 id = memberID[_targetMember];
         if (id == 0) {
@@ -143,8 +145,8 @@ contract LendingBoard is Ownable {
      */
 
     function removeMember(address _targetMember) 
-        private 
-        onlyOwner {
+        private
+        onlyMembers {
 
         require(memberID[_targetMember] != 0, "Do not delete the first Member");
 
@@ -173,8 +175,8 @@ contract LendingBoard is Ownable {
     function changeVotingRules(
         uint256 _minimumQuorumForProposals, uint256 _minutesForDebate, 
         uint8 _marginOfVotesForMajority) 
-        public 
-        onlyOwner {
+        public
+        onlyMembers {
 
         minimumQuorum = _minimumQuorumForProposals;
         debatingPeriodInMinutes = _minutesForDebate;
@@ -216,6 +218,7 @@ contract LendingBoard is Ownable {
         onlyMembers 
         returns (uint256 proposalID) {
 
+        require(_proposedFee >= 100, "proposed fee has to be higher than 100");
         proposalID = createProposalStump("Change Contract Fee", msg.sender);
         Proposal storage p = Proposals[proposalID];
 
@@ -292,7 +295,7 @@ contract LendingBoard is Ownable {
 
     function executeProposal(uint256 _proposalNumber)
         private 
-        onlyOwner {
+        onlyMembers {
 
         Proposal storage p = Proposals[_proposalNumber];
 
