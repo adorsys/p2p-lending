@@ -65,12 +65,12 @@ contract LendingBoard is Ownable {
 
     constructor
     (
-        // uint256 _minQuorum, uint256 _minsForDebate, uint8 _majorityMargin
+        uint256 _minQuorum, uint256 _minsForDebate, uint8 _majorityMargin
     ) 
         public {
 
-        // changeVotingRules(_minQuorum, _minsForDebate, _majorityMargin);
-        changeVotingRules(1, 0, 50);
+        changeVotingRules(_minQuorum, _minsForDebate, _majorityMargin);
+        // changeVotingRules(1, 0, 50);
         contractFee = 1000;
         // add owner as founder
         members.push(Member({

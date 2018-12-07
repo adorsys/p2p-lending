@@ -4,7 +4,7 @@ const web3 = new Web3("ws://127.0.0.1:8545");
 
 // add functionality to change the local time to test functions
 // that can only be called after a certain amount of time has passed
-// 1 day is equal to 86400 seconds
+// 1 hour is equal to 3600 | 1 day is equal to 86400 seconds
 
 const timeTravel = function(time) {
     return new Promise((resolve, reject) => {
@@ -57,7 +57,7 @@ contract("LendingBoard", function(accounts) {
         let debatingPeriod = await LendingBoardInstance.debatingPeriodInMinutes.call();
         assert.strictEqual(
             debatingPeriod.toNumber(),
-            0,
+            30,
             "sets debating period correctly"
         );
 
@@ -239,7 +239,7 @@ contract("LendingBoard", function(accounts) {
         }
     });
 
-    it("can execute the next proposal", async function() {
+    it("can execute the specified proposal", async function() {
         // try to execute the proposal without being a member of the board
         try {
             let dummyExecute = await LendingBoardInstance.executeProposal.call(
@@ -252,6 +252,22 @@ contract("LendingBoard", function(accounts) {
                 "can only be called by members of the board"
             );
         }
+
+        // try to execute the proposal before the debate time has passed
+
+        try {
+            let premExecute = await LendingBoardInstance.executeProposal(
+                proposalID
+            );
+        } catch (err) {
+            assert(
+                err.message.indexOf("revert") >= 0,
+                "can only be executed after the voting deadline"
+            );
+        }
+
+        // travel 1 hour into the future
+        await timeTravel(3600);
         let actualExecute = await LendingBoardInstance.executeProposal(
             proposalID
         );
@@ -307,15 +323,5 @@ contract("LendingBoard", function(accounts) {
         // check if entry in openProposals was removed
         let newLeng = await LendingBoardInstance.getOcLength.call();
         assert.strictEqual(newLeng.toNumber(), 0, "should have been removed");
-    });
-
-    it("should successfully call specialFn because enough time has passed", async function() {
-        try {
-            await timeTravel(86400 * 3);
-            let status = await LendingBoardInstance.specialFn.call();
-            console.log(status);
-        } catch (err) {
-            console.log(err);
-        }
     });
 });
