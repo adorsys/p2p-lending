@@ -80,12 +80,28 @@ contract LendingBoard is Ownable {
         // addMember(owner, "founder");
     }
 
+    function getMembersLength()
+        public
+        view
+        returns (uint256) {
+        
+        return members.length;
+    }
+
     function getOcLength()
         public
         view
         returns (uint256) {
 
         return openProposals.length;
+    }
+
+    function getPropLength()
+        public
+        view
+        returns (uint256) {
+
+        return Proposals.length;
     }
 
     /**
@@ -248,6 +264,8 @@ contract LendingBoard is Ownable {
         public
         onlyMembers
         returns (uint256 proposalID) {
+
+        require(_targetAddress != address(0), "provide a valid address");
         
         string memory _proposalDescription = "Add Member";
 
