@@ -113,7 +113,7 @@ contract("LendingBoard", function(accounts) {
         assert.strictEqual(numProps.toNumber(), 1, "only one proposal should have been added");
 
         // check if proposal was added to openProposals
-        currentOpenProps = await LendingBoardInstance.getOcLength.call();
+        currentOpenProps = await LendingBoardInstance.getOpenProposalsLength.call();
         currentOpenProps = currentOpenProps.toNumber();
         assert.strictEqual(currentOpenProps, 1, "should only be one open proposal");
 
@@ -201,7 +201,7 @@ contract("LendingBoard", function(accounts) {
         );
 
         // check if proposal was added to openProposals
-        currentOpenProps = await LendingBoardInstance.getOcLength.call();
+        currentOpenProps = await LendingBoardInstance.getOpenProposalsLength.call();
         currentOpenProps = currentOpenProps.toNumber();
         assert.strictEqual(currentOpenProps, 2, "should be two open proposals");
     });
@@ -343,7 +343,7 @@ contract("LendingBoard", function(accounts) {
         assert.strictEqual(executedProposal.proposalPassed, true, "should have passed and true");
 
         // check if entry in openProposals was removed
-        let newLeng = await LendingBoardInstance.getOcLength.call();
+        let newLeng = await LendingBoardInstance.getOpenProposalsLength.call();
         assert.strictEqual(newLeng.toNumber(), currentProposals - 1, "should have been removed");
     });
 
@@ -352,7 +352,7 @@ contract("LendingBoard", function(accounts) {
         proposalID = await LendingBoardInstance.openProposals.call(0);
 
         // update number of currentOpenProps
-        currentOpenProps = await LendingBoardInstance.getOcLength.call();
+        currentOpenProps = await LendingBoardInstance.getOpenProposalsLength.call();
 
         // try executing the proposal without voting first
         try {
@@ -428,7 +428,7 @@ contract("LendingBoard", function(accounts) {
         assert.strictEqual(newMember[1], "newUser", "should be newUser");
 
         // check if entry in openProposals was removed
-        let newLeng = await LendingBoardInstance.getOcLength.call();
+        let newLeng = await LendingBoardInstance.getOpenProposalsLength.call();
         assert.strictEqual(
             newLeng.toNumber(),
             currentOpenProps.toNumber() - 1,
@@ -488,7 +488,7 @@ contract("LendingBoard", function(accounts) {
         proposalID = await LendingBoardInstance.openProposals.call(0);
 
         // update number of currentOpenProps
-        currentOpenProps = await LendingBoardInstance.getOcLength.call();
+        currentOpenProps = await LendingBoardInstance.getOpenProposalsLength.call();
 
         // vote against the proposal to remove newUser from the contract
         let vote = await LendingBoardInstance.vote(proposalID.toNumber(), false, { from: admin });
@@ -550,7 +550,7 @@ contract("LendingBoard", function(accounts) {
         assert.strictEqual(stillMember[1], "newUser", "should be newUser");
 
         // check if entry in openProposals was removed
-        let newLeng = await LendingBoardInstance.getOcLength.call();
+        let newLeng = await LendingBoardInstance.getOpenProposalsLength.call();
         assert.strictEqual(
             newLeng.toNumber(),
             currentOpenProps.toNumber() - 1,
@@ -703,5 +703,13 @@ contract("LendingBoard", function(accounts) {
                 "cannot remove a member that does not exist"
             );
         }
+    });
+
+    it("clean up", async function() {
+        // remove the edge cases from open proposals
+        // as they will never be executed anyway
+        let cleanUp = await LendingBoardInstance.cleanUp();
+        let numOpenProposals = await LendingBoardInstance.getOpenProposalsLength.call();
+        assert.strictEqual(numOpenProposals.toNumber(), 0, "no open proposals should be left over");
     });
 });

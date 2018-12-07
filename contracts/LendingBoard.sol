@@ -88,7 +88,7 @@ contract LendingBoard is Ownable {
         return members.length;
     }
 
-    function getOcLength()
+    function getOpenProposalsLength()
         public
         view
         returns (uint256) {
@@ -254,7 +254,6 @@ contract LendingBoard is Ownable {
         emit ProposalAdded(proposalID, "Change Contract Fee");
         openProposals.push(proposalID);
         numProposals++;
-        // numOpenProposals++;
 
         return proposalID;
     }
@@ -285,7 +284,6 @@ contract LendingBoard is Ownable {
         emit ProposalAdded(proposalID, _proposalDescription);
         openProposals.push(proposalID);
         numProposals++;
-        // numOpenProposals++;
 
     }
 
@@ -359,12 +357,23 @@ contract LendingBoard is Ownable {
             p.executed = true;
             p.proposalPassed = false;
         }
-        // numOpenProposals--;
         emit ProposalTallied(_proposalNumber, p.positiveVotes, p.numberOfVotes, p.proposalPassed);
 
         /// remove executed proposal from open proposals
 
-        for (uint256 i = 0; i < openProposals.length - 1; i++) {
+        removeFromOP(_proposalNumber);
+
+        // for (uint256 i = _proposalNumber; i < openProposals.length - 1; i++) {
+        //     openProposals[i] = openProposals[i + 1];
+        // }
+        // delete openProposals[openProposals.length - 1];
+        // openProposals.length--;
+    }
+
+    function removeFromOP(uint256 _proposalNumber)
+        private {
+        
+        for (uint256 i = _proposalNumber; i < openProposals.length - 1; i++) {
             openProposals[i] = openProposals[i + 1];
         }
         delete openProposals[openProposals.length - 1];
@@ -378,45 +387,52 @@ contract LendingBoard is Ownable {
      * @return uint256 the ID of the proposal that was executed
      */
 
-    function automatedExecute()
-        public
-        onlyMembers
-        returns (uint256 proposalID) {
+    // function automatedExecute()
+    //     public
+    //     onlyMembers
+    //     returns (uint256 proposalID) {
 
-        require(openProposals.length != 0, "No Open Proposals to execute");
-        require(Proposals.length != 0, "No Proposals have been created yet");
+    //     require(openProposals.length != 0, "No Open Proposals to execute");
+    //     require(Proposals.length != 0, "No Proposals have been created yet");
 
-        // max uint256 to prevent executing proposal 0 multiple times
-        proposalID = 2**256 - 1;
+    //     // max uint256 to prevent executing proposal 0 multiple times
+    //     proposalID = 2**256 - 1;
         
-        for (uint256 i = 0; i < openProposals.length; i++) {
-            Proposal storage p = Proposals[openProposals[i]];
-            if (now > p.minExecutionDate) {
-                proposalID = openProposals[i];
-                for (uint j = i; j < openProposals.length - 1; j++) {
-                    openProposals[j] = openProposals[j + 1];
-                }
-                delete openProposals[openProposals.length - 1];
-                openProposals.length--;
-                break;
+    //     for (uint256 i = 0; i < openProposals.length; i++) {
+    //         Proposal storage p = Proposals[openProposals[i]];
+    //         if (now > p.minExecutionDate) {
+    //             proposalID = openProposals[i];
+    //             for (uint j = i; j < openProposals.length - 1; j++) {
+    //                 openProposals[j] = openProposals[j + 1];
+    //             }
+    //             delete openProposals[openProposals.length - 1];
+    //             openProposals.length--;
+    //             break;
+    //         }
+    //     }
+        
+    //     require(proposalID < Proposals.length, "Probably out of bounds.");
+        
+    //     executeProposal(proposalID);
+    // }
+
+    function cleanUp()
+        public {
+
+        uint256 oplength = openProposals.length;
+        uint256 i = 0;
+
+        while(i < oplength) {
+            Proposal memory p = Proposals[openProposals[i]];
+            if (p.fnNumber == 2 && p.memberAddress == owner) {
+                removeFromOP(i);
+                oplength--;
             }
-        }
-        
-        require(proposalID < Proposals.length, "Probably out of bounds.");
-        
-        executeProposal(proposalID);
-        // numOpenProposals--;
-    }
-
-    function specialFn()
-        public
-        view
-        returns (string memory) {
-
-        if (now >= 1 days) {
-            return "success";
-        } else {
-            return "failed";
+            if (p.fnNumber == 2 && memberID[p.memberAddress] == 0) {
+                removeFromOP(i);
+                oplength--;
+            }
+            i++;
         }
     }
 }
