@@ -172,7 +172,8 @@ contract LendingBoard is Ownable {
         private
         onlyMembers {
 
-        require(memberID[_targetMember] != 0, "Do not delete the first Member");
+        require(_targetMember != owner, "Ownership has to be relinquished!");
+        require(memberID[_targetMember] != 0, "Member has to exist");
 
         // move member to delete to the end of the array
         for (uint256 i = memberID[_targetMember]; i < members.length - 1; i++) {
@@ -181,6 +182,7 @@ contract LendingBoard is Ownable {
         // delete last member and modify the length
         delete members[members.length - 1];
         members.length--;
+        memberID[_targetMember] = 0;
 
         emit MembershipChanged(_targetMember, false);
     }
