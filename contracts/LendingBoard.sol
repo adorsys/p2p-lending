@@ -13,7 +13,7 @@ contract LendingBoard is Ownable {
     mapping (address => uint256) private memberID;
     Member[] public members;
     uint256[] public openProposals;
-    uint256 public numOpenProposals;
+    // uint256 public numOpenProposals;
     uint256 public contractFee;
 
     event ProposalAdded(uint256 ProposalID, string description);
@@ -78,6 +78,14 @@ contract LendingBoard is Ownable {
             name: "owner"
         }));
         // addMember(owner, "founder");
+    }
+
+    function getOcLength()
+        public
+        view
+        returns (uint256) {
+
+        return openProposals.length;
     }
 
     /**
@@ -228,7 +236,7 @@ contract LendingBoard is Ownable {
         emit ProposalAdded(proposalID, "Change Contract Fee");
         openProposals.push(proposalID);
         numProposals++;
-        numOpenProposals++;
+        // numOpenProposals++;
 
         return proposalID;
     }
@@ -257,7 +265,7 @@ contract LendingBoard is Ownable {
         emit ProposalAdded(proposalID, _proposalDescription);
         openProposals.push(proposalID);
         numProposals++;
-        numOpenProposals++;
+        // numOpenProposals++;
 
     }
 
@@ -299,7 +307,7 @@ contract LendingBoard is Ownable {
 
         Proposal storage p = Proposals[_proposalNumber];
 
-        // require(now > p.minExecutionDate, "Can only be executed after the voting deadline");
+        require(now >= p.minExecutionDate, "Can only be executed after the voting deadline");
         require(!p.executed, "Was already executed");
         require(p.numberOfVotes >= minimumQuorum, "Did not get minimum amount of votes necessary");
 
@@ -331,12 +339,16 @@ contract LendingBoard is Ownable {
             p.executed = true;
             p.proposalPassed = false;
         }
-        numOpenProposals--;
+        // numOpenProposals--;
         emit ProposalTallied(_proposalNumber, p.positiveVotes, p.numberOfVotes, p.proposalPassed);
 
         /// remove executed proposal from open proposals
 
-        for (uint256 i = 0)
+        for (uint256 i = 0; i < openProposals.length - 1; i++) {
+            openProposals[i] = openProposals[i + 1];
+        }
+        delete openProposals[openProposals.length - 1];
+        openProposals.length--;
     }
 
     /**
@@ -373,6 +385,18 @@ contract LendingBoard is Ownable {
         require(proposalID < Proposals.length, "Probably out of bounds.");
         
         executeProposal(proposalID);
-        numOpenProposals--;
+        // numOpenProposals--;
+    }
+
+    function specialFn()
+        public
+        view
+        returns (string memory) {
+
+        if (now >= 1 days) {
+            return "success";
+        } else {
+            return "failed";
+        }
     }
 }

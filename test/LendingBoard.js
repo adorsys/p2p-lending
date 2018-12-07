@@ -1,4 +1,30 @@
 const LendingBoard = artifacts.require("./LendingBoard.sol");
+const Web3 = require("web3");
+const web3 = new Web3("ws://127.0.0.1:8545");
+
+// add functionality to change the local time to test functions
+// that can only be called after a certain amount of time has passed
+// 1 day is equal to 86400 seconds
+
+const timeTravel = function(time) {
+    return new Promise((resolve, reject) => {
+        web3.currentProvider.send(
+            {
+                jsonrpc: "2.0",
+                method: "evm_increaseTime",
+                params: [time],
+                id: new Date().getTime()
+            },
+            (err, result) => {
+                if (err) {
+                    return reject(err);
+                } else {
+                    return resolve(result);
+                }
+            }
+        );
+    });
+};
 
 contract("LendingBoard", function(accounts) {
     const admin = accounts[0];
@@ -109,7 +135,7 @@ contract("LendingBoard", function(accounts) {
             "only one proposal should have been added"
         );
 
-        currentOpenProps = await LendingBoardInstance.numOpenProposals.call();
+        currentOpenProps = await LendingBoardInstance.getOcLength.call();
         currentOpenProps = currentOpenProps.toNumber();
         assert.strictEqual(
             currentOpenProps,
@@ -278,15 +304,18 @@ contract("LendingBoard", function(accounts) {
             "should have passed and true"
         );
 
-        // check if numOpenProposals was reduced
-        let newOP = await LendingBoardInstance.numOpenProposals.call();
-
-        assert.strictEqual(
-            newOP.toNumber(),
-            currentOpenProps - 1,
-            "should be 1 less than internal counter"
-        );
-
         // check if entry in openProposals was removed
+        let newLeng = await LendingBoardInstance.getOcLength.call();
+        assert.strictEqual(newLeng.toNumber(), 0, "should have been removed");
+    });
+
+    it("should successfully call specialFn because enough time has passed", async function() {
+        try {
+            await timeTravel(86400 * 3);
+            let status = await LendingBoardInstance.specialFn.call();
+            console.log(status);
+        } catch (err) {
+            console.log(err);
+        }
     });
 });
