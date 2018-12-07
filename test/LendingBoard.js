@@ -5,8 +5,10 @@ contract("LendingBoard", function(accounts) {
     const nonMember = accounts[9];
     let LendingBoardInstance;
     let proposalID;
+    let currentOpenProps;
     let propVotes;
     let propPosVotes;
+    const proposedFee = 200;
 
     it("initializes the lending board correctly", async function() {
         LendingBoardInstance = await LendingBoard.deployed();
@@ -16,7 +18,7 @@ contract("LendingBoard", function(accounts) {
             "has board address"
         );
 
-        let fee = await LendingBoardInstance.contractFee();
+        let fee = await LendingBoardInstance.contractFee.call();
         assert.strictEqual(fee.toNumber(), 1000, "sets contract fee correctly");
 
         let minimumQuorum = await LendingBoardInstance.minimumQuorum.call();
@@ -77,9 +79,9 @@ contract("LendingBoard", function(accounts) {
         }
 
         // get return value of newFeeProposal function but do not change the state of the contract
-        let pID = await LendingBoardInstance.newFeeProposal.call(200);
+        let pID = await LendingBoardInstance.newFeeProposal.call(proposedFee);
         // actually create a newFeeProposal (changes state of the contract)
-        let proposal = await LendingBoardInstance.newFeeProposal(200);
+        let proposal = await LendingBoardInstance.newFeeProposal(proposedFee);
 
         assert.strictEqual(proposal.logs.length, 1, "triggers one event");
         assert.strictEqual(
@@ -107,9 +109,10 @@ contract("LendingBoard", function(accounts) {
             "only one proposal should have been added"
         );
 
-        let numOpenProps = await LendingBoardInstance.numOpenProposals.call();
+        currentOpenProps = await LendingBoardInstance.numOpenProposals.call();
+        currentOpenProps = currentOpenProps.toNumber();
         assert.strictEqual(
-            numOpenProps.toNumber(),
+            currentOpenProps,
             1,
             "should only be one open proposal"
         );
@@ -208,5 +211,82 @@ contract("LendingBoard", function(accounts) {
                 "you can only vote once"
             );
         }
+    });
+
+    it("can execute the next proposal", async function() {
+        // try to execute the proposal without being a member of the board
+        try {
+            let dummyExecute = await LendingBoardInstance.executeProposal.call(
+                proposalID,
+                { from: nonMember }
+            );
+        } catch (err) {
+            assert(
+                err.message.indexOf("revert") >= 0,
+                "can only be called by members of the board"
+            );
+        }
+        let actualExecute = await LendingBoardInstance.executeProposal(
+            proposalID
+        );
+
+        // check if EVENT ProposalTallied was triggered
+        assert.strictEqual(actualExecute.logs.length, 1, "triggers one event");
+        assert.strictEqual(
+            actualExecute.logs[0].event,
+            "ProposalTallied",
+            "should be the ProposalTallied event"
+        );
+        assert.strictEqual(
+            actualExecute.logs[0].args.proposalID.toNumber(),
+            proposalID.toNumber(),
+            "wrong proposalID"
+        );
+        assert.strictEqual(
+            actualExecute.logs[0].args.result.toNumber(),
+            propPosVotes,
+            "should be the same as internal positive vote counter"
+        );
+        assert.strictEqual(
+            actualExecute.logs[0].args.quorum.toNumber(),
+            propVotes,
+            "should be the same as internal vote counter"
+        );
+        assert.strictEqual(
+            actualExecute.logs[0].args.active,
+            true,
+            "proposal should have passed"
+        );
+
+        // check if contract fee was updated
+        let actualFee = await LendingBoardInstance.contractFee.call();
+        assert.strictEqual(actualFee.toNumber(), proposedFee, "should be 200");
+
+        // check if proposal had the expected tag changes
+        let executedProposal = await LendingBoardInstance.Proposals.call(
+            proposalID
+        );
+
+        assert.strictEqual(
+            executedProposal.executed,
+            true,
+            "should be executed and true"
+        );
+        assert.strictEqual(
+            executedProposal.proposalPassed,
+            true,
+            "should have passed and true"
+        );
+
+        // check if numOpenProposals was reduced
+        let newOP = await LendingBoardInstance.numOpenProposals.call();
+
+        assert.strictEqual(
+            newOP.toNumber(),
+            currentOpenProps - 1,
+            "should be 1 less than internal counter"
+        );
+
+        // check if entry in openProposals was removed
     });
 });

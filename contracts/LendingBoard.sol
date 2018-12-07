@@ -294,12 +294,12 @@ contract LendingBoard is Ownable {
      */
 
     function executeProposal(uint256 _proposalNumber)
-        private 
+        public 
         onlyMembers {
 
         Proposal storage p = Proposals[_proposalNumber];
 
-        require(now > p.minExecutionDate, "Can only be executed after the voting deadline");
+        // require(now > p.minExecutionDate, "Can only be executed after the voting deadline");
         require(!p.executed, "Was already executed");
         require(p.numberOfVotes >= minimumQuorum, "Did not get minimum amount of votes necessary");
 
@@ -331,9 +331,12 @@ contract LendingBoard is Ownable {
             p.executed = true;
             p.proposalPassed = false;
         }
-
+        numOpenProposals--;
         emit ProposalTallied(_proposalNumber, p.positiveVotes, p.numberOfVotes, p.proposalPassed);
 
+        /// remove executed proposal from open proposals
+
+        for (uint256 i = 0)
     }
 
     /**
