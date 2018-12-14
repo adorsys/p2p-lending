@@ -31,42 +31,51 @@ contract("LendingBoard", function(accounts) {
     const newUser = accounts[1];
     const nonMember = accounts[9];
     let LendingBoardInstance;
-    let proposalID;
-    let currentOpenProps;
-    let currentProposals;
-    let propVotes;
-    let propPosVotes;
-    const proposedFee = 200;
-    let numMembers;
+    let expectedProposals = 0;
 
     it("initializes the lending board correctly", async function() {
+        // check if contract was deployed
+
         LendingBoardInstance = await LendingBoard.deployed();
         assert.notStrictEqual(LendingBoardInstance.address, 0x0, "has board address");
 
-        numMembers = await LendingBoardInstance.getMembersLength.call();
-        numMembers = numMembers.toNumber();
+        // check if contract fee was initialized
 
         let fee = await LendingBoardInstance.contractFee.call();
         assert.strictEqual(fee.toNumber(), 1000, "sets contract fee correctly");
 
-        let minimumQuorum = await LendingBoardInstance.minimumQuorum.call();
+        // check if minimum quorum was initialized
+
+        let minimumQuorum = await LendingBoardInstance.minQuorum.call();
         assert.strictEqual(minimumQuorum.toNumber(), 1, "sets minimum quorum correctly");
 
-        let debatingPeriod = await LendingBoardInstance.debatingPeriodInMinutes.call();
-        assert.strictEqual(debatingPeriod.toNumber(), 30, "sets debating period correctly");
+        // check if debating period was initialized
+
+        let debatingPeriod = await LendingBoardInstance.debateTime.call();
+        assert.strictEqual(debatingPeriod.toNumber(), 30, "sets debating time correctly");
+
+        // check if majority margin was initialized
 
         let majorityMargin = await LendingBoardInstance.majorityMargin.call();
         assert.strictEqual(majorityMargin.toNumber(), 50, "sets majority margin correctly");
+
+        // check if a member was added on creation
+
+        let numMembers = await LendingBoardInstance.getMembersLength.call();
+        assert.strictEqual(numMembers.toNumber(), 1, "adds one member");
+
+        // check if first member is the creator of the contract
 
         let firstMember = await LendingBoardInstance.members.call(numMembers - 1);
         assert.strictEqual(firstMember[1], "owner", "adds owner as first member");
         assert.strictEqual(firstMember[0], admin, "adds owner as first member");
     });
 
-    it("can create a proposal to change the contract fee", async function() {
+    it("can create Fee Proposal", async function() {
         // try to create a proposal without being a member of the board
+
         try {
-            let nonMemberProposal = await LendingBoardInstance.newFeeProposal(200, {
+            await LendingBoardInstance.createFeeProposal.call(200, {
                 from: nonMember
             });
         } catch (err) {
@@ -77,63 +86,87 @@ contract("LendingBoard", function(accounts) {
         }
 
         // try to create a proposal with too low a fee
+
         try {
-            let wrongFeeProposal = await LendingBoardInstance.newFeeProposal(50, { from: admin });
+            await LendingBoardInstance.createFeeProposal.call(1, {
+                from: admin
+            });
         } catch (err) {
-            assert(err.message.indexOf("revert") >= 0, "fee must be higher than 100");
+            assert(err.message.indexOf("revert") >= 0, "fee has to be higher than 100");
         }
 
-        // get return value of newFeeProposal (does not change the state of the contract)
-        // used in EVENT test
-        let pID = await LendingBoardInstance.newFeeProposal.call(proposedFee);
-        // actually create a newFeeProposal (changes state of the contract)
-        let proposal = await LendingBoardInstance.newFeeProposal(proposedFee);
+        // get return value of createFeeProposal function call (does NOT change contract state)
 
-        // check if Event Proposal Added was emitted
-        assert.strictEqual(proposal.logs.length, 1, "triggers one event");
+        let pID = await LendingBoardInstance.createFeeProposal.call(500, { from: admin });
+
+        // create feeProposal and change contract state
+
+        let feeProposal = await LendingBoardInstance.createFeeProposal(500, { from: admin });
+        expectedProposals++;
+
+        // check if EVENT ProposalAdded was triggered
+
+        assert.strictEqual(feeProposal.logs.length, 1, "triggers one event");
         assert.strictEqual(
-            proposal.logs[0].event,
+            feeProposal.logs[0].event,
             "ProposalAdded",
-            "should be the ProposalAdded event"
+            "should be ProposalAdded Event"
         );
-
         assert.strictEqual(
-            proposal.logs[0].args.ProposalID.toNumber(),
+            feeProposal.logs[0].args._proposalID.toNumber(),
             pID.toNumber(),
-            "should be pID"
+            "should be the same as pID"
         );
-
         assert.strictEqual(
-            proposal.logs[0].args.description,
+            feeProposal.logs[0].args._description,
             "Change Contract Fee",
             "should be Change Contract Fee"
         );
 
-        let numProps = await LendingBoardInstance.numProposals.call();
-        assert.strictEqual(numProps.toNumber(), 1, "only one proposal should have been added");
+        // check if a proposal was created
+
+        let actualProposals = await LendingBoardInstance.getProposalsLength.call();
+
+        assert.strictEqual(
+            actualProposals.toNumber(),
+            expectedProposals,
+            "actualProposals and expectedProposals should be equal"
+        );
+
+        // check if proposal was created with the user inputs
+        let createdProposal = await LendingBoardInstance.proposals.call(
+            actualProposals.toNumber() - 1
+        );
+
+        assert.strictEqual(
+            createdProposal.author,
+            admin,
+            "should have been created by the owner of the contract"
+        );
+        assert.strictEqual(
+            createdProposal.proposedFee.toNumber(),
+            500,
+            "proposed fee should be 500"
+        );
 
         // check if proposal was added to openProposals
-        currentOpenProps = await LendingBoardInstance.getOpenProposalsLength.call();
-        currentOpenProps = currentOpenProps.toNumber();
-        assert.strictEqual(currentOpenProps, 1, "should only be one open proposal");
 
-        // check if proposal was added to proposals
-        currentProposals = await LendingBoardInstance.getPropLength.call();
-        currentProposals = currentProposals.toNumber();
-        assert.strictEqual(currentProposals, 1, "should only be one proposal");
+        let actualOpenProposals = await LendingBoardInstance.getOpenProposalsLength.call();
+
+        assert.strictEqual(
+            actualOpenProposals.toNumber(),
+            expectedProposals,
+            "actualOpenProposals should be equal to expectedProposals"
+        );
     });
 
-    it("can create a proposal to add another member to the board", async function() {
-        // try to create the proposal without being a member
+    it("can create a MembershipProposal to add a member", async function() {
+        // try to create a MembershipProposal without being a member of the board
+
         try {
-            let failAddMember = await LendingBoardInstance.newMemberProposal(
-                newUser,
-                "newUser",
-                "1",
-                {
-                    from: nonMember
-                }
-            );
+            await LendingBoardInstance.createMembershipProposal.call(1, newUser, "newUser", {
+                from: nonMember
+            });
         } catch (err) {
             assert(
                 err.message.indexOf("revert") >= 0,
@@ -141,138 +174,124 @@ contract("LendingBoard", function(accounts) {
             );
         }
 
-        // try to create the proposal with an invalid address
+        // try to use owner address as a parameter
+
         try {
-            let invalAddMember = await LendingBoardInstance.newMemberProposal(
-                "0x0000000000000000000000000000000000000000",
-                "invalid address",
-                "1",
-                { from: admin }
-            );
+            await LendingBoardInstance.createMembershipProposal.call(1, admin, "admin", {
+                from: admin
+            });
         } catch (err) {
             assert(
                 err.message.indexOf("revert") >= 0,
-                "provide a vaild address to add to the board"
+                "cannot use owner of the contract as a parameter"
             );
         }
 
-        // get return value of proposal call for EVENT test
-        let pID = await LendingBoardInstance.newMemberProposal.call(newUser, "newUser", "1", {
+        // get return value of createMembershipProposal (does NOT change contract state)
+
+        let pID = await LendingBoardInstance.createMembershipProposal.call(1, newUser, "newUser", {
             from: admin
         });
 
-        // actually add the proposal to the contract state
-        let memberProposal = await LendingBoardInstance.newMemberProposal(newUser, "newUser", "1", {
-            from: admin
-        });
+        // create MembershipProposal to add Member (changes contract state)
 
-        // check if EVENT ProposalAdded was triggered
-        assert.strictEqual(memberProposal.logs.length, 1, "triggers one event");
+        let membershipProposal = await LendingBoardInstance.createMembershipProposal(
+            1,
+            newUser,
+            "newUser",
+            { from: admin }
+        );
+        expectedProposals++;
+
+        // check if EVENT ProposalAdded was triggered for add member
+        assert.strictEqual(membershipProposal.logs.length, 1, "should have triggered 1 event");
         assert.strictEqual(
-            memberProposal.logs[0].event,
+            membershipProposal.logs[0].event,
             "ProposalAdded",
-            "should be the ProposalAdded event"
+            "should be ProposalAdded"
         );
-
         assert.strictEqual(
-            memberProposal.logs[0].args.ProposalID.toNumber(),
+            membershipProposal.logs[0].args._proposalID.toNumber(),
             pID.toNumber(),
-            "should be pID"
+            "should be equal to pID"
         );
-
         assert.strictEqual(
-            memberProposal.logs[0].args.description,
+            membershipProposal.logs[0].args._description,
             "Add Member",
             "should be Add Member"
         );
 
-        // check if number of Proposals was incremented
-        let numProps = await LendingBoardInstance.numProposals.call();
-        assert.strictEqual(numProps.toNumber(), 2, "should be the second proposal");
+        // check if a proposal was created
 
-        // check if proposal was added to Proposals
-        let oldNumProps = currentProposals;
-        currentProposals = await LendingBoardInstance.getPropLength.call();
-        currentProposals = currentProposals.toNumber();
+        let actualProposals = await LendingBoardInstance.getProposalsLength.call();
         assert.strictEqual(
-            currentProposals,
-            oldNumProps + 1,
-            "should only be one proposal more than before"
+            actualProposals.toNumber(),
+            expectedProposals,
+            "actualProposals should be equal to expectedProposals"
         );
 
+        // check if proposal was added with the user inputs
+
+        let proposal = await LendingBoardInstance.proposals.call(actualProposals.toNumber() - 1);
+
+        assert.strictEqual(proposal.fnNumber.toNumber(), 1, "should be 1 (add Member)");
+        assert.strictEqual(proposal.memberAddress, newUser, "should be newUser");
+        assert.strictEqual(proposal.memberName, "newUser", 'should be "newUser"');
+
         // check if proposal was added to openProposals
-        currentOpenProps = await LendingBoardInstance.getOpenProposalsLength.call();
-        currentOpenProps = currentOpenProps.toNumber();
-        assert.strictEqual(currentOpenProps, 2, "should be two open proposals");
+
+        let actualOpenProposals = await LendingBoardInstance.getOpenProposalsLength.call();
+        assert.strictEqual(
+            actualOpenProposals.toNumber(),
+            expectedProposals,
+            "actualOpenProposals should be equal to expectedProposals"
+        );
     });
 
-    it("can get and check the created proposal", async function() {
-        proposalID = await LendingBoardInstance.openProposals.call(0);
-        let prop = await LendingBoardInstance.Proposals.call(proposalID.toNumber());
-        propVotes = prop.numberOfVotes.toNumber();
-        propPosVotes = prop.positiveVotes.toNumber();
-        assert.strictEqual(prop[0], admin, "should come from the admin");
-        assert.strictEqual(prop.proposedFee.toNumber(), 200, "proposed fee should be 200");
-    });
+    it("can vote for an open Proposal", async function() {
+        // can get the proposalID via openProposals
 
-    it("can vote for a proposal", async function() {
-        // try to vote for a proposal without being a member of the board
+        let pID = await LendingBoardInstance.openProposals.call(0);
+
+        // cannot vote for a proposal without being a member
+
         try {
-            let vote = await LendingBoardInstance.vote(proposalID, true, {
+            let dummyVote = await LendingBoardInstance.vote.call(pID.toNumber(), true, {
                 from: nonMember
             });
         } catch (err) {
-            // console.log(err);
-            assert(
-                err.message.indexOf("revert") >= 0,
-                "can only be called by members of the board"
-            );
+            assert(err.message.indexOf("revert") >= 0, "you are not a member of the board");
         }
 
-        // check if vote count gets returned when voting
-        // without changing the state of the contract
-        let dummyVote = await LendingBoardInstance.vote.call(proposalID, true, {
-            from: admin
-        });
-        assert.strictEqual(dummyVote.toNumber(), propVotes + 1, "should be 1 more than prop");
+        // get return value of vote function call (does NOT change the contract state)
 
-        // vote and change state of contract
-        let vote = await LendingBoardInstance.vote(proposalID, true, {
-            from: admin
-        });
-        // increase internal vote count
-        propVotes++;
-        propPosVotes++;
+        let voteID = await LendingBoardInstance.vote.call(pID.toNumber(), true, { from: admin });
 
-        // check for vote event
-        assert.strictEqual(vote.logs.length, 1, "triggers one event");
-        assert.strictEqual(vote.logs[0].event, "Voted", "should be the Voted event");
+        // vote for the proposal
+
+        let actualVote = await LendingBoardInstance.vote(pID.toNumber(), true, { from: admin });
+
+        // check if EVENT Voted was triggered
+
+        assert.strictEqual(actualVote.logs.length, 1, "should trigger 1 event");
+        assert.strictEqual(actualVote.logs[0].event, "Voted", "should be Voted");
         assert.strictEqual(
-            vote.logs[0].args.ProposalID.toNumber(),
-            proposalID.toNumber(),
-            "wrong proposalID"
+            actualVote.logs[0].args._proposalID.toNumber(),
+            pID.toNumber(),
+            "should be equal to pID"
         );
-        assert.strictEqual(vote.logs[0].args.stanceOnProposal, true, "should be true");
-        assert.strictEqual(vote.logs[0].args.voter, admin, "should be admin");
+        assert.strictEqual(actualVote.logs[0].args._stance, true, "should be true");
+        assert.strictEqual(actualVote.logs[0].args._voter, admin, "should be admin");
 
-        // check if proposal was modified correctly
-        let proposal = await LendingBoardInstance.Proposals.call(proposalID);
+        // vote count gets increased after voting
 
-        // check if internal proposal vote counts were modified correctly
-        assert.strictEqual(
-            proposal.numberOfVotes.toNumber(),
-            propVotes,
-            "should be equal to prop Votes"
-        );
-        assert.strictEqual(
-            proposal.positiveVotes.toNumber(),
-            propPosVotes,
-            "should be equal to propPosVotes"
-        );
+        let proposal = await LendingBoardInstance.proposals.call(pID.toNumber());
+        assert.strictEqual(proposal.numberOfVotes.toNumber(), 1, "should be one vote in total");
+        assert.strictEqual(proposal.positiveVotes.toNumber(), 1, "should be one positve vote");
 
-        // check if vote was registered for msg.sender by trying to vote again
+        // cannot vote for a proposal twice
         try {
-            let secondVote = await LendingBoardInstance.vote(proposalID, true, {
+            let doubleVote = await LendingBoardInstance.vote.call(pID.toNumber(), false, {
                 from: admin
             });
         } catch (err) {
@@ -280,436 +299,251 @@ contract("LendingBoard", function(accounts) {
         }
     });
 
-    it("can execute the change Fee proposal", async function() {
-        // try to execute the proposal without being a member of the board
+    it("can execute a proposal to change the contract fee", async function() {
+        // first proposal has not been executed yet but has been voted for
+
+        let pID = 0;
+        let oldOpenProposals = await LendingBoardInstance.getOpenProposalsLength.call();
+
+        // try to execute a proposal without being a member
         try {
-            let dummyExecute = await LendingBoardInstance.executeProposal.call(proposalID, {
+            await LendingBoardInstance.executeProposal.call(pID, {
                 from: nonMember
             });
         } catch (err) {
             assert(
                 err.message.indexOf("revert") >= 0,
-                "can only be called by members of the board"
+                "you need to be a member of the board to call this function"
             );
         }
 
-        // try to execute the proposal before the debate time has passed
+        // try to execute a proposal that has not passed the voting deadline yet
 
         try {
-            let premExecute = await LendingBoardInstance.executeProposal(proposalID);
+            await LendingBoardInstance.executeProposal.call(pID, { from: admin });
         } catch (err) {
-            assert(
-                err.message.indexOf("revert") >= 0,
-                "can only be executed after the voting deadline"
-            );
+            assert(err.message.indexOf("revert") >= 0, "debating time has not passed yet");
         }
 
-        // travel 1 hour into the future
+        // advance time by 1 hour
+
         await timeTravel(3600);
-        let actualExecute = await LendingBoardInstance.executeProposal(proposalID);
 
-        // check if EVENT ProposalTallied was triggered
-        assert.strictEqual(actualExecute.logs.length, 1, "triggers one event");
-        assert.strictEqual(
-            actualExecute.logs[0].event,
-            "ProposalTallied",
-            "should be the ProposalTallied event"
-        );
-        assert.strictEqual(
-            actualExecute.logs[0].args.proposalID.toNumber(),
-            proposalID.toNumber(),
-            "wrong proposalID"
-        );
-        assert.strictEqual(
-            actualExecute.logs[0].args.result.toNumber(),
-            propPosVotes,
-            "should be the same as internal positive vote counter"
-        );
-        assert.strictEqual(
-            actualExecute.logs[0].args.quorum.toNumber(),
-            propVotes,
-            "should be the same as internal vote counter"
-        );
-        assert.strictEqual(actualExecute.logs[0].args.active, true, "proposal should have passed");
+        // try to execute a proposal that has not yet reached the minimum amount of votes
 
-        // check if contract fee was updated
-        let actualFee = await LendingBoardInstance.contractFee.call();
-        assert.strictEqual(actualFee.toNumber(), proposedFee, "should be 200");
-
-        // check if proposal had the expected tag changes
-        let executedProposal = await LendingBoardInstance.Proposals.call(proposalID);
-
-        assert.strictEqual(executedProposal.executed, true, "should be executed and true");
-        assert.strictEqual(executedProposal.proposalPassed, true, "should have passed and true");
-
-        // check if entry in openProposals was removed
-        let newLeng = await LendingBoardInstance.getOpenProposalsLength.call();
-        assert.strictEqual(newLeng.toNumber(), currentProposals - 1, "should have been removed");
-    });
-
-    it("can execute the add Member proposal", async function() {
-        // get ID of proposal to execute
-        proposalID = await LendingBoardInstance.openProposals.call(0);
-
-        // update number of currentOpenProps
-        currentOpenProps = await LendingBoardInstance.getOpenProposalsLength.call();
-
-        // try executing the proposal without voting first
         try {
-            let dummyExecute = await LendingBoardInstance.executeProposal.call(proposalID, {
+            await LendingBoardInstance.executeProposal.call(pID + 1, {
                 from: admin
             });
         } catch (err) {
-            assert(
-                err.message.indexOf("revert") >= 0,
-                "proposal does not have the required amount of votes"
-            );
+            assert(err.message.indexOf("revert") >= 0, "not enough votes for proposal");
         }
 
-        // vote for the proposal
-        let vote = await LendingBoardInstance.vote(proposalID, true, {
-            from: admin
-        });
+        // execute the proposal (changes state of the contract)
 
-        // execute the proposal
-        await timeTravel(3600);
-        let actualExecute = await LendingBoardInstance.executeProposal(proposalID, { from: admin });
+        let actualExecute = await LendingBoardInstance.executeProposal(pID, { from: admin });
 
-        // check for EVENTS
-        assert.strictEqual(actualExecute.logs.length, 2, "triggers two events");
+        // check if EVENTS were triggered
 
-        // check for Membership Changed Event
+        assert.strictEqual(actualExecute.logs.length, 2, "should trigger 2 events");
+
+        // triggers ContractFeeChanged Event
+
         assert.strictEqual(
             actualExecute.logs[0].event,
-            "MembershipChanged",
-            "should be the MembershipChanged event"
+            "ContractFeeChanged",
+            "should be ContractFeeChanged"
         );
         assert.strictEqual(
-            actualExecute.logs[0].args.member,
-            newUser,
-            "should be new user (accounts[1])"
+            actualExecute.logs[0].args._oldFee.toNumber(),
+            1000,
+            "old fee should be 1000"
         );
         assert.strictEqual(
-            actualExecute.logs[0].args.isMember,
-            true,
-            "member status should be true"
+            actualExecute.logs[0].args._newFee.toNumber(),
+            500,
+            "new Fee should be 500"
         );
 
-        // check for Proposal Tallied Event
+        // triggers ProposalExecuted Event
+
         assert.strictEqual(
             actualExecute.logs[1].event,
-            "ProposalTallied",
-            "should be the ProposalTallied event"
+            "ProposalExecuted",
+            "should be ProposalExecuted"
         );
         assert.strictEqual(
-            actualExecute.logs[1].args.proposalID.toNumber(),
-            proposalID.toNumber(),
-            "should be proposalID"
+            actualExecute.logs[1].args._proposalID.toNumber(),
+            pID,
+            "should be equal to pID"
         );
         assert.strictEqual(
-            actualExecute.logs[1].args.result.toNumber(),
-            propPosVotes,
-            "should be 1 positive vote"
+            actualExecute.logs[1].args._positiveVotes.toNumber(),
+            1,
+            "should have one positive vote"
         );
         assert.strictEqual(
-            actualExecute.logs[1].args.quorum.toNumber(),
-            propVotes,
-            "should be 1 vote"
+            actualExecute.logs[1].args._numVotes.toNumber(),
+            1,
+            "should have one vote total"
         );
-        assert.strictEqual(actualExecute.logs[1].args.active, true, "proposal should have passed");
+        assert.strictEqual(actualExecute.logs[1].args._executed, true, "should have been executed");
 
-        // update numMembers
-        numMembers = await LendingBoardInstance.getMembersLength.call();
-        numMembers = numMembers.toNumber();
+        // check if flags in the proposal were set
 
-        // check if member was added
-        let newMember = await LendingBoardInstance.members.call(numMembers - 1);
-        assert.strictEqual(newMember[0], newUser, "should be address of newUser (accounts[1])");
-        assert.strictEqual(newMember[1], "newUser", "should be newUser");
+        let proposal = await LendingBoardInstance.proposals.call(0, { from: admin });
+        assert.strictEqual(proposal.executed, true, "should have been executed");
+        assert.strictEqual(proposal.proposalPassed, true, "proposal should have passed");
 
-        // check if entry in openProposals was removed
-        let newLeng = await LendingBoardInstance.getOpenProposalsLength.call();
+        // check if contract fee was updated
+
+        let actualFee = await LendingBoardInstance.contractFee.call();
+        let expectedFee = proposal.proposedFee.toNumber();
+
         assert.strictEqual(
-            newLeng.toNumber(),
-            currentOpenProps.toNumber() - 1,
-            "should have been removed"
+            actualFee.toNumber(),
+            expectedFee,
+            "actualFee and proposedFee should be equal"
+        );
+        // try to execute the same proposal again
+        try {
+            await LendingBoardInstance.executeProposal.call(pID);
+        } catch (err) {
+            assert(err.message.indexOf("revert") >= 0, "proposals cannot be executed twice");
+        }
+
+        // check if proposal was removed from the openProposals
+        let actualOpenProposals = await LendingBoardInstance.getOpenProposalsLength.call();
+
+        assert.strictEqual(
+            actualOpenProposals.toNumber(),
+            oldOpenProposals.toNumber() - 1,
+            "should be 1 less than oldOpenProposals"
         );
     });
 
-    it("can create a proposal to remove a member as a member and not the owner", async function() {
-        // get return value of proposal call for EVENT test
-        let pID = await LendingBoardInstance.newMemberProposal.call(newUser, "newUser", "2", {
-            from: newUser
+    it("can execute a proposal to add a member to the board", async function() {
+        // add member proposal has id 1 in test
+
+        let pID = 1;
+
+        // vote for add member proposal
+
+        await LendingBoardInstance.vote(pID, true, { from: admin });
+
+        // execute proposal
+
+        let actualExecute = await LendingBoardInstance.executeProposal(pID, { from: admin });
+
+        // check if EVENTS were triggered
+
+        assert.strictEqual(actualExecute.logs.length, 2, "should have triggered two events");
+
+        // check if MembershipChanged Event was triggered
+
+        assert.strictEqual(
+            actualExecute.logs[0].event,
+            "MembershipChanged",
+            "should be MembershipChanged Event"
+        );
+        assert.strictEqual(actualExecute.logs[0].args._member, newUser, "should be newUser");
+        assert.strictEqual(actualExecute.logs[0].args._isMember, true, "should be true");
+
+        // check if ProposalExecuted Event was triggered
+
+        assert.strictEqual(
+            actualExecute.logs[1].event,
+            "ProposalExecuted",
+            "should be ProposalExecuted"
+        );
+
+        // check if member was added to the member list
+
+        let nMbr = await LendingBoardInstance.members.call(1);
+        assert.strictEqual(nMbr.member, newUser, "should be newUser");
+        assert.strictEqual(nMbr.name, "newUser", "should be newUser");
+    });
+
+    it("can create a MembershipProposal to remove a member as a member", async function() {
+        // try to remove a member that does not exist
+        try {
+            await LendingBoardInstance.createMembershipProposal.call(2, nonMember, "nonMember");
+        } catch (err) {
+            assert(
+                err.message.indexOf("revert") >= 0,
+                "cannot create a proposal to remove a member that does not exist"
+            );
+        }
+
+        // get return value of createMembershipProposal (does NOT change contract state)
+
+        let pID = await LendingBoardInstance.createMembershipProposal.call(2, newUser, "newUser", {
+            from: admin
         });
 
-        // actually add the proposal to the contract state
-        let memberProposal = await LendingBoardInstance.newMemberProposal(newUser, "newUser", "2", {
-            from: newUser
-        });
+        // create MembershipProposal to remove a member (changes contract state)
 
+        let removeMemberProposal = await LendingBoardInstance.createMembershipProposal(
+            2,
+            newUser,
+            "newUser",
+            { from: newUser }
+        );
+
+        expectedProposals++;
         // check if EVENT ProposalAdded was triggered
-        assert.strictEqual(memberProposal.logs.length, 1, "triggers one event");
+        assert.strictEqual(removeMemberProposal.logs.length, 1, "should trigger 1 event");
         assert.strictEqual(
-            memberProposal.logs[0].event,
+            removeMemberProposal.logs[0].event,
             "ProposalAdded",
-            "should be the ProposalAdded event"
+            "should be ProposalAdded"
         );
-
         assert.strictEqual(
-            memberProposal.logs[0].args.ProposalID.toNumber(),
-            pID.toNumber(),
-            "should be pID"
-        );
-
-        assert.strictEqual(
-            memberProposal.logs[0].args.description,
+            removeMemberProposal.logs[0].args._description,
             "Remove Member",
             "should be Remove Member"
         );
-
-        // check if Proposal was added to Proposals in the contract
-        let newPropLength = await LendingBoardInstance.getPropLength.call();
-
-        // check if Proposal author actually is the newUser
-        let prop = await LendingBoardInstance.Proposals.call(newPropLength - 1);
-        assert.strictEqual(prop.author, newUser, "should be newUser (accounts[1])");
-
-        // check if Proposal is removeMember proposal
-        assert.strictEqual(
-            prop.fnNumber.toNumber(),
-            2,
-            "should be 2 (internal encoding for remove Member)"
-        );
-        assert.strictEqual(prop.description, "Remove Member", "should be Remove Member");
     });
 
-    it("can vote against proposal and changes are not made when executed", async function() {
-        // get ID of proposal to execute
-        proposalID = await LendingBoardInstance.openProposals.call(0);
+    it("can execute a failed proposal without changes happening", async function() {
+        let oldNumOpenProposals = await LendingBoardInstance.getOpenProposalsLength.call();
 
-        // update number of currentOpenProps
-        currentOpenProps = await LendingBoardInstance.getOpenProposalsLength.call();
+        // vote against proposal
 
-        // vote against the proposal to remove newUser from the contract
-        let vote = await LendingBoardInstance.vote(proposalID.toNumber(), false, { from: admin });
-
-        // check if EVENT Voted was emitted
-        assert.strictEqual(vote.logs.length, 1, "triggers one event");
-        assert.strictEqual(vote.logs[0].event, "Voted", "should be the Voted event");
-        assert.strictEqual(
-            vote.logs[0].args.ProposalID.toNumber(),
-            proposalID.toNumber(),
-            "wrong proposalID"
-        );
-        assert.strictEqual(vote.logs[0].args.stanceOnProposal, false, "should be true");
-        assert.strictEqual(vote.logs[0].args.voter, admin, "should be admin");
+        await LendingBoardInstance.vote(2, false);
 
         // execute the proposal
+
         await timeTravel(3600);
-        let actualExecute = await LendingBoardInstance.executeProposal(proposalID, { from: admin });
+        let proposal = await LendingBoardInstance.executeProposal(2, { from: admin });
 
-        // check for EVENT
-        assert.strictEqual(actualExecute.logs.length, 1, "triggers one event");
+        // check if only ProposalExecuted event was triggered
 
-        // check for Proposal Tallied Event
+        assert.strictEqual(proposal.logs.length, 1, "only 1 event should have been triggered");
         assert.strictEqual(
-            actualExecute.logs[0].event,
-            "ProposalTallied",
-            "should be the ProposalTallied event"
-        );
-        assert.strictEqual(
-            actualExecute.logs[0].args.proposalID.toNumber(),
-            proposalID.toNumber(),
-            "should be proposalID"
-        );
-        assert.strictEqual(
-            actualExecute.logs[0].args.result.toNumber(),
-            0,
-            "should have no positive votes"
-        );
-        assert.strictEqual(
-            actualExecute.logs[0].args.quorum.toNumber(),
-            propVotes,
-            "should be 1 vote"
-        );
-        assert.strictEqual(
-            actualExecute.logs[0].args.active,
-            false,
-            "proposal should have failed!"
+            proposal.logs[0].event,
+            "ProposalExecuted",
+            "should be the ProposalExecuted event"
         );
 
-        // check that numMembers has not changed
-        let oldNumMembers = numMembers;
+        // check if member newUser is still a member of the board
 
-        numMembers = await LendingBoardInstance.getMembersLength.call();
-        assert.strictEqual(numMembers.toNumber(), oldNumMembers, "should be equal");
+        let mbr = await LendingBoardInstance.members.call(1);
+        assert.strictEqual(mbr.member, newUser, "should be newUser");
+        assert.strictEqual(mbr.name, "newUser", "should be newUser");
 
-        // check if newUser is still member number 2
-        let stillMember = await LendingBoardInstance.members.call(numMembers - 1);
-        assert.strictEqual(stillMember[0], newUser, "should be address of newUser (accounts[1])");
-        assert.strictEqual(stillMember[1], "newUser", "should be newUser");
+        // failed proposal has the right flags
 
-        // check if entry in openProposals was removed
-        let newLeng = await LendingBoardInstance.getOpenProposalsLength.call();
+        let failedProposal = await LendingBoardInstance.proposals.call(2);
+        assert.strictEqual(failedProposal.proposalPassed, false, "should not have passed");
+        assert.strictEqual(failedProposal.executed, true, "should have been executed");
+
+        // failed proposal was removed from openProposals
+        let newNumOpenProposals = await LendingBoardInstance.getOpenProposalsLength.call();
         assert.strictEqual(
-            newLeng.toNumber(),
-            currentOpenProps.toNumber() - 1,
-            "should have been removed"
+            newNumOpenProposals.toNumber(),
+            oldNumOpenProposals.toNumber() - 1,
+            "should be 1 proposal less than before"
         );
-
-        // check if proposal tags were updated
-        let prop = await LendingBoardInstance.Proposals.call(proposalID);
-        assert.strictEqual(prop.executed, true, "should have been executed");
-        assert.strictEqual(prop.proposalPassed, false, "should not have passed");
-    });
-
-    it("can remove a member", async function() {
-        // get return value of proposal call for EVENT test
-        let pID = await LendingBoardInstance.newMemberProposal.call(newUser, "newUser", "2", {
-            from: admin
-        });
-
-        // actually add the proposal to the contract state
-        let memberProposal = await LendingBoardInstance.newMemberProposal(newUser, "newUser", "2", {
-            from: admin
-        });
-
-        // check if EVENT ProposalAdded was triggered
-        assert.strictEqual(memberProposal.logs.length, 1, "triggers one event");
-        assert.strictEqual(
-            memberProposal.logs[0].event,
-            "ProposalAdded",
-            "should be the ProposalAdded event"
-        );
-
-        // vote for the proposal
-
-        let vote = await LendingBoardInstance.vote(pID.toNumber(), true, { from: admin });
-
-        // check if EVENT Voted was triggered
-        assert.strictEqual(vote.logs.length, 1, "triggers one event");
-        assert.strictEqual(vote.logs[0].event, "Voted", "should be the Voted Event");
-
-        // advance the clock by 1 hour
-        await timeTravel(3600);
-
-        // execute the proposal as a member not the owner
-        let actualExecute = await LendingBoardInstance.executeProposal(pID.toNumber(), {
-            from: newUser
-        });
-
-        // check if EVENTS were triggered during execution
-        assert.strictEqual(actualExecute.logs.length, 2, "triggers two events");
-
-        // check for EVENT MembershipChanged
-        assert.strictEqual(
-            actualExecute.logs[0].event,
-            "MembershipChanged",
-            "should be MembershipChanged"
-        );
-        assert.strictEqual(actualExecute.logs[0].args.member, newUser, "should be newUser");
-        assert.strictEqual(actualExecute.logs[0].args.isMember, false, "should be false");
-
-        // check for EVENT ProposalTallied
-        assert.strictEqual(
-            actualExecute.logs[1].event,
-            "ProposalTallied",
-            "should be ProposalTallied"
-        );
-
-        // check if member was removed
-        let nnl = await LendingBoardInstance.getMembersLength.call();
-        assert.strictEqual(
-            nnl.toNumber(),
-            numMembers.toNumber() - 1,
-            "should be one fewer member than before"
-        );
-    });
-
-    it("remove Member edge cases", async function() {
-        // try to create a proposal as a previously removed member
-        try {
-            let dummyProposal = await LendingBoardInstance.newFeeProposal(200, { from: newUser });
-        } catch (err) {
-            assert(err.message.indexOf("revert") >= 0, "you are not a member or the owner");
-        }
-
-        // try to remove the owner
-
-        // get return value of create Proposal (does not change the state of the contract)
-        let pID = await LendingBoardInstance.newMemberProposal.call(admin, "admin", "2", {
-            from: admin
-        });
-
-        // create the actual proposal to remove the owner (changes the state of the contract)
-        let memberProposal = await LendingBoardInstance.newMemberProposal(admin, "admin", "2", {
-            from: admin
-        });
-
-        // vote for the proposal
-
-        // try to vote for the proposal with a member that does not exist anymore
-        try {
-            let dummyVote = await LendingBoardInstance.vote(pID.toNumber(), true, {
-                from: newUser
-            });
-        } catch (err) {
-            assert(err.message.indexOf("revert") >= 0, "you are not a member or the owner");
-        }
-
-        // actually vote for the proposal
-        let vote = await LendingBoardInstance.vote(pID.toNumber(), true, { from: admin });
-
-        // fast forward 1 hour
-        await timeTravel(3600);
-
-        // try to execute the proposal to remove the owner
-
-        try {
-            let dummyExecute = await LendingBoardInstance.executeProposal(pID.toNumber(), {
-                from: admin
-            });
-        } catch (err) {
-            assert(err.message.indexOf("revert") >= 0, "cannot remove the owner via proposal");
-        }
-
-        // try to remove a memeber that does not exist
-
-        // get return value of create Proposal (does not change the state of the contract)
-        pID = await LendingBoardInstance.newMemberProposal.call(nonMember, "nonMember", "2", {
-            from: admin
-        });
-
-        // create the actual proposal to remove the owner (changes the state of the contract)
-        memberProposal = await LendingBoardInstance.newMemberProposal(nonMember, "nonMember", "2", {
-            from: admin
-        });
-
-        // vote for the proposal
-        vote = await LendingBoardInstance.vote(pID.toNumber(), true, { from: admin });
-
-        // fast forward 1 hour
-        await timeTravel(3600);
-
-        // try to execute the proposal
-
-        try {
-            let dummyExecute = await LendingBoardInstance.executeProposal(pID.toNumber(), {
-                from: admin
-            });
-        } catch (err) {
-            assert(
-                err.message.indexOf("revert") >= 0,
-                "cannot remove a member that does not exist"
-            );
-        }
-    });
-
-    it("clean up", async function() {
-        // remove the edge cases from open proposals
-        // as they will never be executed anyway
-        let cleanUp = await LendingBoardInstance.cleanUp();
-        let numOpenProposals = await LendingBoardInstance.getOpenProposalsLength.call();
-        assert.strictEqual(numOpenProposals.toNumber(), 0, "no open proposals should be left over");
     });
 });
