@@ -31,6 +31,7 @@ contract LendingBoard is Ownable {
         uint256 proposedFee;
         address memberAddress;
         string memberName;
+        uint256 proposalID;
     }
 
     struct Member {
@@ -124,7 +125,7 @@ contract LendingBoard is Ownable {
     )
         internal
         onlyMembers {
-        
+
         uint256 _oldFee = contractFee;
         contractFee = _fee;
 
@@ -152,6 +153,10 @@ contract LendingBoard is Ownable {
         });
 
         emit MembershipChanged(_memberAddress, true);
+
+        if (members.length / 2 > minQuorum) {
+            changeVotingRules(minQuorum + 1, debateTime, majorityMargin);
+        }
     }
 
     function removeMember
@@ -174,6 +179,10 @@ contract LendingBoard is Ownable {
         memberID[_memberAddress] = 0;
 
         emit MembershipChanged(_memberAddress, false);
+
+        if (members.length / 2 <= minQuorum) {
+            changeVotingRules(minQuorum - 1, debateTime, majorityMargin);
+        }
     }
 
     function createFeeProposal
@@ -197,6 +206,7 @@ contract LendingBoard is Ownable {
         p.proposalPassed = false;
         p.executed = false;
         p.proposedFee = _proposedFee;
+        p.proposalID = proposalID;
 
         emit ProposalAdded(proposalID, "Change Contract Fee");
         openProposals.push(proposalID);
@@ -234,6 +244,7 @@ contract LendingBoard is Ownable {
         p.executed = false;
         p.memberAddress = _memberAddress;
         p.memberName = _memberName;
+        p.proposalID = proposalID;
 
         if ( _fnNumber == 1 ) {
             emit ProposalAdded(proposalID, "Add Member");
@@ -254,7 +265,7 @@ contract LendingBoard is Ownable {
         public
         onlyMembers
         returns (uint256 voteID) {
-        
+
         Proposal storage p = proposals[_proposalID];
         require(!p.voted[msg.sender], "you can only vote once");
 
@@ -275,7 +286,7 @@ contract LendingBoard is Ownable {
     )
         public
         onlyMembers {
-        
+
         Proposal storage p = proposals[_proposalID];
 
         require(now >= p.minExecutionDate, "debating time has not passed yet");

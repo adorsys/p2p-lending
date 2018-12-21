@@ -60,7 +60,6 @@ contract("LendingBoard", function(accounts) {
         assert.strictEqual(majorityMargin.toNumber(), 50, "sets majority margin correctly");
 
         // check if a member was added on creation
-
         let numMembers = await LendingBoardInstance.getMembersLength.call();
         assert.strictEqual(numMembers.toNumber(), 1, "adds one member");
 
