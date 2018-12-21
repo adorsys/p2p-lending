@@ -1,4 +1,4 @@
-pragma solidity >=0.4.22;
+pragma solidity ^0.5.2;
 // pragma experimental ABIEncoderV2;
 
 import "./Ownable.sol";
@@ -9,7 +9,6 @@ contract LendingBoard {
 
 contract Base is Ownable {
 
-    uint256 contractFee;
     uint256 lendingRequestCount = 0;
     LendingBoard board;
 
@@ -27,7 +26,7 @@ contract Base is Ownable {
     mapping(address => uint[]) private userRequests;
     LendingRequest[] public lendingRequests;
 
-    constructor(LendingBoard _address) 
+    constructor(LendingBoard _address)
         public {
 
         board = _address;
@@ -39,12 +38,20 @@ contract Base is Ownable {
      * @notice Will return all lending requests of the caller
      */
 
-    function getUserRequests() 
-        public 
-        view 
+    function getUserRequests()
+        public
+        view
         returns (uint[] memory) {
-            
+
         return userRequests[msg.sender];
+    }
+
+    function getContractFee()
+        public
+        view
+        returns (uint256) {
+
+        return board.contractFee();
     }
 
     /*
@@ -76,11 +83,11 @@ contract Base is Ownable {
         public
         view
         returns (uint256 result) {
-        
+
         uint256[] memory myRequests = getUserRequests();
         require(hasUnsettledRequests(), "you have no unsettled requests");
 
-        
+
         for (uint256 i = 0; i < myRequests.length; i++) {
             if (!lendingRequests[i].settled) {
                 result = i;
@@ -95,7 +102,7 @@ contract Base is Ownable {
         internal
         view
         returns (bool) {
-        
+
         uint256[] memory myRequests = getUserRequests();
         bool unsettled = false;
 
@@ -113,26 +120,15 @@ contract Base is Ownable {
     }
 
     /**
-     * @dev Allows the lending board to set the contract fee - has to be deployed by the same address
-     */
-
-    function setContractFee(uint256 _fee)
-        public 
-        onlyOwner {
-        
-        contractFee = _fee;
-    }
-
-    /**
      * @notice Creates a lending request for the amount you specified
      */
 
     function ask(uint amount, uint paybackAmount, string memory purpose)
-        public 
+        public
         returns (uint) {
 
         require(amount > 0, "you need to ask for money");
-        require(paybackAmount >= amount + contractFee, "minimum amount is amount + contractFee");
+        require(paybackAmount >= amount + getContractFee(), "minimum amount is amount + contractFee");
         // require(userRequests[msg.sender].length == 0, "you already have an open request");
         require(!hasUnsettledRequests(), "you have an unsettled request");
 
@@ -157,8 +153,8 @@ contract Base is Ownable {
      * @notice Lend the amount of ether you send to the lending request with the ID you specified
      */
 
-    function lend(uint id) 
-        public 
+    function lend(uint id)
+        public
         payable {
 
         require(lendingRequests[id].asker != msg.sender, "you cannot lend money to yourself");
@@ -173,8 +169,8 @@ contract Base is Ownable {
      * @notice settle the lending request with the ID you specified
      */
 
-    function settle(uint id) 
-        public 
+    function settle(uint id)
+        public
         payable {
 
         require(lendingRequests[id].lent, "cannot be settled before money was lent");
@@ -182,13 +178,13 @@ contract Base is Ownable {
         require(lendingRequests[id].lender != msg.sender, "no lending money to yourself");
         require(lendingRequests[id].paybackAmount == msg.value, "payback amount has to be equal to the amount agreed upon");
 
-        lendingRequests[id].lender.transfer(msg.value - contractFee);
+        lendingRequests[id].lender.transfer(msg.value - getContractFee());
         lendingRequests[id].settled = true;
     }
 
-    function contractFees() 
-        public 
-        view 
+    function contractFees()
+        public
+        view
         returns (uint) {
 
         return address(this).balance;
@@ -198,10 +194,21 @@ contract Base is Ownable {
      * @dev should be called before relinquishing the contract
      */
 
-    function withdrawFees() 
-        public 
+    function withdrawFees()
+        public
         onlyOwner {
 
         owner.transfer(address(this).balance);
+    }
+
+    /**
+     * @dev deletes the contract from the chain and transfers all remaining
+     * funds to the owner of the contract
+     */
+
+    function kill()
+    public
+    onlyOwner {
+        selfdestruct(owner);
     }
 }

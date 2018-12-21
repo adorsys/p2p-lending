@@ -317,4 +317,10 @@ contract LendingBoard is Ownable {
 
         emit ProposalExecuted(_proposalID, p.positiveVotes, p.numberOfVotes, p.executed);
     }
+
+    function kill()
+    public
+    onlyOwner { 
+        selfdestruct(owner);
+    }
 }
