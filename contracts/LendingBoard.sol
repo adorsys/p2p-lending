@@ -21,17 +21,16 @@ contract LendingBoard is Ownable {
     struct Proposal {
         address author;
         uint8 fnNumber;
-        uint256 numberOfVotes;
-        uint256 positiveVotes;
+        uint16 numberOfVotes;
+        uint16 positiveVotes;
         uint256 minExecutionDate;
         bool proposalPassed;
         bool executed;
         Vote[] votes;
         mapping( address => bool ) voted;
-        uint256 proposedFee;
+        uint32 proposedFee;
         address memberAddress;
         string memberName;
-        // uint256 proposalID;
     }
 
     struct Member {
@@ -187,13 +186,14 @@ contract LendingBoard is Ownable {
 
     function createFeeProposal
     (
-        uint256 _proposedFee
+        uint32 _proposedFee
     )
         public
         onlyMembers
         returns ( uint256 proposalID ) {
 
         require(_proposedFee >= 100, "proposed fee has to be higher than 100!");
+        require(openProposals.length < 25, "too many open proposals");
 
         proposalID = proposals.length++;
         Proposal storage p = proposals[proposalID];
@@ -206,7 +206,6 @@ contract LendingBoard is Ownable {
         p.proposalPassed = false;
         p.executed = false;
         p.proposedFee = _proposedFee;
-        // p.proposalID = proposalID;
 
         emit ProposalAdded(proposalID, "Change Contract Fee");
         openProposals.push(proposalID);
@@ -225,6 +224,7 @@ contract LendingBoard is Ownable {
         returns ( uint256 proposalID ) {
 
         require(_memberAddress != owner, "cannot change ownership this way");
+        require(openProposals.length <= 25, "too many open proposals");
 
         if ( _fnNumber == 2 ) {
             require(memberID[_memberAddress] != 0, "cannot remove a member that does not exist");
@@ -244,7 +244,6 @@ contract LendingBoard is Ownable {
         p.executed = false;
         p.memberAddress = _memberAddress;
         p.memberName = _memberName;
-        // p.proposalID = proposalID;
 
         if ( _fnNumber == 1 ) {
             emit ProposalAdded(proposalID, "Add Member");
@@ -291,7 +290,7 @@ contract LendingBoard is Ownable {
         uint256 _proposalID = openProposals[_openProposalIndex];
         Proposal storage p = proposals[_proposalID];
 
-        require(now >= p.minExecutionDate, "debating time has not passed yet");
+        require(block.timestamp >= p.minExecutionDate, "debating time has not passed yet");
         require(p.numberOfVotes >= minQuorum, "proposal did not reach the minimum amount of votes");
         require(!p.executed, "proposal was already executed");
 

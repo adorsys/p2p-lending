@@ -600,4 +600,35 @@ contract("LendingBoard", function(accounts) {
             "should be 1 proposal less than before"
         );
     });
+
+    it("can only create 25 open proposals", async function() {
+        expectedProposals = 0;
+        for (let i = 0; i < 25; i++) {
+            let feeProposal = await LendingBoardInstance.createFeeProposal(
+                500,
+                {
+                    from: admin
+                }
+            );
+            expectedProposals++;
+        }
+
+        let numOpenProposals = await LendingBoardInstance.getOpenProposalsLength.call();
+        assert.strictEqual(
+            numOpenProposals.toNumber(),
+            expectedProposals,
+            "25 proposals are expected"
+        );
+
+        try {
+            await LendingBoardInstance.createFeeProposal.call(200, {
+                from: admin
+            });
+        } catch (err) {
+            assert(
+                err.message.indexOf("revert") >= 0,
+                "only 25 open proposals allowed - cannot create open proposal 26"
+            );
+        }
+    });
 });
