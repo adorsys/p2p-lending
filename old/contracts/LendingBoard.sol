@@ -1,4 +1,4 @@
-pragma solidity >=0.4.21 <0.6.0;
+pragma solidity >=0.4.22;
 
 import "./Ownable.sol";
 
@@ -31,7 +31,7 @@ contract LendingBoard is Ownable {
         uint256 proposedFee;
         address memberAddress;
         string memberName;
-        // uint256 proposalID;
+        uint256 proposalID;
     }
 
     struct Member {
@@ -206,7 +206,7 @@ contract LendingBoard is Ownable {
         p.proposalPassed = false;
         p.executed = false;
         p.proposedFee = _proposedFee;
-        // p.proposalID = proposalID;
+        p.proposalID = proposalID;
 
         emit ProposalAdded(proposalID, "Change Contract Fee");
         openProposals.push(proposalID);
@@ -244,7 +244,7 @@ contract LendingBoard is Ownable {
         p.executed = false;
         p.memberAddress = _memberAddress;
         p.memberName = _memberName;
-        // p.proposalID = proposalID;
+        p.proposalID = proposalID;
 
         if ( _fnNumber == 1 ) {
             emit ProposalAdded(proposalID, "Add Member");
@@ -259,14 +259,13 @@ contract LendingBoard is Ownable {
 
     function vote
     (
-        uint256 _openProposalIndex,
+        uint256 _proposalID,
         bool _stance
     )
         public
         onlyMembers
         returns (uint256 voteID) {
-        
-        uint256 _proposalID = openProposals[_openProposalIndex];
+
         Proposal storage p = proposals[_proposalID];
         require(!p.voted[msg.sender], "you can only vote once");
 
@@ -283,12 +282,11 @@ contract LendingBoard is Ownable {
 
     function executeProposal
     (
-        uint256 _openProposalIndex
+        uint256 _proposalID
     )
         public
         onlyMembers {
-        
-        uint256 _proposalID = openProposals[_openProposalIndex];
+
         Proposal storage p = proposals[_proposalID];
 
         require(now >= p.minExecutionDate, "debating time has not passed yet");
@@ -311,7 +309,7 @@ contract LendingBoard is Ownable {
             p.proposalPassed = false;
         }
 
-        for (uint256 i = _openProposalIndex; i < openProposals.length - 1; i++) {
+        for (uint256 i = _proposalID; i < openProposals.length - 1; i++) {
             openProposals[i] = openProposals[i + 1];
         }
         delete openProposals[openProposals.length - 1];
