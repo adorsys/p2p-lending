@@ -1,4 +1,4 @@
-pragma solidity >=0.4.21 <0.6.0;
+pragma solidity >=0.4.22;
 // pragma experimental ABIEncoderV2;
 
 import "./Ownable.sol";
@@ -11,7 +11,7 @@ contract Base is Ownable {
 
     uint256 lendingRequestCount = 0;
     LendingBoard board;
-    uint256 public contractFee;
+    uint256 public contractFee = 0;
 
     struct LendingRequest {
         address payable asker;
