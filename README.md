@@ -11,5 +11,5 @@ To solve multiple challenges within such a substantial system, we are conduction
 * Decentralized management and progression of the ecosystem by a DAO
 * Staying within the bounds of Ethereum
 * Incentivization of the DAO ecosystem and its continuous use
-* Building out financially profitable and inclusive products
+* Building financially profitable and inclusive products
 * Accessibility and Usability of the p2p-lending plattform and ecosystem
