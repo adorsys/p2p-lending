@@ -1,38 +1,37 @@
-import Web3 from 'web3'
-import { store } from '../store/'
+import store from '@/store/'
 
-let pollWeb3 = function() {
-  let web3 = window.web3
-  web3 = new Web3(web3.currentProvider)
+import * as types from '@/util/constants/types'
 
-  setInterval(() => {
-    if (web3 && store.state.web3.web3Instance) {
-      if (web3.eth.coinbase !== store.state.web3.coinbase) {
-        let newCoinbase = web3.eth.coinbase
-        web3.eth.getBalance(web3.eth.coinbase, function(err, newBalance) {
-          if (err) {
-            console.log(err)
-          } else {
-            store.dispatch('pollWeb3', {
-              coinbase: newCoinbase,
-              balance: parseInt(newBalance, 10)
-            })
-          }
-        })
-      } else {
-        web3.eth.getBalance(store.state.web3.coinbase, (err, polledBalance) => {
-          if (err) {
-            console.log(err)
-          } else if (parseInt(polledBalance, 10) !== store.state.web3.balance) {
-            store.dispatch('pollWeb3', {
-              coinbase: store.state.web3.coinbase,
-              balance: polledBalance
-            })
-          }
-        })
-      }
-    }
-  }, 500)
+let pollHelper = async () => {
+  let web3 = store.state.web3.web3Instance()
+
+  let payload = {
+    networkID: null,
+    coinbase: null,
+    balance: null
+  }
+
+  payload.networkID = await web3.eth.net.getId()
+  payload.coinbase = await web3.eth.getCoinbase()
+  payload.balance = await web3.utils.fromWei(
+    await web3.eth.getBalance(payload.coinbase),
+    'ether'
+  )
+
+  return payload
 }
 
-export default pollWeb3
+let pollWeb3 = async () => {
+  console.log('poll web3 initialized')
+
+  // eslint-disable-next-line no-undef
+  ethereum.on('accountsChanged', async () => {
+    store.dispatch(types.POLL_WEB3)
+  })
+  // eslint-disable-next-line no-undef
+  ethereum.on('networkChanged', async () => {
+    store.dispatch(types.POLL_WEB3)
+  })
+}
+
+export { pollWeb3, pollHelper }

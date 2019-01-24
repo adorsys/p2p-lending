@@ -1,0 +1,100 @@
+table {
+  font-family: 'Open Sans', sans-serif;
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  border-collapse: collapse;
+  border: 2px solid #034234;
+  width: 100%;
+}
+
+table th {
+  text-transform: uppercase;
+  text-align: left;
+  background: #0c0b0c;
+  color: #fff;
+  padding: 8px;
+  min-width: 30px;
+}
+
+table td {
+  text-align: left;
+  padding: 12px;
+  border-right: 2px solid #034234;
+}
+table td:last-child {
+  border-right: none;
+}
+table tbody tr:nth-child(2n) td {
+  background: #e4dfe4;
+}
+#stance {
+  text-align: center;
+  width: 70px;
+}
+#vote {
+  text-align: center;
+  width: 70px;
+}
+#execute {
+  text-align: center;
+  width: 100px;
+}
+.buttons {
+  cursor: pointer;
+  text-align: center;
+  width: 200px;
+  margin: auto;
+  margin-top: 25px;
+  margin-bottom: 25px;
+  padding: 20px;
+  border: 2px solid #034234;
+  border-radius: 10px;
+  color: #0f3242;
+  box-shadow: 2px 2px #0c0b0c;
+  width: 200px;
+}
+#voteButton {
+  font-size: 1rem;
+  background: #fff;
+  border: 2px solid #a0a0a0;
+  border-radius: 2px;
+  color: #666666;
+  width: 70px;
+  height: 25px;
+  margin: auto;
+  cursor: pointer;
+  outline: none;
+}
+#executeButton {
+  font-size: 1rem;
+  background: #fff;
+  border: 2px solid #a0a0a0;
+  border-radius: 2px;
+  color: #666666;
+  width: 100px;
+  height: 25px;
+  margin: auto;
+  cursor: pointer;
+  outline: none;
+}
+#emptyPropHead {
+  text-align: center;
+}
+#emptyPropCont {
+  text-align: center;
+}
+button {
+  font-size: 1.5rem;
+  background: #fff;
+  border: 2px solid #a0a0a0;
+  border-radius: 2px;
+  color: #666666;
+  height: 50px;
+  width: 250px;
+  margin: auto;
+  cursor: pointer;
+  outline: none;
+}

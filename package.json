@@ -1,0 +1,25 @@
+{
+  "name": "p2p-lending",
+  "version": "1.0.0",
+  "description": "This repository hosts a variety of smart contracts for a DAO (Decentralized Autonomous Organisation) focussing on delivering a decentralized p2p-lending platform on the Ethereum Blockchain. This may very well develop into something completely different based on the direction taken by the DAO in the future. We are as excited as you are! ;-)",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "web3": "^1.0.0-beta.37"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/adorsys/p2p-lending.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/adorsys/p2p-lending/issues"
+  },
+  "homepage": "https://github.com/adorsys/p2p-lending#readme"
+}
