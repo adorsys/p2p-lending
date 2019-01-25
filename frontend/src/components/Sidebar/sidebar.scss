@@ -1,0 +1,54 @@
+@import '../../util/scss/variables';
+.v-enter-active {
+  transition: all 0.3s ease-in;
+}
+.v-leave-active {
+  transition: all 0.2s ease-out;
+}
+.v-enter,
+.v-leave-to {
+  left: 0;
+  opacity: 0;
+}
+.nav-left {
+  position: fixed;
+  display: block;
+  bottom: 0;
+  width: $sidebar-width;
+  height: calc(100% - 47px);
+  background-color: $background-color-inactive;
+  border-right: $border-width solid $border-color-navbar;
+  left: 0;
+
+  ul {
+    list-style: none;
+    margin: 0;
+    position: fixed;
+    padding-top: 2 * $standard-padding;
+    padding-left: 0px;
+
+    li.title {
+      padding-bottom: 2 * $standard-padding;
+      border-bottom: 2 * $border-width solid $border-color-navbar;
+      color: $link-text-color;
+      font-weight: bold;
+      font-size: 1.5rem;
+    }
+
+    li.link {
+      :hover {
+        background-color: $background-color-hover;
+      }
+      width: $sidebar-width;
+      margin-bottom: 2 * $standard-margin;
+
+      .router-link {
+        display: block;
+        color: $link-text-color;
+        text-align: center;
+        padding: 2 * $standard-padding;
+        text-decoration: none;
+      }
+    }
+  }
+}
