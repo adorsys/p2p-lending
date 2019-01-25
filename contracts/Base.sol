@@ -1,17 +1,16 @@
-pragma solidity >=0.4.21 <0.6.0;
+pragma solidity ^0.5.0;
 // pragma experimental ABIEncoderV2;
 
 import "./Ownable.sol";
 
-contract LendingBoard {
-    function contractFee() public pure returns(uint256) {}
+interface LendingBoard {
+    function contractFee() external pure returns( uint256 );
 }
 
 contract Base is Ownable {
 
     uint256 lendingRequestCount = 0;
     LendingBoard board;
-    uint256 public contractFee;
 
     struct LendingRequest {
         address payable asker;
@@ -31,20 +30,6 @@ contract Base is Ownable {
         public {
 
         board = _address;
-        contractFee = board.contractFee();
-    }
-
-
-    /**
-     * @notice Will return all lending requests of the caller
-     */
-
-    function getUserRequests()
-        public
-        view
-        returns (uint[] memory) {
-
-        return userRequests[msg.sender];
     }
 
     function getContractFee()
@@ -53,71 +38,6 @@ contract Base is Ownable {
         returns (uint256) {
 
         return board.contractFee();
-    }
-
-    /*
-        Handle Requests in Webinterface - do not use as database
-    */
-
-    // function getLendingRequests() public view returns (LendingRequest[]) {
-    //     return lendingRequests;
-    // }
-
-    // function getLendingRequestsByUser(address user) public view returns (LendingRequest[]) {
-    //     uint[] memory myRequests = userRequests[user];
-    //     LendingRequest[] memory fullRequests = new LendingRequest[](myRequests.length);
-    //     for (uint i = 0; i < myRequests.length; i++) {
-    //         fullRequests[i] = lendingRequests[myRequests[i]];
-    //     }
-    //     return fullRequests;
-    // }
-
-    // function getMyLendingRequests() public view returns (LendingRequest[]) {
-    //     return getLendingRequestsByUser(msg.sender);
-    // }
-
-    /**
-     * @notice Will return the ID of the first unsettled lending request if one exists
-     */
-
-    function getMyFirstUnsettledLendingRequest()
-        public
-        view
-        returns (uint256 result) {
-
-        uint256[] memory myRequests = getUserRequests();
-        require(hasUnsettledRequests(), "you have no unsettled requests");
-
-
-        for (uint256 i = 0; i < myRequests.length; i++) {
-            if (!lendingRequests[i].settled) {
-                result = i;
-                break;
-            }
-        }
-
-        return result;
-    }
-
-    function hasUnsettledRequests()
-        internal
-        view
-        returns (bool) {
-
-        uint256[] memory myRequests = getUserRequests();
-        bool unsettled = false;
-
-        if (lendingRequests.length == 0 || myRequests.length == 0) {
-            return false;
-        }
-
-        for (uint256 i = 0; i < myRequests.length; i++) {
-            if (!lendingRequests[i].settled) {
-                unsettled = true;
-                break;
-            }
-        }
-        return unsettled;
     }
 
     /**
@@ -130,8 +50,6 @@ contract Base is Ownable {
 
         require(amount > 0, "you need to ask for money");
         require(paybackAmount >= amount + getContractFee(), "minimum amount is amount + contractFee");
-        // require(userRequests[msg.sender].length == 0, "you already have an open request");
-        require(!hasUnsettledRequests(), "you have an unsettled request");
 
         LendingRequest memory request = LendingRequest({
             asker: msg.sender,
@@ -183,7 +101,7 @@ contract Base is Ownable {
         lendingRequests[id].settled = true;
     }
 
-    function contractFees()
+    function contractBalance()
         public
         view
         returns (uint) {
