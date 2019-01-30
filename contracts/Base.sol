@@ -81,6 +81,7 @@ contract Base is Ownable {
         require(lendingRequests[id].amount == msg.value, "provided amount has to be equal to the amount asked for");
 
         lendingRequests[id].asker.transfer(msg.value);
+        lendingRequests[id].lender = msg.sender;
         lendingRequests[id].lent = true;
     }
 
