@@ -4,16 +4,19 @@ contract LendingRequest {
 
     /// events
 
-    event MoneyLent(address from, uint256 amount);
-    event DebtSettled(address from, uint256 amount);
-    event MoneyWithdrawn(address from, uint256 amount);
+    event MoneyLent( address lendingRequest, uint256 amount );
+    event DebtSettled( address lendingRequest, uint256 amount );
+    event MoneyWithdrawn( address lendingRequest, uint256 amount );
+    event LendingRequestReset( address lendingRequest );
     
     /// variables
+
+    address payable private managementContract = address(0);
 
     address payable public asker;
     address payable public lender;
 
-    bool public verifiedAsker;
+    bool private verifiedAsker;
 
     uint256 public amountAsked;
     uint256 public paybackAmount;
@@ -22,9 +25,12 @@ contract LendingRequest {
     string public purpose;
     uint256 public createdAt;
     bool public moneyLent;
+    bool private withdrawnByAsker = false;
     bool public debtSettled;
+    bool private withdrawnByLender = false;
 
-    // constructor should only be callable by the LendingRequestFactory 
+    /// constructor should only be callable by the LendingRequestFactory
+
     constructor(
         address payable _asker,
         bool _verifiedAsker,
@@ -45,59 +51,104 @@ contract LendingRequest {
         debtSettled = false;
     }
 
-    // accept ether
+    /**
+     * @dev Regulate payment conditions of the LendingRequest
+     */
+    
     function()
         payable
         external {
 
-        // if request is still open only accept full amount asked for
-        if (!moneyLent && msg.value != amountAsked) {
-            revert();
-        } else if (moneyLent && !debtSettled && msg.value != (paybackAmount + contractFee)) {
-            revert();
-        } else if (moneyLent && debtSettled) {
-            revert();
-        } else {
-            if (!moneyLent && msg.value == amountAsked) {
-                moneyLent = true;
-                lender = msg.sender;
-                emit MoneyLent(msg.sender, msg.value);
-            } else if (moneyLent && !debtSettled && msg.value == (paybackAmount + contractFee)) {
-                debtSettled = true;
-                emit DebtSettled(msg.sender, msg.value);
-            }
-            
-        }    
+        /*
+         * Case 1:
+         *          Lending Request is being covered by lender
+         *          checks:
+         *              must not be covered twice
+         *              must not be covered if the debt has been settled
+         *              must not be covered by the asker
+         *              has to be covered with one transaction
+         * Case 2:
+         *          Asker pays back the debt
+         *          checks:
+         *              cannot pay back the debt if money has yet to be lent
+         *              must not be paid back twice
+         *              has to be paid back by the asker
+         *              must be paid back in one transaction and has to include contractFee
+         *
+         * Think about moving the code to separate deposit function and disable functionality to receive funds via the fallback function
+         */
+
+        if ( !moneyLent ) {
+            require( !debtSettled, "Debt was already settled" );
+            require( msg.sender != asker, "Asker & Lender have to differ" );
+            require( msg.value == amountAsked * 1 ether, "not the amount asked for" );
+            moneyLent = true;
+            lender = msg.sender;
+            emit MoneyLent( address(this), msg.value);
+        }
+        else if ( moneyLent && !debtSettled ) {
+            require( msg.sender == asker, "Can only be paid back by the asker" );
+            require( msg.value == ( paybackAmount + contractFee ) * 1 ether, "not payback + contractFee" );
+            debtSettled = true;
+            emit DebtSettled( address(this), msg.value);
+        }
+        else {
+            revert( "Error" );
+        }
     }
 
     function withdraw()
         public {
+        
+        /*
+         * Case 1: ( asker withdraws amountAsked )
+         *      checks:
+         *          must only be callable by asker
+         *          money has to be lent first
+         * Case 2.1: ( lender withdraws amountAsked )
+         *      checks:
+         *          must only be callable by the lender
+         *          asker must not have withdrawn amountAsked
+         *      reset moneyLent status
+         * Case 2.2: ( lender withdraws paybackAmount )
+         *      checks:
+         *          must only be callable by the lender
+         *          debt has to be repaid first
+         *      contractFee has to remain with the contract
+         */
 
-        // only allow asker and lender to withdraw money depending on internal state
-        // allow the lender to withdraw the money if whole sum is still available
-
-        // transfer the money depending on internal state 
-        if (!moneyLent) {
-            revert();
-        } else {
-            if (moneyLent) {
-                require((msg.sender == asker) || (msg.sender == lender),
-                        "You need to be the asker or the lender to withdraw ether");
-                if (debtSettled) {
-                    require(msg.sender == lender, "Only Lender can withdraw payback amount");
-
-                    // add functionality to transfer the contractFee to the Factory Contract
-                    // this transfers all the funds to the lender ( including the contractFee (!) )
-                    msg.sender.transfer(address(this).balance);
-                } else {
-                    if (msg.sender == lender) {
-                        moneyLent = false;
-                        emit MoneyWithdrawn(msg.sender, address(this).balance);
-                    }
-                    msg.sender.transfer(address(this).balance);
-                }
+        require( moneyLent, "can only be called after money was lent" );
+        require( this.lender() != address(0), "lender has to be initialized" );
+        if ( msg.sender == this.asker() ) {
+            require(!debtSettled, "debt was settled");
+            withdrawnByAsker = true;
+            emit MoneyWithdrawn( address(this), address(this).balance );
+            this.asker().transfer( address(this).balance );
+        }
+        else if ( msg.sender == this.lender() ) {
+            if ( !debtSettled ) {
+                require( !withdrawnByAsker, "Asker has already withdrawn the funds" );
+                moneyLent = false;
+                emit LendingRequestReset( address(this) );
+                this.lender().transfer( address(this).balance );
+            }
+            else {
+                withdrawnByLender = true;
+                emit MoneyWithdrawn( address(this), address(this).balance );
+                this.lender().transfer( address(this).balance - contractFee );
+                // FIXME: Add address of Management contract to cleanUp()
+                cleanUp();
             }
         }
+        else {
+            revert( "Error" );
+        }
+    }
 
+    function cleanUp()
+        public
+    {
+        // add management contract address
+        selfdestruct( msg.sender );
     }
 }
