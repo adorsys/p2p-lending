@@ -8,21 +8,6 @@
   </div>
 </template>
 
-<style lang="scss">
-#app {
-  font-family: 'Fira Code', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-#main {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  padding-top: 45px;
-  transition: margin-left 0.3s;
-}
-</style>
-
 <script>
 import Navbar from '@/components/Navbar/navbar'
 import Sidebar from '@/components/Sidebar/sidebar'
@@ -47,3 +32,18 @@ export default {
   }
 }
 </script>
+
+<style lang="scss">
+#app {
+  font-family: 'Fira Code', Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+}
+#main {
+  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  padding-top: 45px;
+  transition: margin-left 0.3s;
+}
+</style>
