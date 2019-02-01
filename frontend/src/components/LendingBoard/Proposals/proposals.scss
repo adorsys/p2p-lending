@@ -7,6 +7,7 @@ table {
   margin-bottom: 20px;
   border-collapse: collapse;
   border: 2px solid #034234;
+  width: 100%;
 }
 
 table th {
@@ -41,20 +42,6 @@ table tbody tr:nth-child(2n) td {
   text-align: center;
   width: 100px;
 }
-.buttons {
-  cursor: pointer;
-  text-align: center;
-  width: 200px;
-  margin: auto;
-  margin-top: 25px;
-  margin-bottom: 25px;
-  padding: 20px;
-  border: 2px solid #034234;
-  border-radius: 10px;
-  color: #0f3242;
-  box-shadow: 2px 2px #0c0b0c;
-  width: 200px;
-}
 #voteButton {
   font-size: 1rem;
   background: #fff;
@@ -84,16 +71,4 @@ table tbody tr:nth-child(2n) td {
 }
 #emptyPropCont {
   text-align: center;
-}
-button {
-  font-size: 1.5rem;
-  background: #fff;
-  border: 2px solid #a0a0a0;
-  border-radius: 2px;
-  color: #666666;
-  height: 50px;
-  width: 250px;
-  margin: auto;
-  cursor: pointer;
-  outline: none;
 }

@@ -26,7 +26,7 @@ export default new Router({
             path: '/lendingboard',
             name: 'lendingboard',
             component: () =>
-                import(/* webpackChunkName: "about" */ './views/LendingBoard.vue')
+                import(/* webpackChunkName: "lendingBoard" */ './views/LendingBoard.vue')
         }
     ]
 })

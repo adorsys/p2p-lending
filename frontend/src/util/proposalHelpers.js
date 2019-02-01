@@ -1,5 +1,4 @@
 import store from '@/store/'
-import { INIT_PROPOSALS } from '@/util/constants/types'
 
 async function openProposalsLength() {
     let length = await store.state
@@ -73,8 +72,4 @@ async function getOpenProposals() {
     return proposals
 }
 
-async function proposalInit() {
-    store.dispatch(INIT_PROPOSALS)
-}
-
-export { getOpenProposals, proposalInit }
+export default getOpenProposals

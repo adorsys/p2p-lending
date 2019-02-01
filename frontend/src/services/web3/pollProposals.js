@@ -1,7 +1,7 @@
 import store from '@/store/'
 import * as types from '@/util/constants/types'
 
-let pollProposals = async () => {
+async function pollProposals() {
     console.log('Proposal Listener Active')
     let contractInstance = store.state.contractInstance
 
@@ -20,4 +20,8 @@ let pollProposals = async () => {
     })
 }
 
-export default pollProposals
+async function proposalInit() {
+    store.dispatch(types.INIT_PROPOSALS)
+}
+
+export { pollProposals, proposalInit }

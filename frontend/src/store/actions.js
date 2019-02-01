@@ -1,9 +1,9 @@
 import * as types from '@/util/constants/types'
 
-import initializeConnection from '@/util/initializeConnection'
-import { initializeContractHelper } from '../util/initializeContract'
-import { pollHelper } from '@/util/pollWeb3'
-import { getOpenProposals } from '../util/proposalHelpers'
+import getOpenProposals from '../util/proposalHelpers'
+import initializeConnection from '@/services/web3/initializeConnection'
+import { initializeContractHelper } from '@/services/web3/initializeContract'
+import { pollHelper } from '@/services/web3/pollWeb3'
 
 export default {
     async [types.INIT_CONNECTION]({ commit }) {

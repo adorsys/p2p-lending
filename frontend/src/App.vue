@@ -1,10 +1,9 @@
 <template>
   <div id="app">
-    <Sidebar/>
-    <Navbar/>
-    <div id="main">
+    <Sidebar>
       <router-view/>
-    </div>
+    </Sidebar>
+    <Navbar/>
   </div>
 </template>
 
@@ -17,15 +16,6 @@ export default {
   components: {
     Navbar,
     Sidebar
-  },
-  mounted() {
-    this.$on('toggleSidebar', () => {
-      if (document.getElementById('main').style.marginLeft !== '200px') {
-        document.getElementById('main').style.marginLeft = '200px'
-      } else {
-        document.getElementById('main').style.marginLeft = '0px'
-      }
-    })
   },
   beforeCreate() {
     this.$store.dispatch(types.INIT_CONNECTION)
