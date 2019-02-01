@@ -2,10 +2,6 @@ pragma solidity >=0.4.21 <0.6.0;
 
 import "./Ownable.sol";
 
-interface TrustToken {
-    function unlock_users(address[] calldata) external;
-}
-
 contract LendingBoard is Ownable {
 
     /// modifiers
@@ -19,11 +15,6 @@ contract LendingBoard is Ownable {
             require(mID != 0, "you are not a member");
             _;
         }
-    }
-
-    modifier onlyTrustToken {
-        require(msg.sender == address(trustToken), "can only be called by the TrustToken Contract");
-        _;
     }
 
     /// structs
@@ -58,7 +49,6 @@ contract LendingBoard is Ownable {
     uint8 public majorityMargin;
 
     uint256 public contractFee;
-    TrustToken trustToken;
 
     uint256[] public openProposals;
     Proposal[] public proposals;
@@ -272,7 +262,7 @@ contract LendingBoard is Ownable {
         bool _stance
     )
         public
-        onlyTrustToken
+        onlyMembers
         returns (uint256 voteID) {
         
         uint256 _proposalID = openProposals[_openProposalIndex];
