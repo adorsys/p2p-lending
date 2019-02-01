@@ -2,48 +2,61 @@ pragma solidity ^0.5.0;
 
 import "./LendingRequest.sol";
 
+interface LendingBoard {
+    function contractFee() external view returns( uint256 );
+}
+
 contract LendingRequestFactory {
 
     /// events
 
     event RequestCreated(address request, address from, bool verified, string purpose);
 
-    mapping( address => address[] ) requests;
-    uint256 public contractFee = 1000;
+    address managementContract;
+    LendingBoard board;
 
-    function getRequests( address _user )
+    constructor( LendingBoard _LendingBoardAddress )
         public
-        view
-        returns ( address[] memory )
     {
-        return requests[_user];
+        managementContract = msg.sender;
+        board = _LendingBoardAddress;
     }
+
+    function isVerified( address _user )
+        internal
+        pure
+        returns ( bool )
+    {
+        // TODO: Uport verification
+
+        if ( _user != address(0) ) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
 
     function newLendingRequest
     ( 
         uint256 _amount,
         uint256 _paybackAmount,
-        string memory _purpose
+        string memory _purpose,
+        address payable _origin
     )   public
         returns ( address lendingRequest )
-    {
-        // create new Lending Request
-        // check if msg.sender is verified
-        bool verified = false;
-
+    {   
+        bool verified = isVerified(_origin);
+        uint256 contractFee = board.contractFee();
+        
         lendingRequest = address(
             new LendingRequest(
-                msg.sender, verified, _amount, _paybackAmount,
-                contractFee, _purpose)
+                _origin, verified, _amount, _paybackAmount,
+                contractFee, _purpose, msg.sender)
         );
 
-        // add LendingRequest to LendingRequests control structure
-
-        requests[msg.sender].push(lendingRequest);
-        requests[address(this)].push(lendingRequest);
-
-        // trigger Event
-        emit RequestCreated(lendingRequest, msg.sender, verified, _purpose);
+        emit RequestCreated(lendingRequest, _origin, verified, _purpose);
     }
 
     // prevent sending ether to the factory contract

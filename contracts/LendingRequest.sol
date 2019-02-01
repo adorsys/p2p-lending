@@ -8,37 +8,42 @@ contract LendingRequest {
     event DebtSettled( address lendingRequest, uint256 amount );
     event MoneyWithdrawn( address lendingRequest, uint256 amount );
     event LendingRequestReset( address lendingRequest );
+    event CollectContractFee( address lendingRequest, address managementAddress );
     
     /// variables
 
-    address payable private managementContract = address(0);
+    address payable private managementContract;
 
     address payable public asker;
-    address payable public lender;
+    address payable private lender;
 
     bool private verifiedAsker;
 
     uint256 public amountAsked;
     uint256 public paybackAmount;
     uint256 public contractFee;
-
+    uint256 public creationTime;
     string public purpose;
-    uint256 public createdAt;
     bool public moneyLent;
-    bool private withdrawnByAsker = false;
     bool public debtSettled;
-    bool private withdrawnByLender = false;
+
+    bool private withdrawnByAsker = false;
+    bool public withdrawnByLender = false;
 
     /// constructor should only be callable by the LendingRequestFactory
 
-    constructor(
+    constructor
+    (
         address payable _asker,
         bool _verifiedAsker,
         uint256 _amountAsked,
         uint256 _paybackAmount,
         uint256 _contractFee,
-        string memory _purpose
-    ) public {
+        string memory _purpose,
+        address payable _managementContract
+    )
+        public
+    {
         asker = _asker;
         lender = address(0);
         verifiedAsker = _verifiedAsker;
@@ -46,19 +51,26 @@ contract LendingRequest {
         paybackAmount = _paybackAmount;
         contractFee = _contractFee;
         purpose = _purpose;
-        createdAt = now;
+        creationTime = now;
         moneyLent = false;
         debtSettled = false;
+        managementContract = _managementContract;
     }
 
-    /**
-     * @dev Regulate payment conditions of the LendingRequest
-     */
-    
     function()
         payable
-        external {
+        external
+    {
+        // prevent execution of fallback function by invalid calls
+        require(msg.data.length == 0, "invalid function call");
+        revert("use deposit");
+    }
 
+    function deposit(address payable _origin)
+        public
+        payable
+        returns( bool )
+    {
         /*
          * Case 1:
          *          Lending Request is being covered by lender
@@ -74,30 +86,31 @@ contract LendingRequest {
          *              must not be paid back twice
          *              has to be paid back by the asker
          *              must be paid back in one transaction and has to include contractFee
-         *
-         * Think about moving the code to separate deposit function and disable functionality to receive funds via the fallback function
          */
 
-        if ( !moneyLent ) {
-            require( !debtSettled, "Debt was already settled" );
-            require( msg.sender != asker, "Asker & Lender have to differ" );
-            require( msg.value == amountAsked * 1 ether, "not the amount asked for" );
+        if (!moneyLent) {
+            require(!debtSettled, "Debt was already settled");
+            require(_origin != asker, "Asker & Lender have to differ");
+            require(msg.value == amountAsked * 1 ether, "msg.value");
             moneyLent = true;
-            lender = msg.sender;
-            emit MoneyLent( address(this), msg.value);
+            lender = _origin;
+            emit MoneyLent(address(this), msg.value);
+            return true;
         }
-        else if ( moneyLent && !debtSettled ) {
-            require( msg.sender == asker, "Can only be paid back by the asker" );
-            require( msg.value == ( paybackAmount + contractFee ) * 1 ether, "not payback + contractFee" );
+        else if (moneyLent && !debtSettled) {
+            require(_origin == asker, "Can only be paid back by the asker");
+            require(msg.value == (paybackAmount + contractFee) * 1 ether, "not paybackAmount + contractFee");
             debtSettled = true;
-            emit DebtSettled( address(this), msg.value);
+            emit DebtSettled(address(this), msg.value);
+            return true;
         }
         else {
-            revert( "Error" );
+            revert("Error");
         }
+        return false;
     }
 
-    function withdraw()
+    function withdraw(address _origin)
         public {
         
         /*
@@ -117,38 +130,37 @@ contract LendingRequest {
          *      contractFee has to remain with the contract
          */
 
-        require( moneyLent, "can only be called after money was lent" );
-        require( this.lender() != address(0), "lender has to be initialized" );
-        if ( msg.sender == this.asker() ) {
+        require(moneyLent, "can only be called after money was lent");
+        require(lender != address(0), "lender has to be initialized");
+        if (_origin == asker) {
             require(!debtSettled, "debt was settled");
             withdrawnByAsker = true;
-            emit MoneyWithdrawn( address(this), address(this).balance );
-            this.asker().transfer( address(this).balance );
+            emit MoneyWithdrawn(address(this), address(this).balance);
+            asker.transfer(address(this).balance);
         }
-        else if ( msg.sender == this.lender() ) {
-            if ( !debtSettled ) {
-                require( !withdrawnByAsker, "Asker has already withdrawn the funds" );
+        else if (_origin == lender) {
+            if (!debtSettled) {
+                require(!withdrawnByAsker, "Asker has already withdrawn the funds");
                 moneyLent = false;
-                emit LendingRequestReset( address(this) );
-                this.lender().transfer( address(this).balance );
+                emit LendingRequestReset(address(this));
+                lender.transfer(address(this).balance);
             }
             else {
                 withdrawnByLender = true;
-                emit MoneyWithdrawn( address(this), address(this).balance );
-                this.lender().transfer( address(this).balance - contractFee );
-                // FIXME: Add address of Management contract to cleanUp()
-                cleanUp();
+                emit MoneyWithdrawn(address(this), address(this).balance);
+                lender.transfer(address(this).balance - (contractFee * 1 ether));
             }
         }
         else {
-            revert( "Error" );
+            revert("Error");
         }
     }
 
     function cleanUp()
         public
     {
-        // add management contract address
-        selfdestruct( msg.sender );
+        require(msg.sender == managementContract, "cleanUp failed");
+        emit CollectContractFee(address(this), managementContract);
+        selfdestruct(managementContract);
     }
 }
