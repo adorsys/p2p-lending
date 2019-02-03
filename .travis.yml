@@ -1,0 +1,9 @@
+language: node_js
+node_js: "9.11.2"
+sudo: required
+
+deploy:
+  provider: script
+  script: npm run migrate
+  on:
+    branch: deployment
