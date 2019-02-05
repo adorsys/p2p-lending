@@ -6,7 +6,7 @@ contract("RequestManagement", function(accounts) {
 
     let firstAccount;
     let lendingBoard;
-    let base;
+    let requestManagement;
 
     let asker;
     let lender;
