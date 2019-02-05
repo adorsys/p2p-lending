@@ -3,6 +3,7 @@ node_js: "9.11.2"
 sudo: required
 
 deploy:
+  skip_cleanup: true
   provider: script
   script: npm run migrate
   on:
