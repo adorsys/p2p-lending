@@ -73,7 +73,7 @@ contract LendingBoard is Ownable {
         public {
 
         changeVotingRules(_minQuorum, _minsForDebate, _majorityMargin);
-        contractFee = 1000;
+        contractFee = 1;
         addMember(msg.sender, "owner");
     }
 

@@ -9,8 +9,8 @@
 
 <script>
 import { mapState } from 'vuex'
-import LendingBoardInputs from '@/components/LendingBoard/inputs'
-import Proposals from '@/components/LendingBoard/proposals'
+import LendingBoardInputs from '@/components/LendingBoard/Inputs/inputs'
+import Proposals from '@/components/LendingBoard/Proposals/proposals'
 
 export default {
   computed: mapState({

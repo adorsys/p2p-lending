@@ -1,7 +1,7 @@
 <template>
   <div>
     <hr>
-    <table v-if="proposals.length !== 0" id="Open Proposals">
+    <table v-if="proposals.length !== 0">
       <thead>
         <tr>
           <th>Author</th>
@@ -31,7 +31,7 @@
         </tr>
       </tbody>
     </table>
-    <table v-if="proposals.length === 0" id="No Proposals">
+    <table v-if="proposals.length === 0">
       <thead>
         <tr>
           <th id="emptyPropHead">Proposals</th>
@@ -74,5 +74,5 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '@/components/LendingBoard/proposals.scss';
+@import '@/components/LendingBoard/Proposals/proposals.scss';
 </style>

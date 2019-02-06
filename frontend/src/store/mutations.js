@@ -1,9 +1,8 @@
-import { pollWeb3 } from '@/util/pollWeb3'
-import { initializeContract } from '@/util/initializeContract'
-import pollContractFee from '@/util/pollContractFee'
-import { proposalInit } from '@/util/proposalHelpers'
+import { pollWeb3 } from '@/services/web3/pollWeb3'
+import { initializeContract } from '@/services/web3/initializeContract'
+import pollContractFee from '@/services/web3/pollContractFee'
 import * as types from '@/util/constants/types'
-import pollProposals from '../util/pollProposals'
+import { pollProposals, proposalInit } from '../services/web3/pollProposals'
 
 export default {
     [types.INIT_CONNECTION](state, payload) {

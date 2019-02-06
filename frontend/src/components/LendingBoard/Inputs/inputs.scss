@@ -1,0 +1,55 @@
+.LendingBoardInputLabels {
+  margin: 25px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-column-gap: 25px;
+  grid-row-gap: 25px;
+}
+
+.LendingBoardInputs {
+  margin: 25px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-column-gap: 25px;
+  grid-row-gap: 25px;
+
+  > div {
+    margin-right: 5px;
+
+    > label {
+      margin-right: 20px;
+      padding-bottom: 10px;
+    }
+
+    > input {
+      padding: 12px 20px;
+      width: 200px;
+      outline: none;
+
+      :focus {
+        border: 1px solid #555;
+      }
+    }
+  }
+}
+
+.lending-board-buttons {
+  margin: 25px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-column-gap: 25px;
+  grid-row-gap: 25px;
+
+  > button {
+    font-size: 1.2rem;
+    background: #fff;
+    border: 2px solid #a0a0a0;
+    border-radius: 2px;
+    color: #666666;
+    height: 50px;
+    width: 200px;
+    margin: auto;
+    cursor: pointer;
+    outline: none;
+  }
+}

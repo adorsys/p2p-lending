@@ -1,12 +1,27 @@
 <template>
   <div id="app">
-    <Sidebar/>
-    <Navbar/>
-    <div id="main">
+    <Sidebar>
       <router-view/>
-    </div>
+    </Sidebar>
+    <Navbar/>
   </div>
 </template>
+
+<script>
+import Navbar from '@/components/Navbar/navbar'
+import Sidebar from '@/components/Sidebar/sidebar'
+import * as types from '@/util/constants/types'
+
+export default {
+  components: {
+    Navbar,
+    Sidebar
+  },
+  beforeCreate() {
+    this.$store.dispatch(types.INIT_CONNECTION)
+  }
+}
+</script>
 
 <style lang="scss">
 #app {
@@ -22,28 +37,3 @@
   transition: margin-left 0.3s;
 }
 </style>
-
-<script>
-import Navbar from '@/components/Navbar/navbar'
-import Sidebar from '@/components/Sidebar/sidebar'
-import * as types from '@/util/constants/types'
-
-export default {
-  components: {
-    Navbar,
-    Sidebar
-  },
-  mounted() {
-    this.$on('toggleSidebar', () => {
-      if (document.getElementById('main').style.marginLeft !== '200px') {
-        document.getElementById('main').style.marginLeft = '200px'
-      } else {
-        document.getElementById('main').style.marginLeft = '0px'
-      }
-    })
-  },
-  beforeCreate() {
-    this.$store.dispatch(types.INIT_CONNECTION)
-  }
-}
-</script>

@@ -1,23 +1,34 @@
 <template>
   <div>
     <hr>
-    <h3>Inputs</h3>
-    <div class="inputs">
+    <div class="LendingBoardInputLabels">
+      <label for="lending-board-input-fee">Proposed Fee:</label>
+      <label class="input-address" for="lending-board-input-address">Member Address:</label>
+      <label for="lending-board-input-name">Member Name:</label>
+    </div>
+    <div class="LendingBoardInputs">
       <div>
-        <span>Proposed Fee:</span>
-        <input v-model="proposedFee" placeholder="0">
+        <input type="text" id="lending-board-input-fee" v-model="proposedFee" placeholder="0">
       </div>
       <div>
-        Member Address:
-        <input v-model="memberAddress" placeholder="0x0">
+        <input
+          type="text"
+          id="lending-board-input-address"
+          v-model="memberAddress"
+          placeholder="0x0"
+        >
       </div>
       <div>
-        Member Name:
-        <input v-model="memberName" placeholder="Cpt. Placeholder">
+        <input
+          type="text"
+          id="lending-board-input-name"
+          v-model="memberName"
+          placeholder="Cpt. Placeholder"
+        >
       </div>
     </div>
     <hr>
-    <div class="buttons">
+    <div class="lending-board-buttons">
       <button @click="changeFee">Change Fee</button>
       <button @click="addMember">Add Member</button>
       <button @click="removeMember">Remove Member</button>
@@ -48,7 +59,6 @@ export default {
       }
     },
     async addMember() {
-      console.log('add member')
       if (this.memberAddress === null || this.memberName === null) {
         console.log(
           'please provide the address and the name of the member you want to add'
@@ -61,8 +71,6 @@ export default {
         ) {
           console.log('wrong format')
         } else {
-          console.log('adding member:', this.memberAddress, this.memberName)
-          // check if member does not exist yet
           await this.$store.state
             .contractInstance()
             .methods.createMembershipProposal(
@@ -77,7 +85,6 @@ export default {
       this.memberName = null
     },
     async removeMember() {
-      console.log('Remove Member')
       if (this.memberAddress === null) {
         console.log(
           'please provide the address and the name of the member you want to remove'
@@ -90,8 +97,6 @@ export default {
         ) {
           console.log('wrong format')
         } else {
-          console.log('trying to remove member:', this.memberAddress)
-          // check if member exists
           await this.$store.state
             .contractInstance()
             .methods.createMembershipProposal(2, this.memberAddress, 'empty')
@@ -106,5 +111,5 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '@/components/LendingBoard/inputs.scss';
+@import '@/components/LendingBoard/Inputs/inputs.scss';
 </style>

@@ -10,6 +10,9 @@
   left: 0;
   opacity: 0;
 }
+div {
+  padding-top: 30px;
+}
 .nav-left {
   position: fixed;
   display: block;
@@ -25,7 +28,7 @@
     margin: 0;
     position: fixed;
     padding-top: 2 * $standard-padding;
-    padding-left: 0px;
+    padding-left: 0;
 
     li.title {
       padding-bottom: 2 * $standard-padding;
