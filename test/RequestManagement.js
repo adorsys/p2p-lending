@@ -45,31 +45,32 @@ contract("RequestManagement", function(accounts) {
     it("lending request successfully submitted but not granted and not settled", async () => {
 
         let lendingRequestsNumber = await requestManagement.openLendingRequests.call(asker);
-
         let lendingRequestAddresses = await requestManagement.getRequests(asker, {from: firstAccount});
-
         let lendingRequest = await LendingRequest.at(lendingRequestAddresses[lendingRequestsNumber - 1]);
 
         let amountAsked = await lendingRequest.amountAsked.call();
-
-        console.log(amountAsked);
+        let promisedPayback = await lendingRequest.paybackAmount.call();
+        let requestPurpose = await lendingRequest.purpose.call();
+        let askerAddress = await lendingRequest.asker.call();
+        let moneyLent = await lendingRequest.moneyLent.call();
+        let debtSettled = await lendingRequest.debtSettled.call();
 
         // check asker address
-        expect(lendingRequest[0]).to.equal(asker);
-        //
-        // // check if ask amount is the same
-        // expect(lendingRequest[1].toNumber()).to.equal(askAmount);
-        //
-        // // check if payback amount is the same
-        // expect(lendingRequest[2].toNumber()).to.equal(paybackAmount);
-        //
-        // // check that lending request has not been settled yet
-        // expect(lendingRequest[4]).to.equal(false);
-        //
-        // // check lending request purpose
-        // expect(lendingRequest[5]).to.equal(purpose);
-        //
-        // // check that lending request has not been granted yet
-        // expect(lendingRequest[6]).to.equal(false);
+        expect(askerAddress).to.equal(asker);
+
+        // check if ask amount is the same
+        expect(amountAsked.toNumber()).to.equal(askAmount);
+
+        // check if payback amount is the same
+        expect(promisedPayback.toNumber()).to.equal(paybackAmount);
+
+        // check that lending request has not been settled yet
+        expect(debtSettled).to.equal(false);
+
+        // check lending request purpose
+        expect(requestPurpose).to.equal(purpose);
+
+        // check that lending request has not been granted yet
+        expect(moneyLent).to.equal(false);
     });
 });
