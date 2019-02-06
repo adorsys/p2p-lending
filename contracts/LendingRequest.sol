@@ -91,7 +91,7 @@ contract LendingRequest {
         if (!moneyLent) {
             require(!debtSettled, "Debt was already settled");
             require(_origin != asker, "Asker & Lender have to differ");
-            require(msg.value == amountAsked * 1 ether, "msg.value");
+            require(msg.value == amountAsked, "msg.value");
             moneyLent = true;
             lender = _origin;
             emit MoneyLent(address(this), msg.value);
@@ -99,7 +99,7 @@ contract LendingRequest {
         }
         else if (moneyLent && !debtSettled) {
             require(_origin == asker, "Can only be paid back by the asker");
-            require(msg.value == (paybackAmount + contractFee) * 1 ether, "not paybackAmount + contractFee");
+            require(msg.value == (paybackAmount + contractFee), "not paybackAmount + contractFee");
             debtSettled = true;
             emit DebtSettled(address(this), msg.value);
             return true;
