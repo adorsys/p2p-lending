@@ -15,6 +15,8 @@ contract LendingRequestFactory {
     address managementContract;
     LendingBoard board;
 
+    address uportRegistry = 0xdCa7EF03e98e0DC2B855bE647C39ABe984fcF21B; // Rinkeby address
+
     constructor( LendingBoard _LendingBoardAddress )
         public
     {
@@ -27,9 +29,10 @@ contract LendingRequestFactory {
         pure
         returns ( bool )
     {
-        // TODO: Uport verification
+        // calling uportRegistry contract without ABI
+        address identityOwner = uportRegistry.call(bytes4(keccak256("identityOwner(address)")),_user);
 
-        if ( _user != address(0) ) {
+        if ( identityOwner != _user ) {
             return true;
         }
         else {
