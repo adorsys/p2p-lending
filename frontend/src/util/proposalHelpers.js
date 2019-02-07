@@ -42,27 +42,23 @@ async function getOpenProposals() {
 
         let _description = 'Change fee to '
 
-        if (parseInt(proposal[1], 10) === 1) {
+        if (parseInt(proposal.fnNumber, 10) === 1) {
             _description = 'Add member '
-            _description = _description.concat(proposal[8])
-        } else if (parseInt(proposal[1], 10) === 2) {
+            _description = _description.concat(proposal.memberAddress)
+        } else if (parseInt(proposal.fnNumber, 10) === 2) {
             _description = 'Remove member '
-            _description = _description.concat(proposal[8])
+            _description = _description.concat(proposal.memberAddress)
         } else {
             _description = _description.concat(
-                parseInt(proposal[7], 10) + ' wei'
+                proposal.proposedFee / 1000 + ' ETH'
             )
         }
 
-        let date = new Date(parseInt(proposal[4], 10) * 1000)
-        date = date.toLocaleString()
-
         let newProposal = {
-            author: proposal[0],
+            author: proposal.author,
             description: _description,
-            executionDate: date,
             id: i,
-            executed: proposal[6],
+            executed: proposal.executed,
             agrees: false
         }
 

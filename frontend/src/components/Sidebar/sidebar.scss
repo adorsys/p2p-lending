@@ -1,13 +1,12 @@
 @import '../../util/scss/variables';
 .v-enter-active {
-  transition: all 0.3s ease-in;
+  transition: opacity 0.2s ease-in-out;
 }
 .v-leave-active {
-  transition: all 0.2s ease-out;
+  transition: opacity 0.2s ease-in-out;
 }
 .v-enter,
 .v-leave-to {
-  left: 0;
   opacity: 0;
 }
 div {

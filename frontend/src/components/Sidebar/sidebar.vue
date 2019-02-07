@@ -1,6 +1,6 @@
 <template>
   <div>
-    <slot></slot>
+    <slot name="router-view"></slot>
     <transition>
       <nav class="nav-left" v-if="isShowing">
         <ul>
@@ -15,13 +15,18 @@
             <router-link :to="{ name: 'about' }" class="router-link">About</router-link>
           </li>
         </ul>
+        <SidebarOverlay slot="sidebar-overlay"/>
       </nav>
     </transition>
   </div>
 </template>
 
 <script>
+import SidebarOverlay from '@/components/Sidebar/sidebar-overlay'
 export default {
+  components: {
+    SidebarOverlay
+  },
   data() {
     return {
       isShowing: false

@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <Sidebar>
-      <router-view/>
+      <router-view slot="router-view"/>
     </Sidebar>
     <Navbar/>
   </div>
@@ -30,10 +30,5 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-}
-#main {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  padding-top: 45px;
-  transition: margin-left 0.3s;
 }
 </style>

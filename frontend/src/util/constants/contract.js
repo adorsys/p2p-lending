@@ -1,11 +1,11 @@
-const address = '0xe2fd7679d107f0b64f95ab93595dd56231498b71'
+const address = '0x1717478c326fcbaa3cae1ba426ee27bca4ccbdc1'
 const ABI = [
     {
         constant: false,
         inputs: [
             {
                 name: '_proposedFee',
-                type: 'uint32'
+                type: 'uint256'
             }
         ],
         name: 'createFeeProposal',
@@ -24,7 +24,7 @@ const ABI = [
         inputs: [
             {
                 name: '_fnNumber',
-                type: 'uint8'
+                type: 'uint256'
             },
             {
                 name: '_memberAddress',
@@ -42,20 +42,6 @@ const ABI = [
                 type: 'uint256'
             }
         ],
-        payable: false,
-        stateMutability: 'nonpayable',
-        type: 'function'
-    },
-    {
-        constant: false,
-        inputs: [
-            {
-                name: '_openProposalIndex',
-                type: 'uint256'
-            }
-        ],
-        name: 'executeProposal',
-        outputs: [],
         payable: false,
         stateMutability: 'nonpayable',
         type: 'function'
@@ -105,12 +91,7 @@ const ABI = [
             }
         ],
         name: 'vote',
-        outputs: [
-            {
-                name: 'voteID',
-                type: 'uint256'
-            }
-        ],
+        outputs: [],
         payable: false,
         stateMutability: 'nonpayable',
         type: 'function'
@@ -122,12 +103,8 @@ const ABI = [
                 type: 'uint256'
             },
             {
-                name: '_minsForDebate',
-                type: 'uint256'
-            },
-            {
                 name: '_majorityMargin',
-                type: 'uint8'
+                type: 'uint256'
             }
         ],
         payable: false,
@@ -190,11 +167,6 @@ const ABI = [
                 indexed: false,
                 name: '_numVotes',
                 type: 'uint256'
-            },
-            {
-                indexed: false,
-                name: '_executed',
-                type: 'bool'
             }
         ],
         name: 'ProposalExecuted',
@@ -280,20 +252,6 @@ const ABI = [
     {
         constant: true,
         inputs: [],
-        name: 'debateTime',
-        outputs: [
-            {
-                name: '',
-                type: 'uint256'
-            }
-        ],
-        payable: false,
-        stateMutability: 'view',
-        type: 'function'
-    },
-    {
-        constant: true,
-        inputs: [],
         name: 'getMembersLength',
         outputs: [
             {
@@ -340,7 +298,7 @@ const ABI = [
         outputs: [
             {
                 name: '',
-                type: 'uint8'
+                type: 'uint256'
             }
         ],
         payable: false,
@@ -438,18 +396,14 @@ const ABI = [
             },
             {
                 name: 'fnNumber',
-                type: 'uint8'
+                type: 'uint256'
             },
             {
                 name: 'numberOfVotes',
-                type: 'uint16'
+                type: 'uint256'
             },
             {
                 name: 'positiveVotes',
-                type: 'uint16'
-            },
-            {
-                name: 'minExecutionDate',
                 type: 'uint256'
             },
             {
@@ -462,7 +416,7 @@ const ABI = [
             },
             {
                 name: 'proposedFee',
-                type: 'uint32'
+                type: 'uint256'
             },
             {
                 name: 'memberAddress',

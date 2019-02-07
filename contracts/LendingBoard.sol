@@ -6,29 +6,22 @@ contract LendingBoard is Ownable {
 
     /// modifiers
     modifier onlyMembers {
-        uint256 mID = memberID[msg.sender];
-
-        if ( mID == 0 ) {
-            require(msg.sender == owner, "you are not the owner or a member of the board");
-            _;
-        } else {
-            require(mID != 0, "you are not a member");
-            _;
-        }
+        assert(msg.sender != address(0));
+        require(memberID[msg.sender] != 0, "you are not a member");
+        _;
     }
 
     /// structs
     struct Proposal {
         address author;
-        uint8 fnNumber;
-        uint16 numberOfVotes;
-        uint16 positiveVotes;
-        uint256 minExecutionDate;
+        uint256 fnNumber;
+        uint256 numberOfVotes;
+        uint256 positiveVotes;
         bool proposalPassed;
         bool executed;
         Vote[] votes;
         mapping( address => bool ) voted;
-        uint32 proposedFee;
+        uint256 proposedFee;
         address memberAddress;
         string memberName;
     }
@@ -45,8 +38,7 @@ contract LendingBoard is Ownable {
 
     /// variables
     uint256 public minQuorum;
-    uint256 public debateTime;
-    uint8 public majorityMargin;
+    uint256 public majorityMargin;
 
     uint256 public contractFee;
 
@@ -59,22 +51,28 @@ contract LendingBoard is Ownable {
     /// events
     event ProposalAdded( uint256 _proposalID, string _description );
     event Voted( uint256 _proposalID, bool _stance, address _voter );
-    event ProposalExecuted( uint256 _proposalID, uint256 _positiveVotes, uint256 _numVotes, bool _executed );
+    event ProposalExecuted( uint256 _proposalID, uint256 _positiveVotes, uint256 _numVotes );
     event MembershipChanged( address _member, bool _isMember );
     event ContractFeeChanged( uint256 _oldFee, uint256 _newFee );
 
     /// constructor
-    constructor
-    (
-            uint256 _minQuorum,
-            uint256 _minsForDebate,
-            uint8 _majorityMargin
+    constructor(
+        uint256 _minQuorum,
+        uint256 _majorityMargin
     )
         public {
+        members.push( Member({
+            member: address(0),
+            name: "dummy"
+        }));
+        members.push( Member({
+            member: msg.sender,
+            name: "Creator"
+        }));
+        memberID[msg.sender] = 1;
 
-        changeVotingRules(_minQuorum, _minsForDebate, _majorityMargin);
-        contractFee = 1;
-        addMember(msg.sender, "owner");
+        changeVotingRules(_minQuorum, _majorityMargin);
+        contractFee = 1000; // contractFee is 1 ETH represented in Finney ( Milliether )
     }
 
     /// Getter
@@ -103,23 +101,19 @@ contract LendingBoard is Ownable {
     }
 
     /// Setter
-    function changeVotingRules
-    (
+    function changeVotingRules(
         uint256 _minQuorum,
-        uint256 _minsForDebate,
-        uint8 _majorityMargin
+        uint256 _majorityMargin
     )
         internal
         onlyMembers {
 
         minQuorum = _minQuorum;
-        debateTime = _minsForDebate;
         majorityMargin = _majorityMargin;
 
     }
 
-    function setContractFee
-    (
+    function setContractFee(
         uint256 _fee
     )
         internal
@@ -132,8 +126,7 @@ contract LendingBoard is Ownable {
     }
 
     /// internal functions
-    function addMember
-    (
+    function addMember(
         address _memberAddress,
         string memory _memberName
     )
@@ -154,12 +147,11 @@ contract LendingBoard is Ownable {
         emit MembershipChanged(_memberAddress, true);
 
         if (members.length / 2 > minQuorum) {
-            changeVotingRules(minQuorum + 1, debateTime, majorityMargin);
+            changeVotingRules(minQuorum + 1, majorityMargin);
         }
     }
 
-    function removeMember
-    (
+    function removeMember(
         address _memberAddress
     )
         internal
@@ -180,13 +172,12 @@ contract LendingBoard is Ownable {
         emit MembershipChanged(_memberAddress, false);
 
         if (members.length / 2 <= minQuorum) {
-            changeVotingRules(minQuorum - 1, debateTime, majorityMargin);
+            changeVotingRules(minQuorum - 1, majorityMargin);
         }
     }
 
-    function createFeeProposal
-    (
-        uint32 _proposedFee
+    function createFeeProposal(
+        uint256 _proposedFee
     )
         public
         onlyMembers
@@ -202,7 +193,6 @@ contract LendingBoard is Ownable {
         p.fnNumber = 0;
         p.numberOfVotes = 0;
         p.positiveVotes = 0;
-        p.minExecutionDate = now + debateTime * 1 minutes;
         p.proposalPassed = false;
         p.executed = false;
         p.proposedFee = _proposedFee;
@@ -213,9 +203,8 @@ contract LendingBoard is Ownable {
         return proposalID;
     }
 
-    function createMembershipProposal
-    (
-        uint8 _fnNumber,
+    function createMembershipProposal(
+        uint256 _fnNumber,
         address _memberAddress,
         string memory _memberName
     )
@@ -239,7 +228,6 @@ contract LendingBoard is Ownable {
         p.fnNumber = _fnNumber;
         p.numberOfVotes = 0;
         p.positiveVotes = 0;
-        p.minExecutionDate = now + debateTime * 1 minutes;
         p.proposalPassed = false;
         p.executed = false;
         p.memberAddress = _memberAddress;
@@ -256,14 +244,13 @@ contract LendingBoard is Ownable {
         return proposalID;
     }
 
-    function vote
-    (
+    function vote(
         uint256 _openProposalIndex,
         bool _stance
     )
         public
         onlyMembers
-        returns (uint256 voteID) {
+    {
         
         uint256 _proposalID = openProposals[_openProposalIndex];
         Proposal storage p = proposals[_proposalID];
@@ -277,20 +264,22 @@ contract LendingBoard is Ownable {
         }
 
         emit Voted(_proposalID, _stance, msg.sender);
-        return p.numberOfVotes;
+
+        if ((p.numberOfVotes >= minQuorum) && !p.executed) {
+            executeProposal(_openProposalIndex);
+        }
     }
 
     function executeProposal
     (
         uint256 _openProposalIndex
     )
-        public
+        internal
         onlyMembers {
         
         uint256 _proposalID = openProposals[_openProposalIndex];
         Proposal storage p = proposals[_proposalID];
 
-        require(block.timestamp >= p.minExecutionDate, "debating time has not passed yet");
         require(p.numberOfVotes >= minQuorum, "proposal did not reach the minimum amount of votes");
         require(!p.executed, "proposal was already executed");
 
@@ -316,7 +305,7 @@ contract LendingBoard is Ownable {
         delete openProposals[openProposals.length - 1];
         openProposals.length--;
 
-        emit ProposalExecuted(_proposalID, p.positiveVotes, p.numberOfVotes, p.executed);
+        emit ProposalExecuted(_proposalID, p.positiveVotes, p.numberOfVotes);
     }
 
     function kill()

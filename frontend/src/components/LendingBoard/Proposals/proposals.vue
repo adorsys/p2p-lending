@@ -6,17 +6,14 @@
         <tr>
           <th>Author</th>
           <th>Description</th>
-          <th>Execution Date</th>
           <th>In Favor</th>
           <th id="vote">Vote</th>
-          <th id="execute">Execute</th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="p in proposals" :key="p.idx">
           <td>{{p.author}}</td>
           <td>{{p.description}}</td>
-          <td>{{p.executionDate}}</td>
           <td id="stance">
             <label>
               <input type="checkbox" :value="true" v-model="p.agrees">
@@ -24,9 +21,6 @@
           </td>
           <td id="vote">
             <button v-on:click="vote(p.id, p.agrees)" id="voteButton">Vote</button>
-          </td>
-          <td id="execute">
-            <button v-on:click="execute(p.id)" id="executeButton">Execute</button>
           </td>
         </tr>
       </tbody>
@@ -56,17 +50,9 @@ export default {
   },
   methods: {
     async vote(idx, stance) {
-      console.log(idx, stance)
       await this.$store.state
         .contractInstance()
         .methods.vote(idx, stance)
-        .send({ from: this.$store.state.web3.coinbase })
-    },
-    async execute(idx) {
-      console.log('execute')
-      await this.$store.state
-        .contractInstance()
-        .methods.executeProposal(idx)
         .send({ from: this.$store.state.web3.coinbase })
     }
   }
