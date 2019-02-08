@@ -19,7 +19,7 @@ div {
   width: $sidebar-width;
   height: calc(100% - 47px);
   background-color: $background-color-inactive;
-  border-right: $border-width solid $border-color-navbar;
+  border-right: $border-width solid $border-color;
   left: 0;
 
   ul {
@@ -31,7 +31,7 @@ div {
 
     li.title {
       padding-bottom: 2 * $standard-padding;
-      border-bottom: 2 * $border-width solid $border-color-navbar;
+      border-bottom: 2 * $border-width solid $border-color;
       color: $link-text-color;
       font-weight: bold;
       font-size: 1.5rem;

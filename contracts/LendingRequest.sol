@@ -15,7 +15,7 @@ contract LendingRequest {
     address payable private managementContract;
 
     address payable public asker;
-    address payable private lender;
+    address payable public lender;
 
     bool private verifiedAsker;
 
@@ -47,9 +47,9 @@ contract LendingRequest {
         asker = _asker;
         lender = address(0);
         verifiedAsker = _verifiedAsker;
-        amountAsked = _amountAsked;
-        paybackAmount = _paybackAmount;
-        contractFee = _contractFee;
+        amountAsked = _amountAsked * 1 ether;
+        paybackAmount = _paybackAmount * 1 ether;
+        contractFee = _contractFee * 1 finney;
         purpose = _purpose;
         creationTime = now;
         moneyLent = false;
@@ -61,9 +61,7 @@ contract LendingRequest {
         payable
         external
     {
-        // prevent execution of fallback function by invalid calls
-        require(msg.data.length == 0, "invalid function call");
-        revert("use deposit");
+        revert("use deposit to transfer ETH");
     }
 
     function deposit(address payable _origin)
@@ -89,7 +87,6 @@ contract LendingRequest {
          */
 
         if (!moneyLent) {
-            require(!debtSettled, "Debt was already settled");
             require(_origin != asker, "Asker & Lender have to differ");
             require(msg.value == amountAsked, "msg.value");
             moneyLent = true;

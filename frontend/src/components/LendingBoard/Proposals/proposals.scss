@@ -1,3 +1,5 @@
+@import '../../../util/scss/variables';
+
 table {
   font-family: 'Open Sans', sans-serif;
   text-align: center;
@@ -6,15 +8,15 @@ table {
   margin-top: 20px;
   margin-bottom: 20px;
   border-collapse: collapse;
-  border: 2px solid #034234;
+  border: 2px solid $background-color-inactive;
   width: 100%;
 }
 
 table th {
   text-transform: uppercase;
   text-align: left;
-  background: #0c0b0c;
-  color: #fff;
+  background: $background-color-inactive;
+  color: $link-text-color;
   padding: 8px;
   min-width: 30px;
 }
@@ -22,27 +24,32 @@ table th {
 table td {
   text-align: left;
   padding: 12px;
-  border-right: 2px solid #034234;
+  border: 2px solid $border-color;
 }
-table td:last-child {
+table tr:first-of-type td {
+  border-top: none;
+}
+table tr:last-of-type td {
+  border-bottom: none;
+}
+table td:first-of-type {
+  border-left: none;
+}
+table td:last-of-type {
   border-right: none;
 }
 table tbody tr:nth-child(2n) td {
-  background: #e4dfe4;
+  background: $background-color-inactive;
 }
-#stance {
+.proposal-stance {
   text-align: center;
   width: 70px;
 }
-#vote {
+.proposal-vote {
   text-align: center;
   width: 70px;
 }
-#execute {
-  text-align: center;
-  width: 100px;
-}
-#voteButton {
+.proposals-vote-button {
   font-size: 1rem;
   background: #fff;
   border: 2px solid #a0a0a0;
@@ -54,21 +61,7 @@ table tbody tr:nth-child(2n) td {
   cursor: pointer;
   outline: none;
 }
-#executeButton {
-  font-size: 1rem;
-  background: #fff;
-  border: 2px solid #a0a0a0;
-  border-radius: 2px;
-  color: #666666;
-  width: 100px;
-  height: 25px;
-  margin: auto;
-  cursor: pointer;
-  outline: none;
-}
-#emptyPropHead {
+.proposals-empty {
   text-align: center;
-}
-#emptyPropCont {
-  text-align: center;
+  border: none;
 }

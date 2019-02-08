@@ -50,7 +50,7 @@ async function getOpenProposals() {
             _description = _description.concat(proposal.memberAddress)
         } else {
             _description = _description.concat(
-                proposal.proposedFee / 1000 + ' ETH'
+                proposal.proposedFee / 10 ** 3 + ' ETH'
             )
         }
 

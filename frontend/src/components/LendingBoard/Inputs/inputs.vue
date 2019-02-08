@@ -3,19 +3,19 @@
     <hr>
     <div class="LendingBoardInputLabels">
       <label for="lending-board-input-fee">Proposed Fee:</label>
-      <label class="input-address" for="lending-board-input-address">Member Address:</label>
+      <label for="lending-board-input-address">Member Address:</label>
       <label for="lending-board-input-name">Member Name:</label>
     </div>
     <div class="LendingBoardInputs">
       <div>
-        <input type="text" id="lending-board-input-fee" v-model="proposedFee" placeholder="0">
+        <input type="text" id="lending-board-input-fee" v-model="proposedFee" placeholder="0.0 ETH">
       </div>
       <div>
         <input
           type="text"
           id="lending-board-input-address"
           v-model="memberAddress"
-          placeholder="0x0"
+          placeholder="Member Address ( 0x0 )"
         >
       </div>
       <div>
@@ -23,11 +23,10 @@
           type="text"
           id="lending-board-input-name"
           v-model="memberName"
-          placeholder="Cpt. Placeholder"
+          placeholder="Member Name"
         >
       </div>
     </div>
-    <hr>
     <div class="lending-board-buttons">
       <button @click="changeFee">Change Fee</button>
       <button @click="addMember">Add Member</button>
@@ -50,10 +49,10 @@ export default {
       if (this.proposedFee == null) {
         console.log('please provide a fee with your request')
       } else {
-        console.log('changing fee to:', this.proposedFee)
+        let feeToFinney = this.proposedFee * 1000
         await this.$store.state
           .contractInstance()
-          .methods.createFeeProposal(this.proposedFee)
+          .methods.createFeeProposal(feeToFinney)
           .send({ from: this.$store.state.web3.coinbase })
         this.proposedFee = null
       }

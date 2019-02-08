@@ -60,7 +60,7 @@ contract LendingRequestFactory {
     }
 
     // prevent sending ether to the factory contract
-    function() external {
+    function() external payable {
         revert("Factory Contract does NOT accept ether");
     }
 

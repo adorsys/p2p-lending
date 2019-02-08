@@ -5,9 +5,7 @@
   "directories": {
     "test": "test"
   },
-  "dependencies": {
-    "web3": "^1.0.0-beta.37"
-  },
+  "dependencies": {},
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
