@@ -1,6 +1,6 @@
 pragma solidity ^0.5.0;
 
-import "./Ownable.sol";
+import "../Ownable.sol";
 import "./LendingRequestFactory.sol";
 
 contract RequestManagement is Ownable {

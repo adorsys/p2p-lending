@@ -10,9 +10,9 @@ contract("LendingRequest", accounts => {
         lendingRequest = await LendingRequest.new(
             asker,
             true,
-            1,
-            2,
-            1,
+            web3.utils.toWei("1", "ether"),
+            web3.utils.toWei("2", "ether"),
+            web3.utils.toWei("1", "ether"),
             "food",
             managementContract
         );

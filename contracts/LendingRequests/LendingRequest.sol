@@ -47,9 +47,9 @@ contract LendingRequest {
         asker = _asker;
         lender = address(0);
         verifiedAsker = _verifiedAsker;
-        amountAsked = _amountAsked * 1 ether;
-        paybackAmount = _paybackAmount * 1 ether;
-        contractFee = _contractFee * 1 finney;
+        amountAsked = _amountAsked;
+        paybackAmount = _paybackAmount;
+        contractFee = _contractFee;
         purpose = _purpose;
         creationTime = now;
         moneyLent = false;

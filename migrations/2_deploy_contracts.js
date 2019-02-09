@@ -1,5 +1,7 @@
 const LendingBoard = artifacts.require("./LendingBoard.sol");
-const RequestManagement = artifacts.require("./RequestManagement.sol");
+const RequestManagement = artifacts.require(
+    "./LendingRequests/RequestManagement.sol"
+);
 const ProposalFactory = artifacts.require(
     "./ProposalFactory/ProposalFactory.sol"
 );
