@@ -1,17 +1,10 @@
 pragma solidity ^0.5.0;
 
-interface LendingBoard {
-    function executeProposal() external;
-    function setContractFee(uint256) external;
+contract LendingBoard {
+    function setContractFee(uint256) public pure{}
 }
 
 contract ContractFeeProposal {
-
-    event ProposalExecuted(
-        address ContractFeeProposal,
-        uint256 numberOfPositiveVotes,
-        uint256 numberOfVotes
-    );
 
     modifier onlyManagementContract {
         require(
@@ -23,24 +16,21 @@ contract ContractFeeProposal {
 
     /// events
 
-    /// struct
-
-    struct Vote {
-        address voter;
-        bool stance;
-    }
+    event ProposalExecuted(
+        address ContractFeeProposal,
+        uint256 numberOfPositiveVotes,
+        uint256 numberOfVotes
+    );
 
     /// variables
 
     address private managementContract;
     address public author;
-    uint256 private proposalIdentifier = 0;
     uint256 public proposedFee;
     uint256 public numberOfVotes = 0;
     uint256 public numberOfPositiveVotes = 0;
     uint256 public minimumNumberOfVotes;
     uint256 public majorityMargin;
-    Vote[] private votes;
     mapping(address => bool) private voted;
     bool public proposalPassed = false;
     bool public proposalExecuted = false;
@@ -120,9 +110,8 @@ contract ContractFeeProposal {
         proposalExecuted = true;
         emit ProposalExecuted(address(this), numberOfPositiveVotes, numberOfVotes);
 
-        // if (((numberOfPositiveVotes * 100) / numberOfVotes) >= majorityMargin) {
-        //     proposalPassed = true;
-        //     LendingBoard(managementContract).setContractFee(proposedFee);
-        // }
+        if (((numberOfPositiveVotes * 100) / numberOfVotes) >= majorityMargin) {
+            proposalPassed = true;
+        }
     }
 }
