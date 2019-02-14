@@ -1,6 +1,9 @@
 const ContractFeeProposal = artifacts.require(
     "./ProposalFactory/ContractFeeProposal.sol"
 );
+const ProposalManagement = artifacts.require(
+    "./ProposalFactory/ProposalManagement.sol"
+);
 
 contract("ContractFeeProposal", accounts => {
     beforeEach(async () => {
@@ -9,14 +12,14 @@ contract("ContractFeeProposal", accounts => {
         proposedFee = web3.utils.toWei("1000", "finney");
         minimumNumberOfVotes = 2;
         majorityMargin = 50;
-        managementContract = author;
+        managementContract = await ProposalManagement.deployed();
 
         contractFeeProposal = await ContractFeeProposal.new(
             author,
             proposedFee,
             minimumNumberOfVotes,
             majorityMargin,
-            managementContract,
+            managementContract.address,
             { from: author }
         );
     });
@@ -31,11 +34,13 @@ contract("ContractFeeProposal", accounts => {
 
     it("second vote from the same address fails", async () => {
         await contractFeeProposal.vote(true, author, {
-            from: author
+            from: managementContract.address
         });
         // second vote from same address
         try {
-            await contractFeeProposal.vote.call(true, author, { from: author });
+            await contractFeeProposal.vote.call(true, author, {
+                from: managementContract.address
+            });
         } catch (error) {
             assert(
                 error.message.indexOf("revert") >= 0,

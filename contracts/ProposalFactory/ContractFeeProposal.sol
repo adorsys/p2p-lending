@@ -1,9 +1,5 @@
 pragma solidity ^0.5.0;
 
-contract LendingBoard {
-    function setContractFee(uint256) public pure{}
-}
-
 contract ContractFeeProposal {
 
     modifier onlyManagementContract {
@@ -24,7 +20,7 @@ contract ContractFeeProposal {
 
     /// variables
 
-    address private managementContract;
+    address payable private managementContract;
     address public author;
     uint256 public proposedFee;
     uint256 public numberOfVotes = 0;
@@ -49,7 +45,7 @@ contract ContractFeeProposal {
         uint256 _proposedFee,
         uint256 _minimumNumberOfVotes,
         uint256 _majorityMargin,
-        address _managementContract
+        address payable _managementContract
     )
         public {
         
@@ -58,6 +54,7 @@ contract ContractFeeProposal {
         minimumNumberOfVotes = _minimumNumberOfVotes;
         majorityMargin = _majorityMargin;
         managementContract = _managementContract;
+
     }
 
     /// external
@@ -83,7 +80,7 @@ contract ContractFeeProposal {
     }
 
     function updateManagementContract(
-        address _managementContract
+        address payable _managementContract
     )
         external
         onlyManagementContract {
@@ -112,6 +109,10 @@ contract ContractFeeProposal {
 
         if (((numberOfPositiveVotes * 100) / numberOfVotes) >= majorityMargin) {
             proposalPassed = true;
+            bytes memory payload = abi.encodeWithSignature("setContractFee(uint256)", proposedFee);
+            (bool success, ) = managementContract.call(payload);
+            require(success, "setting of contractFee failed");
+            selfdestruct(managementContract);
         }
     }
 }
