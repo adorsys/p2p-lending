@@ -11,14 +11,12 @@ export default {
         state.web3.coinbase = payload.web3.coinbase
         state.web3.balance = payload.web3.balance
         state.web3.web3Instance = payload.web3.web3Instance
-        console.log('web3 init finished')
         initializeContract()
         pollWeb3()
     },
     [types.INIT_CONTRACT](state, payload) {
         state.contractFee = payload.contractFee
         state.contractInstance = payload.contractInstance
-        console.log('contract init finished')
         pollContractFee()
         proposalInit()
     },

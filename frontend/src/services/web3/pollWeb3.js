@@ -22,8 +22,6 @@ let pollHelper = async () => {
 }
 
 let pollWeb3 = async () => {
-    console.log('poll web3 initialized')
-
     // eslint-disable-next-line no-undef
     ethereum.on('accountsChanged', async () => {
         store.dispatch(types.POLL_WEB3)

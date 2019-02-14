@@ -1,7 +1,7 @@
 <template>
   <div class="lendingboard">
     <h1>Lending Board</h1>
-    <h3>Current Contract Fee: {{ contractFee }} WEI</h3>
+    <h3>Current Contract Fee: {{ contractFee / 1000 }} ETH</h3>
     <LendingBoardInputs/>
     <Proposals/>
   </div>

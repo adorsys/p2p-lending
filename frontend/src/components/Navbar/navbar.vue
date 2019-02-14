@@ -1,31 +1,40 @@
 <template>
-  <ul>
-    <li class="icon">
-      <img src="@/assets/menu.svg" @click="toggleSidebar">
-    </li>
-    <li class="title">
-      <router-link :to="{ name: 'home' }" id="title">
-        <span id="firstpart">P2P</span>
-        <span id="secondpart">Lending</span>
-      </router-link>
-    </li>
+  <div>
+    <nav>
+      <ul>
+        <li class="navbar-menu-icon">
+          <img src="@/assets/menu.svg" @click="toggleSidebar">
+        </li>
+        <li class="navbar-title">
+          <router-link :to="{ name: 'home' }" class="navbar-router-title">
+            <span class="navbar-title-firstpart">P2P</span>
+            <span class="navbar-title-secondpart">Lending</span>
+          </router-link>
+        </li>
 
-    <li class="account" v-if="authenticated === true" @click="logOut">
-      <router-link :to="{ name: 'about' }" class="router-link">LogOut</router-link>
-    </li>
-    <li class="account" v-if="authenticated !== true" @click="logIn">
-      <router-link :to="{ name: 'about' }" class="router-link">LogIn</router-link>
-    </li>
-    <li class="network" v-if="network !== null">
-      <span>{{ network }}</span>
-    </li>
-    <li class="balance" v-if="balance !== null">
-      <span>{{ balance }}</span>
-      <span id="eth">ETH</span>
-    </li>
-    <li class="has-metamask" v-if="isInjected">Connected</li>
-    <li class="has-no-metamask" v-if="!isInjected">Connected</li>
-  </ul>
+        <li class="navbar-account" v-if="authenticated === true" @click="logOut">
+          <router-link :to="{ name: 'about' }" class="navbar-router-link">LogOut</router-link>
+        </li>
+        <li class="navbar-account" v-if="authenticated !== true" @click="logIn">
+          <router-link :to="{ name: 'about' }" class="navbar-router-link">LogIn</router-link>
+        </li>
+        <li class="navbar-network" v-if="network !== null">
+          <span>{{ network }}</span>
+        </li>
+        <li class="navbar-balance" v-if="balance !== null">
+          <span>{{ balance }}</span>
+          <span class="navbar-balance-eth">ETH</span>
+        </li>
+        <li class="navbar-metamask navbar-metamask-active" v-if="isInjected">Connected</li>
+        <li class="navbar-metamask navbar-metamask-inactive" v-if="!isInjected">Connected</li>
+      </ul>
+    </nav>
+    <div class="router-view-slotted">
+      <slot name="sidebar">
+        <slot name="sidebar-overlay"></slot>
+      </slot>
+    </div>
+  </div>
 </template>
 
 <script>

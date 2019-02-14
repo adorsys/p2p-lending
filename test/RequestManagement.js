@@ -1,10 +1,12 @@
-const LendingBoard = artifacts.require("./LendingBoard.sol");
-const RequestManagement = artifacts.require("./RequestManagement.sol");
-const LendingRequest = artifacts.require("./LendingRequest.sol");
+const LendingBoard = artifacts.require("./LendingRequests/LendingBoard.sol");
+const RequestManagement = artifacts.require(
+    "./LendingRequests/RequestManagement.sol"
+);
+const LendingRequest = artifacts.require(
+    "./LendingRequests/LendingRequest.sol"
+);
 
-
-contract("RequestManagement", function(accounts) {
-
+contract("RequestManagement", accounts => {
     // truffle accounts
     let firstAccount;
     let asker;
@@ -32,17 +34,26 @@ contract("RequestManagement", function(accounts) {
     let contractFee;
 
     beforeEach(async () => {
-        lendingBoard = await LendingBoard.new(5, 60, 5);
+        lendingBoard = await LendingBoard.new(1, 50);
         requestManagement = await RequestManagement.new(lendingBoard.address);
 
         firstAccount = accounts[0];
         asker = accounts[1];
         lender = accounts[2];
 
-        await requestManagement.ask(askAmount, paybackAmount, purpose, {from: asker});
-        lendingRequestsAmount = await requestManagement.openLendingRequests.call(asker);
-        askerLendingRequestsAddresses = await requestManagement.getRequests(asker, {from: firstAccount});
-        lendingRequest = await LendingRequest.at(askerLendingRequestsAddresses[0]);
+        await requestManagement.ask(askAmount, paybackAmount, purpose, {
+            from: asker
+        });
+        lendingRequestsAmount = await requestManagement.openLendingRequests.call(
+            asker
+        );
+        askerLendingRequestsAddresses = await requestManagement.getRequests(
+            asker,
+            { from: firstAccount }
+        );
+        lendingRequest = await LendingRequest.at(
+            askerLendingRequestsAddresses[0]
+        );
 
         amountAsked = await lendingRequest.amountAsked.call();
         promisedPayback = await lendingRequest.paybackAmount.call();
@@ -67,16 +78,15 @@ contract("RequestManagement", function(accounts) {
         );
     });
 
-
     it("lending request successfully submitted but not granted and not settled", async () => {
         // assert amount of lending requests for the asker
-        expect(lendingRequestsAmount.toNumber()).to.equal(1);
+        expect(parseInt(lendingRequestsAmount, 10)).to.equal(1);
         // check asker address
         expect(askerAddress).to.equal(asker);
         // check if ask amount is the same
-        expect(amountAsked.toNumber()).to.equal(askAmount);
+        expect(parseInt(amountAsked, 10)).to.equal(askAmount);
         // check if payback amount is the same
-        expect(promisedPayback.toNumber()).to.equal(paybackAmount);
+        expect(parseInt(promisedPayback, 10)).to.equal(paybackAmount);
         // check that lending request has not been settled yet
         expect(debtSettled).to.equal(false);
         // check lending request purpose
@@ -87,20 +97,23 @@ contract("RequestManagement", function(accounts) {
 
     it("lending request successfully submitted and granted but not settled", async () => {
         // grant money to the lending request
-        await requestManagement.deposit(askerLendingRequestsAddresses[0], {from: lender, value: askAmount});
+        await requestManagement.deposit(askerLendingRequestsAddresses[0], {
+            from: lender,
+            value: askAmount
+        });
         // actualizing only "moneyLent" and "debtSettled"  properties
         moneyLent = await lendingRequest.moneyLent.call();
         debtSettled = await lendingRequest.debtSettled.call();
         // assert amount of lending requests for the asker
-        expect(lendingRequestsAmount.toNumber()).to.equal(1);
+        expect(parseInt(lendingRequestsAmount, 10)).to.equal(1);
         // check asker address
         expect(askerAddress).to.equal(asker);
         // check lender address
         expect(askerAddress).to.equal(asker);
         // check if ask amount is the same
-        expect(amountAsked.toNumber()).to.equal(askAmount);
+        expect(parseInt(amountAsked, 10)).to.equal(askAmount);
         // check if payback amount is the same
-        expect(promisedPayback.toNumber()).to.equal(paybackAmount);
+        expect(parseInt(promisedPayback, 10)).to.equal(paybackAmount);
         // check lending request purpose
         expect(requestPurpose).to.equal(purpose);
         // check that lending request has not been granted yet
@@ -111,8 +124,14 @@ contract("RequestManagement", function(accounts) {
 
     it("lending request successfully submitted, granted and settled", async () => {
         // grant money to the lending request
-        await requestManagement.deposit(askerLendingRequestsAddresses[0], {from: lender, value: askAmount});
-        await requestManagement.deposit(askerLendingRequestsAddresses[0], {from: asker, value: paybackAmount + contractFee.toNumber()});
+        await requestManagement.deposit(askerLendingRequestsAddresses[0], {
+            from: lender,
+            value: askAmount
+        });
+        await requestManagement.deposit(askerLendingRequestsAddresses[0], {
+            from: asker,
+            value: paybackAmount + parseInt(contractFee, 10)
+        });
 
         amountAsked = await lendingRequest.amountAsked.call();
         promisedPayback = await lendingRequest.paybackAmount.call();
@@ -122,15 +141,15 @@ contract("RequestManagement", function(accounts) {
         debtSettled = await lendingRequest.debtSettled.call();
 
         // assert amount of lending requests for the asker
-        expect(lendingRequestsAmount.toNumber()).to.equal(1);
+        expect(parseInt(lendingRequestsAmount, 10)).to.equal(1);
         // check asker address
         expect(askerAddress).to.equal(asker);
         // check lender address
         expect(askerAddress).to.equal(asker);
         // check if ask amount is the same
-        expect(amountAsked.toNumber()).to.equal(askAmount);
+        expect(parseInt(amountAsked, 10)).to.equal(askAmount);
         // check if payback amount is the same
-        expect(promisedPayback.toNumber()).to.equal(paybackAmount);
+        expect(parseInt(promisedPayback, 10)).to.equal(paybackAmount);
         // check lending request purpose
         expect(requestPurpose).to.equal(purpose);
         // check that lending request has not been granted yet

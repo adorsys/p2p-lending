@@ -5,7 +5,7 @@ const ABI = [
         inputs: [
             {
                 name: '_proposedFee',
-                type: 'uint32'
+                type: 'uint256'
             }
         ],
         name: 'createFeeProposal',
@@ -24,7 +24,7 @@ const ABI = [
         inputs: [
             {
                 name: '_fnNumber',
-                type: 'uint8'
+                type: 'uint256'
             },
             {
                 name: '_memberAddress',
@@ -42,20 +42,6 @@ const ABI = [
                 type: 'uint256'
             }
         ],
-        payable: false,
-        stateMutability: 'nonpayable',
-        type: 'function'
-    },
-    {
-        constant: false,
-        inputs: [
-            {
-                name: '_openProposalIndex',
-                type: 'uint256'
-            }
-        ],
-        name: 'executeProposal',
-        outputs: [],
         payable: false,
         stateMutability: 'nonpayable',
         type: 'function'
@@ -105,12 +91,7 @@ const ABI = [
             }
         ],
         name: 'vote',
-        outputs: [
-            {
-                name: 'voteID',
-                type: 'uint256'
-            }
-        ],
+        outputs: [],
         payable: false,
         stateMutability: 'nonpayable',
         type: 'function'
@@ -122,12 +103,8 @@ const ABI = [
                 type: 'uint256'
             },
             {
-                name: '_minsForDebate',
-                type: 'uint256'
-            },
-            {
                 name: '_majorityMargin',
-                type: 'uint8'
+                type: 'uint256'
             }
         ],
         payable: false,
@@ -139,12 +116,12 @@ const ABI = [
         inputs: [
             {
                 indexed: false,
-                name: '_proposalID',
+                name: 'proposalID',
                 type: 'uint256'
             },
             {
                 indexed: false,
-                name: '_description',
+                name: 'description',
                 type: 'string'
             }
         ],
@@ -156,17 +133,17 @@ const ABI = [
         inputs: [
             {
                 indexed: false,
-                name: '_proposalID',
+                name: 'proposalID',
                 type: 'uint256'
             },
             {
                 indexed: false,
-                name: '_stance',
+                name: 'stance',
                 type: 'bool'
             },
             {
                 indexed: false,
-                name: '_voter',
+                name: 'voter',
                 type: 'address'
             }
         ],
@@ -178,23 +155,18 @@ const ABI = [
         inputs: [
             {
                 indexed: false,
-                name: '_proposalID',
+                name: 'proposalID',
                 type: 'uint256'
             },
             {
                 indexed: false,
-                name: '_positiveVotes',
+                name: 'positiveVotes',
                 type: 'uint256'
             },
             {
                 indexed: false,
-                name: '_numVotes',
+                name: 'numVotes',
                 type: 'uint256'
-            },
-            {
-                indexed: false,
-                name: '_executed',
-                type: 'bool'
             }
         ],
         name: 'ProposalExecuted',
@@ -205,12 +177,12 @@ const ABI = [
         inputs: [
             {
                 indexed: false,
-                name: '_member',
+                name: 'member',
                 type: 'address'
             },
             {
                 indexed: false,
-                name: '_isMember',
+                name: 'isMember',
                 type: 'bool'
             }
         ],
@@ -222,12 +194,12 @@ const ABI = [
         inputs: [
             {
                 indexed: false,
-                name: '_oldFee',
+                name: 'oldFee',
                 type: 'uint256'
             },
             {
                 indexed: false,
-                name: '_newFee',
+                name: 'newFee',
                 type: 'uint256'
             }
         ],
@@ -267,20 +239,6 @@ const ABI = [
         constant: true,
         inputs: [],
         name: 'contractFee',
-        outputs: [
-            {
-                name: '',
-                type: 'uint256'
-            }
-        ],
-        payable: false,
-        stateMutability: 'view',
-        type: 'function'
-    },
-    {
-        constant: true,
-        inputs: [],
-        name: 'debateTime',
         outputs: [
             {
                 name: '',
@@ -340,7 +298,7 @@ const ABI = [
         outputs: [
             {
                 name: '',
-                type: 'uint8'
+                type: 'uint256'
             }
         ],
         payable: false,
@@ -438,18 +396,14 @@ const ABI = [
             },
             {
                 name: 'fnNumber',
-                type: 'uint8'
+                type: 'uint256'
             },
             {
                 name: 'numberOfVotes',
-                type: 'uint16'
+                type: 'uint256'
             },
             {
                 name: 'positiveVotes',
-                type: 'uint16'
-            },
-            {
-                name: 'minExecutionDate',
                 type: 'uint256'
             },
             {
@@ -462,7 +416,7 @@ const ABI = [
             },
             {
                 name: 'proposedFee',
-                type: 'uint32'
+                type: 'uint256'
             },
             {
                 name: 'memberAddress',
