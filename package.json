@@ -5,10 +5,21 @@
   "directories": {
     "test": "test"
   },
-  "dependencies": {},
-  "devDependencies": {},
+  "dependencies": {
+    "truffle-hdwallet-provider": "^1.0.3",
+    "web3": "^1.0.0-beta.37"
+  },
+  "devDependencies": {
+    "ganache-cli": "^6.3.0",
+    "truffle": "^5.0.3"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "compile": "truffle compile",
+    "test": "truffle test",
+    "migrate": "npm run migrate:ropsten",
+    "migrate:dev": "truffle migrate --reset --network development",
+    "migrate:ropsten": "truffle migrate --reset --network ropsten",
+    "deploy:app": "cd ./frontend && ./deploy.sh"
   },
   "repository": {
     "type": "git",
