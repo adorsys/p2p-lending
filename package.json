@@ -6,17 +6,20 @@
     "test": "test"
   },
   "dependencies": {
+    "truffle-hdwallet-provider": "^1.0.3",
     "web3": "^1.0.0-beta.37"
   },
   "devDependencies": {
     "ganache-cli": "^6.3.0",
-    "truffle": "^5.0.3",
-    "truffle-hdwallet-provider": "^1.0.3"
+    "truffle": "^5.0.3"
   },
   "scripts": {
-    "test": "ganache-cli -q & truffle test",
+    "compile": "truffle compile",
+    "test": "truffle test",
     "migrate": "npm run migrate:ropsten",
-    "migrate:ropsten": "truffle migrate --network ropsten"
+    "migrate:dev": "truffle migrate --reset --network development",
+    "migrate:ropsten": "truffle migrate --reset --network ropsten",
+    "deploy:app": "cd ./frontend && ./deploy.sh"
   },
   "repository": {
     "type": "git",

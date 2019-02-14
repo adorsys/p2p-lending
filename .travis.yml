@@ -2,9 +2,22 @@ language: node_js
 node_js: "9.11.2"
 sudo: required
 
+services:
+  - docker
+
+before_script:
+  - ganache-cli -q &
+
+script:
+  - npm run compile
+  - npm test
+
+before_deploy:
+  - npm run migrate
+
 deploy:
   skip_cleanup: true
   provider: script
-  script: npm run migrate
+  script: npm run deploy:app
   on:
     branch: deployment
