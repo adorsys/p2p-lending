@@ -58,6 +58,13 @@ contract ProposalManagement {
         return(proposals[address(this)]);
     }
 
+    function getMembersLength()
+        public
+        view
+        returns (uint256) {
+        return members.length;
+    }
+
     function addMember(
         address _memberAddress,
         string memory _memberName
@@ -87,10 +94,8 @@ contract ProposalManagement {
         contractFee = _proposedFee;
     }
 
-    function vote(bool _stance, address _proposal) public onlyMembers {
-        bytes memory payload = abi.encodeWithSignature("vote(bool, address)", _stance, msg.sender);
-        (bool success, ) = _proposal.call(payload);
-        require(success, "voting failed");
+    function vote(bool _stance, address payable _proposal) public onlyMembers {
+        proposalFactory.castVote(_proposal, _stance);
     }
 
     /// internal

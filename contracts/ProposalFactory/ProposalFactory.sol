@@ -2,7 +2,8 @@ pragma solidity ^0.5.0;
 
 import "./ContractFeeProposal.sol";
 
-contract ProposalFactory {    
+contract ProposalFactory {
+    event Voted(address proposalAddress);
     /// constructor
 
     /// fallback
@@ -21,7 +22,7 @@ contract ProposalFactory {
 
         uint256 minimumNumberOfVotes = getMinimumNumberOfVotes();
         uint256 majorityMargin = getMajorityMargin();
-        
+
         contractFeeProposal = address(new ContractFeeProposal(
             _origin,
             _proposedFee,
@@ -36,7 +37,9 @@ contract ProposalFactory {
         bool _stance
     )
         public {
-        
+
+        emit Voted(_proposalAddress);
+
         ContractFeeProposal proposal = ContractFeeProposal(_proposalAddress);
         proposal.vote(_stance, msg.sender);
     }
@@ -47,7 +50,7 @@ contract ProposalFactory {
         internal
         pure
         returns (uint256) {
-        
+
         return 1;
     }
 
@@ -55,7 +58,7 @@ contract ProposalFactory {
         internal
         pure
         returns (uint256) {
-        
+
         return 50;
     }
 

@@ -48,7 +48,7 @@ contract ContractFeeProposal {
         address payable _managementContract
     )
         public {
-        
+
         author = _author;
         proposedFee = _proposedFee;
         minimumNumberOfVotes = _minimumNumberOfVotes;
@@ -60,9 +60,8 @@ contract ContractFeeProposal {
     /// external
 
     function vote(bool _stance, address _origin)
-        external
-        onlyManagementContract {
-        
+        external {
+
         require(!proposalExecuted, "proposal was executed");
         require(!voted[_origin], "you can only vote once");
 
@@ -75,16 +74,14 @@ contract ContractFeeProposal {
         }
 
         if ((numberOfVotes >= minimumNumberOfVotes)) {
-            execute();
+            // execute();
         }
     }
 
     function updateManagementContract(
         address payable _managementContract
     )
-        external
-        onlyManagementContract {
-        
+        external {
         managementContract = _managementContract;
     }
 
@@ -97,7 +94,7 @@ contract ContractFeeProposal {
     function execute()
         private
     {
-        
+
         require(!proposalExecuted, "proposal was executed");
         require(
             numberOfVotes >= minimumNumberOfVotes,
@@ -112,7 +109,7 @@ contract ContractFeeProposal {
             bytes memory payload = abi.encodeWithSignature("setContractFee(uint256)", proposedFee);
             (bool success, ) = managementContract.call(payload);
             require(success, "setting of contractFee failed");
-            selfdestruct(managementContract);
+            // selfdestruct(managementContract);
         }
     }
 }
