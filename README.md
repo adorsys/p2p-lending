@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/adorsys/p2p-lending.svg?branch=deployment)](https://travis-ci.org/adorsys/p2p-lending)
+[![Build Status](https://travis-ci.org/adorsys/p2p-lending.svg?branch=master)](https://travis-ci.org/adorsys/p2p-lending)
 # Introduction
 
 This repository hosts a variety of smart contracts for a DAO (Decentralized Autonomous Organisation) focussing on delivering a decentralized p2p-lending platform on the Ethereum Blockchain. This may very well develop into something completely different based on the direction taken by the DAO in the future. We are as excited as you are! ;-)

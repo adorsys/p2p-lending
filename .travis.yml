@@ -20,4 +20,4 @@ deploy:
   provider: script
   script: npm run deploy:app
   on:
-    branch: deployment
+    branch: master
