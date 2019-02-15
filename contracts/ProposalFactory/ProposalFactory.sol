@@ -3,45 +3,28 @@ pragma solidity ^0.5.0;
 import "./ContractFeeProposal.sol";
 
 contract ProposalFactory {
-    event Voted(address proposalAddress);
     /// constructor
-
     /// fallback
-
     function() external payable {
         revert("ProposalFactory does not accept payments");
     }
-
     /// external
-
     /// public
-
-    function newContractFeeProposal(uint256 _proposedFee, address _origin)
+    function newContractFeeProposal(uint256 _proposedFee)
         public
         returns(address contractFeeProposal) {
 
         uint256 minimumNumberOfVotes = getMinimumNumberOfVotes();
         uint256 majorityMargin = getMajorityMargin();
 
-        contractFeeProposal = address(new ContractFeeProposal(
-            _origin,
-            _proposedFee,
-            minimumNumberOfVotes,
-            majorityMargin,
-            msg.sender
+        contractFeeProposal = address(
+            new ContractFeeProposal(
+                msg.sender,
+                _proposedFee,
+                minimumNumberOfVotes,
+                majorityMargin,
+                msg.sender
         ));
-    }
-
-    function castVote(
-        address payable _proposalAddress,
-        bool _stance
-    )
-        public {
-
-        emit Voted(_proposalAddress);
-
-        ContractFeeProposal proposal = ContractFeeProposal(_proposalAddress);
-        proposal.vote(_stance, msg.sender);
     }
 
     /// internal

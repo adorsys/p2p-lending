@@ -1,36 +1,34 @@
 pragma solidity ^0.5.0;
 
 contract ContractFeeProposal {
-
-    modifier onlyManagementContract {
-        require(
-            msg.sender == managementContract,
-            "can only be called by management contract"
-        );
-        _;
-    }
-
     /// events
-
     event ProposalExecuted(
         address ContractFeeProposal,
         uint256 numberOfPositiveVotes,
         uint256 numberOfVotes
     );
 
-    /// variables
+    event RegisteredVote(
+        address proposalAddress,
+        bool stance,
+        address from,
+        address origin
+    );
 
-    address payable private managementContract;
-    address public author;
-    uint256 public proposedFee;
-    uint256 public numberOfVotes = 0;
-    uint256 public numberOfPositiveVotes = 0;
-    uint256 public minimumNumberOfVotes;
-    uint256 public majorityMargin;
+    event FromAllowed(bool allowed, address sender, address management);
+
+    /// variables
+    address private author;
+    uint256 private proposedFee;
+    uint256 private numberOfVotes = 0;
+    uint256 private numberOfPositiveVotes = 0;
+    uint256 private minimumNumberOfVotes;
+    uint256 private majorityMargin;
     mapping(address => bool) private voted;
-    bool public proposalPassed = false;
-    bool public proposalExecuted = false;
+    bool private proposalPassed = false;
+    bool private proposalExecuted = false;
     address[] private lockedUsers;
+    address private management = address(0);
 
     /// fallback
 
@@ -45,23 +43,42 @@ contract ContractFeeProposal {
         uint256 _proposedFee,
         uint256 _minimumNumberOfVotes,
         uint256 _majorityMargin,
-        address payable _managementContract
-    )
-        public {
-
+        address _managementContract
+    ) public {
         author = _author;
         proposedFee = _proposedFee;
         minimumNumberOfVotes = _minimumNumberOfVotes;
         majorityMargin = _majorityMargin;
-        managementContract = _managementContract;
-
+        management = _managementContract;
     }
 
     /// external
 
-    function vote(bool _stance, address _origin)
-        external {
+    function kill() external {
+        require(msg.sender == management, "not called by management contract");
+        require(proposalExecuted, "proposal has to be executed first");
+        selfdestruct(msg.sender);
+    }
 
+    /// public
+
+    function getContractFee() public view returns (uint256) {
+        return proposedFee;
+    }
+
+    function getCurrentNumberOfVotes() public view returns (uint256) {
+        return numberOfVotes;
+    }
+
+    function getLockedUsers() public view returns (address[] memory) {
+        require(msg.sender == management, "not called by management contract");
+        return lockedUsers;
+    }
+
+    function vote(bool _stance, address _origin)
+        public
+        returns (bool, uint256) {
+        require(msg.sender == management, "not called by management contract");
         require(!proposalExecuted, "proposal was executed");
         require(!voted[_origin], "you can only vote once");
 
@@ -72,29 +89,23 @@ contract ContractFeeProposal {
         if (_stance == true) {
             numberOfPositiveVotes += 1;
         }
-
         if ((numberOfVotes >= minimumNumberOfVotes)) {
-            // execute();
+            execute();
+            if (proposalPassed) {
+                return(true, 0);
+            } else {
+                return(false, 0);
+            }
+        } else {
+            return (false, 0);
         }
     }
-
-    function updateManagementContract(
-        address payable _managementContract
-    )
-        external {
-        managementContract = _managementContract;
-    }
-
-    /// public
 
     /// internal
 
     /// private
 
-    function execute()
-        private
-    {
-
+    function execute() private {
         require(!proposalExecuted, "proposal was executed");
         require(
             numberOfVotes >= minimumNumberOfVotes,
@@ -102,14 +113,11 @@ contract ContractFeeProposal {
         );
 
         proposalExecuted = true;
-        emit ProposalExecuted(address(this), numberOfPositiveVotes, numberOfVotes);
-
+        emit ProposalExecuted(address(this), numberOfVotes, numberOfPositiveVotes);
         if (((numberOfPositiveVotes * 100) / numberOfVotes) >= majorityMargin) {
             proposalPassed = true;
-            bytes memory payload = abi.encodeWithSignature("setContractFee(uint256)", proposedFee);
-            (bool success, ) = managementContract.call(payload);
-            require(success, "setting of contractFee failed");
-            // selfdestruct(managementContract);
+        } else {
+            proposalPassed = false;
         }
     }
 }
