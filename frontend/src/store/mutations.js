@@ -17,6 +17,8 @@ export default {
     [types.INIT_CONTRACT](state, payload) {
         state.contractFee = payload.contractFee
         state.contractInstance = payload.contractInstance
+        state.icoContractInstance = payload.icoContractInstance
+        state.decimals = payload.decimals
         pollContractFee()
         proposalInit()
     },

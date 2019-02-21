@@ -10,13 +10,24 @@
       placeholder="input-1"
     >
     <div class="button button--ico" @click="submit">Submit</div>
-    {{ input_1 }}
-    {{ output_1 }}
+    <div class="button button--ico" @click="receive">Receive</div>
+    <div class="ico__output">
+      <span>Output:</span>
+      {{ output_1 }}
+    </div>
+    <div class="ico__decimals">
+      <span>Decimals:</span>
+      {{ decimals }}
+    </div>
   </div>
 </template>
 
 <script>
+import { mapState } from 'vuex'
 export default {
+  computed: mapState({
+    decimals: state => state.decimals
+  }),
   data() {
     return {
       input_1: null,
@@ -25,18 +36,18 @@ export default {
   },
   methods: {
     async submit() {
-      console.log('test')
-      console.log(this.input_1)
-      console.log(
-        await this.$store.state
-          .contractInstance()
-          .methods.minQuorum()
-          .call()
-      )
+      await this.$store.state
+        .icoContractInstance()
+        .methods.set(parseInt(this.input_1, 10))
+        .send({ from: this.$store.state.web3.coinbase })
+    },
+    async receive() {
       this.output_1 = await this.$store.state
-        .contractInstance()
-        .methods.minQuorum()
+        .icoContractInstance()
+        .methods.get()
         .call()
+      console.log(this.$store.state.web3.web3Instance())
+      console.log(this.$store.state.icoContractInstance())
     }
   }
 }
@@ -80,5 +91,9 @@ $link-text-color-darkened: #444;
   border-radius: 2px;
   box-shadow: 0 0px 12px -6px rgba($color: #000000, $alpha: 0.3);
   font-weight: 600;
+}
+
+.button--ico {
+  width: 200px;
 }
 </style>

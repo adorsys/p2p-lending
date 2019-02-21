@@ -8,5 +8,7 @@ export default {
     },
     proposals: [],
     contractInstance: null,
-    contractFee: null
+    icoContractInstance: null,
+    contractFee: null,
+    decimals: null
 }

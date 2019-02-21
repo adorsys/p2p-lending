@@ -32,7 +32,7 @@ export default new Router({
             path: '/ico',
             name: 'ico',
             component: () =>
-                import(/* webpackChunkName: "lendingBoard" */ './views/ICO.vue')
+                import(/* webpackChunkName: "ico" */ './views/ICO.vue')
         }
     ]
 })
