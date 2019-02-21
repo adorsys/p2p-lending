@@ -12,6 +12,9 @@
             <router-link :to="{ name: 'lendingboard' }" class="router-link">Lending Board</router-link>
           </li>
           <li class="link">
+            <router-link :to="{ name: 'ico' }" class="router-link">ICO</router-link>
+          </li>
+          <li class="link">
             <router-link :to="{ name: 'about' }" class="router-link">About</router-link>
           </li>
         </ul>
