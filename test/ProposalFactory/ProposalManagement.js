@@ -8,6 +8,7 @@ const ContractFeeProposal = artifacts.require(
 contract("ProposalManagement", accounts => {
     let firstVoter;
     let secondVoter;
+    let nonMember;
 
     let proposalManagement;
     let contractFeeProposal;
@@ -15,10 +16,9 @@ contract("ProposalManagement", accounts => {
     beforeEach(async () => {
         firstVoter = accounts[0];
         secondVoter = accounts[1];
+        nonMember = accounts[9];
         proposalManagement = await ProposalManagement.new();
-        contractFeeProposal = await proposalManagement.createContractFeeProposal(
-            1234
-        );
+        await proposalManagement.createContractFeeProposal(4);
     });
 
     it("ProposalManagement gets deployed", async () => {
@@ -49,8 +49,21 @@ contract("ProposalManagement", accounts => {
         );
     });
 
+    it("Access limitation is working", async () => {
+        contractFeeProposal = (await proposalManagement.getProposals.call())[0];
+        try {
+            await proposalManagement.vote.call(true, contractFeeProposal, { from: nonMember });
+        } catch (error) {
+            assert(
+                error.message.indexOf("revert") >= 0,
+                "vote from nonMember should revert"
+            )
+        }
+    })
+
     it("proposal gets executed after voting", async () => {
-        let proposalAddress = (await proposalManagement.getProposals.call())[0];
-        console.log(proposalAddress);
+        contractFeeProposal = (await proposalManagement.getProposals.call())[0];
+        let vote = await proposalManagement.vote(true, contractFeeProposal, { from: firstVoter });
+        console.log(vote.logs);
     })
 });

@@ -8,13 +8,22 @@ contract ProposalManagement {
         string memberName;
     }
 
+    /*
+     * proposalType == 0 -> invalid proposal
+     * proposalType == 1 -> contractFee proposal
+     * proposalType == 2 -> addMember proposal
+     * proposalType == 3 -> removeMember proposal
+     * proposalType == 4 -> allowance proposal
+     */
+
+    mapping(address => uint256) private proposalType;
     mapping(address => address[]) private proposals;
     mapping(address => uint256) private memberId;
 
-    uint256 public contractFee;
+    address trustTokenContract;
     ProposalFactory private proposalFactory;
+    uint256 public contractFee;
     Member[] public members;
-    address[] public lockedUsers;
 
     modifier onlyMembers() {
         require(memberId[msg.sender] != 0, "you need to be a member");
@@ -22,8 +31,8 @@ contract ProposalManagement {
     }
 
     event Voted(address proposalAddress, bool stance, address from);
-    event CallReturn(bool success, bool returnValue, uint256 proposalParameter);
     event NewContractFee(uint256 oldFee, uint256 newFee);
+    event UnlockUsers(address[] unlockUsers);
 
     /// constructor
     constructor() public {
@@ -43,6 +52,7 @@ contract ProposalManagement {
     /// fallback
     /// external
     /// public
+
     function getProposals() public view returns (address[] memory) {
         return(proposals[address(this)]);
     }
@@ -53,52 +63,84 @@ contract ProposalManagement {
 
 
     function createContractFeeProposal(uint256 _proposedFee) public {
-        address proposal = proposalFactory.newContractFeeProposal(_proposedFee * 1 finney);
+        address proposal = proposalFactory.newContractFeeProposal(
+            _proposedFee * 1 finney,
+            // minimumNumberOfVotes,
+            // majorityMargin
+        );
         proposals[address(this)].push(proposal);
+        proposalType[proposal] = 1;
     }
 
     function vote(bool _stance, address _proposalAddress) public onlyMembers {
-        emit Voted(_proposalAddress, _stance, msg.sender);
+        uint256 proposalParameter = proposalType[_proposalAddress];
+        require(proposalParameter != 0, "Invalid proposalAddress");
 
         /// vote for proposal at _proposalAddress
         bytes memory payload = abi.encodeWithSignature("vote(bool,address)", _stance, msg.sender);
         (bool success, bytes memory encodedReturnValue) = _proposalAddress.call(payload);
-        /// throw if function call failed
+
         require(success, "voting failed");
+        emit Voted(_proposalAddress, _stance, msg.sender);
+
         /// decode return values of successful function call
-        (bool proposalPassed, uint256 proposalParameter) = abi.decode(encodedReturnValue, (bool,uint256));
+        bool proposalPassed = abi.decode(encodedReturnValue, (bool));
 
         /// handle return values of voting call
+        require(
+            handleVoteReturn(proposalParameter, proposalPassed, _proposalAddress),
+            "processing of vote return failed"
+        );
 
-        /* Case: ContractFeeProposal
-         *       -> proposalParameter = 0
-         *       -> decodedReturnValue = true ... then changeContractFee
-         *       facilitate unlocking of locked Users in ICO contract
-         */
-        if(proposalParameter == 0) {
-            /// update fee if necessary
-            if (proposalPassed) {
-                payload = abi.encodeWithSignature("getContractFee()");
-                (success, encodedReturnValue) = _proposalAddress.call(payload);
-                require(success, "could not get new contract fee");
-                (uint256 newFee) = abi.decode(encodedReturnValue, (uint256));
-
-                uint256 oldFee = contractFee;
-                setFee(newFee);
-                emit NewContractFee(oldFee, newFee);
-            }
-            /// get locked users from proposal to unlock in ICO contract
-            payload = abi.encodeWithSignature("getLockedUsers()");
-            (success, encodedReturnValue) = _proposalAddress.call(payload);
-            require(success, "could not get locked addresses");
-            lockedUsers = abi.decode(encodedReturnValue, (address[]));
-            // TODO: unlock users in ICO contract
-        }
+        /// unlock users in ICO contract
+        require(unlockUsers(_proposalAddress), "unlocking users failed");
     }
 
     /// internal
 
     /// private
+
+    function handleVoteReturn(uint256 _parameter, bool _passed, address _proposalAddress)
+        private
+        returns (bool) {
+        /// case: contractFeeProposal
+        if(_parameter == 1) {
+            if (_passed) {
+                // get new contract fee from proposal
+                bytes memory payload = abi.encodeWithSignature("getContractFee()");
+                (bool success, bytes memory encodedReturnValue) = _proposalAddress.call(payload);
+                
+                // throw if function call failed
+                require(success, "could not get new contract fee");
+
+                // decode contract fee
+                uint256 newContractFee = abi.decode(encodedReturnValue, (uint256));
+                uint256 oldContractFee = contractFee;
+                
+                // update contract fee
+                setFee(newContractFee);
+                emit NewContractFee(oldContractFee, newContractFee);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    event Test(address userToUnlock, uint256 oldLength, uint256 newLength);
+
+    function unlockUsers(address _proposalAddress) public returns (bool) {
+        // get locked user for 
+        bytes memory payload = abi.encodeWithSignature("getLockedUsers()");
+        (bool success, bytes memory encodedReturnValue) = _proposalAddress.call(payload);
+
+        // throw if function call failed
+        require(success, "could not get users to unlock");
+
+        address[] memory lockedUsers = abi.decode(encodedReturnValue, (address[]));
+        emit UnlockUsers(lockedUsers);
+        return true;
+    }
+
     function addMember(address _memberAddress, string memory _memberName) private {
         require(_memberAddress != address(0), "invalid address");
         require(memberId[_memberAddress] == 0, "already a member");

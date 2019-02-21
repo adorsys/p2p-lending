@@ -10,40 +10,25 @@ contract ProposalFactory {
     }
     /// external
     /// public
-    function newContractFeeProposal(uint256 _proposedFee)
+    function newContractFeeProposal(
+        uint256 _proposedFee,
+        uint256 _minimumNumberOfVotes,
+        uint256 _majorityMargin    
+    )
         public
         returns(address contractFeeProposal) {
-
-        uint256 minimumNumberOfVotes = getMinimumNumberOfVotes();
-        uint256 majorityMargin = getMajorityMargin();
 
         contractFeeProposal = address(
             new ContractFeeProposal(
                 msg.sender,
                 _proposedFee,
-                minimumNumberOfVotes,
-                majorityMargin,
+                _minimumNumberOfVotes,
+                _majorityMargin,
                 msg.sender
-        ));
+            )
+        );
     }
 
     /// internal
-
-    function getMinimumNumberOfVotes()
-        internal
-        pure
-        returns (uint256) {
-
-        return 1;
-    }
-
-    function getMajorityMargin()
-        internal
-        pure
-        returns (uint256) {
-
-        return 50;
-    }
-
     /// private
 }

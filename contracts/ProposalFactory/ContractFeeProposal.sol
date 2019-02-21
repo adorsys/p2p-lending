@@ -77,7 +77,7 @@ contract ContractFeeProposal {
 
     function vote(bool _stance, address _origin)
         public
-        returns (bool, uint256) {
+        returns (bool) {
         require(msg.sender == management, "not called by management contract");
         require(!proposalExecuted, "proposal was executed");
         require(!voted[_origin], "you can only vote once");
@@ -92,12 +92,12 @@ contract ContractFeeProposal {
         if ((numberOfVotes >= minimumNumberOfVotes)) {
             execute();
             if (proposalPassed) {
-                return(true, 0);
+                return(true);
             } else {
-                return(false, 0);
+                return(false);
             }
         } else {
-            return (false, 0);
+            return (false);
         }
     }
 
