@@ -8,6 +8,9 @@ const ProposalFactory = artifacts.require(
 const ProposalManagement = artifacts.require(
     "./ProposalFactory/ProposalManagement.sol"
 );
+const TrustToken = artifacts.require(
+    "./IcoContract/TrustToken.sol"
+);
 
 const fs = require('fs');
 const path = require('path');
@@ -18,6 +21,7 @@ const majorityMargin = 50;
 
 module.exports = async deployer => {
     await generateContractDeploymentConfig();
+    await deployer.deploy(TrustToken);
     await deployer.deploy(LendingBoard, minimumQuorum, majorityMargin);
 
     await writeContractInfo('lendingboard', LendingBoard.abi, LendingBoard.address);
