@@ -64,6 +64,6 @@ contract("ProposalManagement", accounts => {
     it("proposal gets executed after voting", async () => {
         contractFeeProposal = (await proposalManagement.getProposals.call())[0];
         let vote = await proposalManagement.vote(true, contractFeeProposal, { from: firstVoter });
-        console.log(vote.logs);
+        console.log(vote);
     })
 });

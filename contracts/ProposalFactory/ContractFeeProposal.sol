@@ -8,15 +8,6 @@ contract ContractFeeProposal {
         uint256 numberOfVotes
     );
 
-    event RegisteredVote(
-        address proposalAddress,
-        bool stance,
-        address from,
-        address origin
-    );
-
-    event FromAllowed(bool allowed, address sender, address management);
-
     /// variables
     address private author;
     uint256 private proposedFee;
@@ -27,7 +18,6 @@ contract ContractFeeProposal {
     mapping(address => bool) private voted;
     bool private proposalPassed = false;
     bool private proposalExecuted = false;
-    address[] private lockedUsers;
     address private management = address(0);
 
     /// fallback
@@ -70,11 +60,6 @@ contract ContractFeeProposal {
         return numberOfVotes;
     }
 
-    function getLockedUsers() public view returns (address[] memory) {
-        require(msg.sender == management, "not called by management contract");
-        return lockedUsers;
-    }
-
     function vote(bool _stance, address _origin)
         public
         returns (bool) {
@@ -83,7 +68,6 @@ contract ContractFeeProposal {
         require(!voted[_origin], "you can only vote once");
 
         voted[_origin] = true;
-        lockedUsers.push(_origin);
         numberOfVotes += 1;
 
         if (_stance == true) {

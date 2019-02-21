@@ -23,6 +23,9 @@ contract ProposalManagement {
     address trustTokenContract;
     ProposalFactory private proposalFactory;
     uint256 public contractFee;
+    uint256 minimumNumberOfVotes = 1;
+    uint256 majorityMargin = 50;
+    address[] public lockedUsers;
     Member[] public members;
 
     modifier onlyMembers() {
@@ -65,8 +68,8 @@ contract ProposalManagement {
     function createContractFeeProposal(uint256 _proposedFee) public {
         address proposal = proposalFactory.newContractFeeProposal(
             _proposedFee * 1 finney,
-            // minimumNumberOfVotes,
-            // majorityMargin
+            minimumNumberOfVotes,
+            majorityMargin
         );
         proposals[address(this)].push(proposal);
         proposalType[proposal] = 1;
@@ -78,10 +81,10 @@ contract ProposalManagement {
 
         /// vote for proposal at _proposalAddress
         bytes memory payload = abi.encodeWithSignature("vote(bool,address)", _stance, msg.sender);
+        emit Voted(_proposalAddress, _stance, msg.sender);
         (bool success, bytes memory encodedReturnValue) = _proposalAddress.call(payload);
 
         require(success, "voting failed");
-        emit Voted(_proposalAddress, _stance, msg.sender);
 
         /// decode return values of successful function call
         bool proposalPassed = abi.decode(encodedReturnValue, (bool));
@@ -93,7 +96,6 @@ contract ProposalManagement {
         );
 
         /// unlock users in ICO contract
-        require(unlockUsers(_proposalAddress), "unlocking users failed");
     }
 
     /// internal
@@ -124,21 +126,6 @@ contract ProposalManagement {
             return true;
         }
         return false;
-    }
-
-    event Test(address userToUnlock, uint256 oldLength, uint256 newLength);
-
-    function unlockUsers(address _proposalAddress) public returns (bool) {
-        // get locked user for 
-        bytes memory payload = abi.encodeWithSignature("getLockedUsers()");
-        (bool success, bytes memory encodedReturnValue) = _proposalAddress.call(payload);
-
-        // throw if function call failed
-        require(success, "could not get users to unlock");
-
-        address[] memory lockedUsers = abi.decode(encodedReturnValue, (address[]));
-        emit UnlockUsers(lockedUsers);
-        return true;
     }
 
     function addMember(address _memberAddress, string memory _memberName) private {
