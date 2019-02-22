@@ -10,7 +10,15 @@ export default {
     contractInstance: null,
     icoContractInstance: null,
     contractFee: null,
-    icoGoal: null,
-    icoEtherBalance: null,
-    isIcoActive: null
+    icoState:{
+        icoGoal: null,
+        icoEtherBalance: null,
+        isIcoActive: null,
+        totalTokenSupply: null,
+        icoParticipantCount: null,
+        tokenSymbol: null,
+        tokenBalanceUser: null
+        
+    }
+    
 }

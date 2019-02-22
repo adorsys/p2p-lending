@@ -12,17 +12,28 @@ const initializeContractHelper = async () => {
         contractInstance: null,
         contractFee: null,
         icoContractInstance: null,
-        icoGoal: null,
-        icoEtherBalance: null,
-        isIcoActive: null
+        icoPayload:{
+            icoGoal: null,
+            icoEtherBalance: null,
+            isIcoActive: null,
+            totalTokenSupply: null,
+            icoParticipantCount: null,
+            tokenSymbol: null,
+            tokenBalanceUser: null
+        }
+        
     }
 
-    payload.contractFee = await contract.methods.contractFee().call()
-    payload.icoGoal = await icoContract.methods.goal().call()
-    payload.icoEtherBalance = await icoContract.methods.contractEtherBalance().call()
-    payload.isIcoActive = await icoContract.methods.isIcoActive().call()
+    payload.icoPayload.contractFee = await contract.methods.contractFee().call()
+    payload.icoPayload.icoGoal = await icoContract.methods.goal().call()
+    payload.icoPayload.icoEtherBalance = await icoContract.methods.contractEtherBalance().call()
+    payload.icoPayload.isIcoActive = await icoContract.methods.isIcoActive().call()
+    payload.icoPayload.totalTokenSupply = await icoContract.methods.totalSupply().call()
+    payload.icoPayload.icoParticipantCount = await icoContract.methods.getParticipantsCount().call()
+    payload.icoPayload.tokenSymbol = await icoContract.methods.symbol().call()
+    payload.icoPayload.tokenBalanceUser= await icoContract.methods.balanceOf(await web3.eth.getCoinbase()).call()
 
-
+    
     payload.contractInstance = () => {
         return contract
     }

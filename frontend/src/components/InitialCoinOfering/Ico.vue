@@ -12,7 +12,11 @@
     <div class="button button--ico" @click="submit">Submit</div>
     <div class="button button--ico" @click="receive">Receive</div>
     <h3>{{ "ICO active: " +  isIcoActive}}</h3>
+    <h3>{{ "Total TrustToken: " +  totalTokenSupply}}</h3>
+    <h3>{{ "You own: "+ tokenBalanceUser +" "+tokenSymbol}}</h3>
+    <h3>{{ "Participants count: " +  icoParticipantCount}}</h3>
     <h3>{{ "Contract Blance/Goal: " + contractEtherBalance + "/"+icoGoal }}</h3>
+
     
   </div>
 </template>
@@ -20,17 +24,28 @@
 <script>
 import { mapState } from 'vuex'
 export default {
-  computed: mapState({
-    icoGoal: state => state.icoGoal,
-    contractEtherBalance: state => state.icoEtherBalance,
-    isIcoActive: state => state.isIcoActive
+  computed: 
+  
+  mapState({
+    icoGoal: state => state.icoState.icoGoal,
+    contractEtherBalance: state => state.icoState.icoEtherBalance,
+    isIcoActive: state => state.icoState.isIcoActive,
+    totalTokenSupply : state => state.icoState.totalTokenSupply,
+    icoParticipantCount : state => state.icoState.icoParticipantCount,    
+    tokenSymbol : state => state.icoState.tokenSymbol,
+    tokenBalanceUser: state => state.icoState.tokenBalanceUser
   }
   ),
+  showAccount: function() {
+      
+     getTokenBlanceUser()
+    },
   data() {
     return {
-      input_1: null
+      input_1: null,
     }
   },
+
   methods: {
     async submit() {
       await this.$store.state
@@ -44,10 +59,15 @@ export default {
         .methods.get()
         .call()
       console.log(this.$store.state.web3.web3Instance())
-      console.log(this.$store.state.icoContractInstance())
-    }
+      console.log(this.$store.state.icoContractInstance())    
+    },
+    
+   
+
+
   }
 }
+
 </script>
 
 <style lang="scss" scoped>

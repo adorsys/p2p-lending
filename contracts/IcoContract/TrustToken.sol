@@ -143,7 +143,7 @@ contract TrustToken is EIP20Interface {
         return allowed[_owner][_spender];
     }
 
-    function() external payable{
+    function participate () external payable{
         
         if(isIcoActive)
         {
