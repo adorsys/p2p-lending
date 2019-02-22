@@ -16,6 +16,18 @@
     <h3>{{ "You own: "+ tokenBalanceUser +" "+tokenSymbol}}</h3>
     <h3>{{ "Participants count: " +  icoParticipantCount}}</h3>
     <h3>{{ "Contract Blance/Goal: " + contractEtherBalance + "/"+icoGoal }}</h3>
+    <h3>{{ "Buy TrustToken"}}</h3>
+    <input
+      type="text"
+      name="ico__input-1"
+      id="ico__input-1"
+      class="ico__input"
+      v-model="etherAmount"
+      placeholder="Ether"
+    >
+    <div class="button button--ico" @click="buyToken">Buy</div>
+
+
 
     
   </div>
@@ -43,6 +55,7 @@ export default {
   data() {
     return {
       input_1: null,
+      etherAmount: null
     }
   },
 
@@ -60,10 +73,18 @@ export default {
         .call()
       console.log(this.$store.state.web3.web3Instance())
       console.log(this.$store.state.icoContractInstance())    
-    },
-    
-   
+      console.log(await web3.eth)    
 
+      
+    },
+    async buyToken() {
+      await this.$store.state
+        .icoContractInstance()
+        .methods.participate()
+        .send({ from: this.$store.state.web3.coinbase ,
+                value: this.$store.state.web3.web3Instance().utils.toWei(this.etherAmount, "ether")})
+    },
+  
 
   }
 }
@@ -111,6 +132,6 @@ $link-text-color-darkened: #444;
 }
 
 .button--ico {
-  width: 200px;
+  width: 150px;
 }
 </style>
