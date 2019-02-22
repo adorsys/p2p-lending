@@ -10,6 +10,7 @@ body {
   font-weight: 400;
   margin-top: 55px;
   background-color: $navbar-hover-color;
+  text-align: center;
 }
 
 .separator {
@@ -32,6 +33,23 @@ body {
   border-radius: 2px;
   box-shadow: 0 0px 12px -6px rgba($color: #000000, $alpha: 0.3);
   font-weight: 600;
+}
+
+.title {
+  font-weight: 800;
+  font-size: 2.8rem;
+  color: $link-text-color-darkened;
+  margin-bottom: 0.3em;
+  text-decoration: underline;
+}
+
+.subtitle {
+  font-weight: 600;
+  font-size: 1.7rem;
+  color: $link-text-color-darkened;
+  margin-top: 1em;
+  margin-bottom: 1em;
+  text-decoration: underline;
 }
 
 .button--table {
@@ -60,6 +78,7 @@ body {
   color: $link-text-color;
   padding: 8px;
   min-width: 30px;
+  height: 30px;
   border-right: 1px solid $border-color;
 }
 
@@ -71,7 +90,7 @@ body {
   text-align: center;
   margin: 0;
   padding: 0;
-  width: 33%;
+  width: auto;
   padding: 12px;
   border: 1px solid $border-color;
 }

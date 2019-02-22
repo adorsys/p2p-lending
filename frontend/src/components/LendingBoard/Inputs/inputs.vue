@@ -1,5 +1,6 @@
 <template>
   <div>
+    <div class="subtitle">Board Inputs:</div>
     <div class="userInput">
       <label
         for="userInput__input--contractFee"
