@@ -1,32 +1,35 @@
 <template>
   <div>
-    <slot name="router-view"></slot>
+    <div class="content">
+      <slot name="router-view"></slot>
+    </div>
     <transition>
-      <nav class="nav-left" v-if="isShowing">
-        <ul>
-          <li class="title">Navigation</li>
-          <li class="link">
-            <router-link :to="{ name: 'home' }" class="router-link" style="margin-top: 14px">Home</router-link>
+      <div class="sidebar" v-if="isShowing">
+        <ul class="sidebar__menu">
+          <li class="sidebar__menu--title">Navigation</li>
+          <li class="sidebar__menu--link sidebar__menu--firstlink" @click="isShowing = false">
+            <router-link
+              :to="{ name: 'home' }"
+              class="sidebar__menu--router sidebar__menu--firstItem"
+            >Home</router-link>
           </li>
-          <li class="link">
-            <router-link :to="{ name: 'lendingboard' }" class="router-link">Lending Board</router-link>
+          <li class="sidebar__menu--link" @click="isShowing = false">
+            <router-link :to="{ name: 'lendingboard' }" class="sidebar__menu--router">Lending Board</router-link>
           </li>
-          <li class="link">
-            <router-link :to="{ name: 'about' }" class="router-link">About</router-link>
+          <li class="sidebar__menu--link" @click="isShowing = false">
+            <router-link :to="{ name: 'about' }" class="sidebar__menu--router">About</router-link>
           </li>
         </ul>
-        <SidebarOverlay slot="sidebar-overlay"/>
-      </nav>
+      </div>
+    </transition>
+    <transition>
+      <div class="sidebar__overlay" v-if="isShowing"></div>
     </transition>
   </div>
 </template>
 
 <script>
-import SidebarOverlay from '@/components/Sidebar/sidebar-overlay'
 export default {
-  components: {
-    SidebarOverlay
-  },
   data() {
     return {
       isShowing: false
@@ -40,6 +43,6 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 @import '@/components/Sidebar/sidebar.scss';
 </style>

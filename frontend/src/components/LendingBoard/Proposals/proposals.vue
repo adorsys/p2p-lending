@@ -1,38 +1,32 @@
 <template>
-  <div>
-    <hr>
-    <table v-if="proposals.length !== 0">
+  <div class="proposals">
+    <table class="table" v-if="proposals.length !== 0">
       <thead>
         <tr>
-          <th>Author</th>
-          <th>Description</th>
-          <th>In Favor</th>
-          <th class="proposal-vote">Vote</th>
+          <th class="table__head">Author</th>
+          <th class="table__head">Description</th>
+          <th class="table__head">Vote</th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="p in proposals" :key="p.idx">
-          <td>{{p.author}}</td>
-          <td>{{p.description}}</td>
-          <td class="proposal-stance">
-            <label>
-              <input type="checkbox" :value="true" v-model="p.agrees">
-            </label>
-          </td>
-          <td class="proposal-vote">
-            <button v-on:click="vote(p.id, p.agrees)" class="proposals-vote-button">Vote</button>
+        <tr class="table__row" v-for="p in proposals" :key="p.idx">
+          <td class="table__data">{{p.author}}</td>
+          <td class="table__data">{{p.description}}</td>
+          <td class="table__data table__data--vote">
+            <div v-on:click="vote(p.id, true)" class="button button--table button--vote">Agree</div>
+            <div v-on:click="vote(p.id, false)" class="button button--table button--vote">Disagree</div>
           </td>
         </tr>
       </tbody>
     </table>
-    <table v-if="proposals.length === 0">
+    <table class="table" v-if="proposals.length === 0">
       <thead>
         <tr>
-          <th class="proposals-empty">Proposals</th>
+          <th class="table__head">Proposals</th>
         </tr>
       </thead>
       <tbody>
-        <td class="proposals-empty">No Proposals found</td>
+        <td class="table__data">No Proposals found</td>
       </tbody>
     </table>
   </div>
@@ -59,6 +53,6 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 @import '@/components/LendingBoard/Proposals/proposals.scss';
 </style>

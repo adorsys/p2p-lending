@@ -1,34 +1,25 @@
 <template>
   <div>
-    <nav>
-      <ul>
-        <li class="navbar-menu-icon">
-          <img src="@/assets/menu.svg" @click="toggleSidebar">
-        </li>
-        <li class="navbar-title">
-          <router-link :to="{ name: 'home' }" class="navbar-router-title">
-            <span class="navbar-title-firstpart">P2P</span>
-            <span class="navbar-title-secondpart">Lending</span>
-          </router-link>
-        </li>
-
-        <li class="navbar-account" v-if="authenticated === true" @click="logOut">
-          <router-link :to="{ name: 'about' }" class="navbar-router-link">LogOut</router-link>
-        </li>
-        <li class="navbar-account" v-if="authenticated !== true" @click="logIn">
-          <router-link :to="{ name: 'about' }" class="navbar-router-link">LogIn</router-link>
-        </li>
-        <li class="navbar-network" v-if="network !== null">
-          <span>{{ network }}</span>
-        </li>
-        <li class="navbar-balance" v-if="balance !== null">
-          <span>{{ balance }}</span>
-          <span class="navbar-balance-eth">ETH</span>
-        </li>
-        <li class="navbar-metamask navbar-metamask-active" v-if="isInjected">Connected</li>
-        <li class="navbar-metamask navbar-metamask-inactive" v-if="!isInjected">Connected</li>
-      </ul>
-    </nav>
+    <ul class="navbar">
+      <li class="navbar__icon">
+        <img src="@/assets/menu.svg" @click="toggleSidebar">
+      </li>
+      <li class="navbar__title">
+        <span class="navbar__title--first">p2p</span>
+        <span class="navbar__title--second">Lending</span>
+      </li>
+      <li class="navbar__right">
+        <span class="navbar__right--auth" v-if="!authenticated" @click="logIn">LogIn</span>
+        <span class="navbar__right--auth" v-if="authenticated" @click="logOut">LogOut</span>
+      </li>
+      <li class="navbar__right navbar__right--network" v-if="network !== null">
+        <span>{{ network }}</span>
+      </li>
+      <li class="navbar__right">
+        <span class="navbar__right--metamaskActive" v-if="isInjected">Connected</span>
+        <span class="navbar__right--metamaskInactive" v-if="!isInjected">Connected</span>
+      </li>
+    </ul>
     <div class="router-view-slotted">
       <slot name="sidebar">
         <slot name="sidebar-overlay"></slot>
@@ -45,7 +36,6 @@ import { NETWORKS } from '@/util/constants/networks'
 export default {
   computed: mapState({
     isInjected: state => state.web3.isInjected,
-    balance: state => state.web3.balance,
     network: state => NETWORKS[state.web3.networkID]
   }),
   data() {
@@ -69,6 +59,6 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 @import '@/components/Navbar/navbar.scss';
 </style>

@@ -1,101 +1,83 @@
 @import '../../util/scss/variables';
 
-ul {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
+.navbar {
+  background-color: $background-color;
   border-bottom: $border-width solid $border-color;
-  background-color: $background-color-inactive;
   position: fixed;
-  width: 100%;
   top: 0;
   left: 0;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  text-align: left;
+  list-style: none;
 }
 
-.navbar-title {
+.navbar__icon {
   float: left;
-  display: block;
-  margin-left: $standard-margin;
   margin-top: 5px;
-  font-weight: bold;
+  margin-bottom: 5px;
+  margin-left: 0.5em;
+  height: 34px;
 }
 
-.navbar-router-title {
-  text-decoration: none;
+.navbar__title {
+  float: left;
+  height: $navbar-height;
+  line-height: $navbar-height;
+  white-space: nowrap;
+  font-size: 1.2rem;
+  margin-left: 0.5em;
+  font-weight: 800;
 }
 
-.navbar-title-firstpart {
-  text-transform: uppercase;
-  font-size: 1.5rem;
-  letter-spacing: 0.1px;
-  color: $link-text-color-faded;
-}
-
-.navbar-title-secondpart {
-  padding-left: $standard-padding;
-  text-transform: uppercase;
-  font-size: 2rem;
-  letter-spacing: 0.1px;
+.navbar__title--first {
+  font-size: 1.3rem;
+  letter-spacing: 0.2px;
   color: $link-text-color;
 }
 
-.navbar-router-link {
+.navbar__title--second {
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 1.7rem;
+  color: $link-text-color-darkened;
+}
+
+.navbar__right {
+  float: right;
+  margin-right: 1em;
+  height: $navbar-height;
+  line-height: $navbar-height;
+  white-space: nowrap;
+  font-size: 1.2rem;
+}
+
+.navbar__right--auth {
   text-decoration: none;
-  display: block;
-  color: $link-text-color;
-  text-align: center;
-  padding: 12px;
-}
-
-.navbar-account {
-  float: right;
-  font-weight: 600;
-  font-size: 1.25rem;
-}
-
-.navbar-account:hover {
-  background-color: $background-color-hover;
-}
-
-.navbar-metamask {
-  float: right;
-  padding: 2 * $standard-padding;
-  padding-right: $standard-padding;
-  font-weight: 500;
-}
-
-.navbar-metamask-active {
-  color: green;
-}
-
-.navbar-metamask-inactive {
-  color: red;
-}
-
-.navbar-menu-icon {
   cursor: pointer;
-  img {
-    float: left;
-    padding-top: 7px;
-    padding-left: 14px;
-    padding-right: 7px;
-    padding-bottom: 7px;
-  }
+  color: $link-text-color-darkened;
+  font-weight: 600;
+  margin-left: 1em;
+  font-size: 1.4rem;
+  padding: $padding-standard;
 }
 
-.navbar-balance {
-  float: right;
-  padding: 2 * $standard-padding;
-  font-weight: 500;
+.navbar__right--auth:hover {
+  background-color: $navbar-hover-color;
 }
 
-.navbar-balance-eth {
-  font-weight: bold;
+.navbar__right--network {
+  color: $link-text-color-darkened;
+  font-weight: 600;
 }
 
-.navbar-network {
-  float: right;
-  padding: 2 * $standard-padding;
-  padding-right: 4 * $standard-padding;
-  font-weight: 500;
+.navbar__right--metamaskActive {
+  color: green;
+  font-weight: 600;
+}
+
+.navbar__right--metamaskInactive {
+  color: red;
+  font-weight: 600;
 }
