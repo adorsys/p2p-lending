@@ -19,8 +19,8 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="UbR-ao-7Ln">
-                                <rect key="frame" x="160" y="92" width="46" height="30"/>
-                                <state key="normal" title="Button"/>
+                                <rect key="frame" x="143" y="92" width="81" height="30"/>
+                                <state key="normal" title="Read Funds"/>
                                 <connections>
                                     <action selector="syncFundsPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="TXJ-Vt-rJv"/>
                                 </connections>
@@ -32,8 +32,8 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="F4s-jj-Kf6">
-                                <rect key="frame" x="182" y="282" width="46" height="30"/>
-                                <state key="normal" title="Button"/>
+                                <rect key="frame" x="164" y="282" width="82" height="30"/>
+                                <state key="normal" title="Send Funds"/>
                                 <connections>
                                     <action selector="transactionButtonPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="pJj-hg-DIw"/>
                                 </connections>
@@ -45,12 +45,8 @@
                                 </constraints>
                                 <nil key="textColor"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits"/>
+                                <textInputTraits key="textInputTraits" keyboardType="decimalPad"/>
                             </textField>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="GHV-jt-yia">
-                                <rect key="frame" x="79" y="358" width="240" height="128"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            </imageView>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
@@ -69,7 +65,6 @@
                         <outlet property="SyncFunds" destination="UbR-ao-7Ln" id="zcn-G5-KfL"/>
                         <outlet property="fundInput" destination="Ivx-Vc-EZg" id="dsJ-S7-n4f"/>
                         <outlet property="fundLabel" destination="xef-jb-gUF" id="RAA-6N-vth"/>
-                        <outlet property="imageView" destination="GHV-jt-yia" id="d7J-dH-QGQ"/>
                         <outlet property="transactionButton" destination="F4s-jj-Kf6" id="biq-sp-Dpo"/>
                     </connections>
                 </viewController>

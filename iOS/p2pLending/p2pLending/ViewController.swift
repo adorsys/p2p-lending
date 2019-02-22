@@ -37,19 +37,22 @@ class ViewController: UIViewController {
     }
     
     @IBAction func syncFundsPressed(_ sender: Any) {
+        let balance = try HexAsDecimalString(hex: EthBalance(network: network,
+                                                             address: EthAddress(hex: "0xbF19938BcfcD4b09684987e4C464D995C5A365de")))
+        fundLabel.text = try? balance.value()
+        
+    }
+    
+    @IBAction func transactionButtonPressed(_ sender: Any) {
         
         let response = try? SendRawTransactionProcedure(network: network, transactionBytes: EthDirectTransactionBytes(
             network: network,
             senderKey: self.sender,
             recipientAddress: recipient,
             weiAmount: amount
-            )).call()
+        )).call()
         
         print(response!["result"].string ?? "Something went wrong")
     }
-    @IBAction func transactionButtonPressed(_ sender: Any) {
-        
-    }
-    
 }
 
