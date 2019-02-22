@@ -1,9 +1,10 @@
 pragma solidity ^0.5.0;
 
-contract ContractFeeProposal {
+contract MemberProposal {
     /// variables
     address private author;
-    uint256 private proposedFee;
+    address public memberAddress;
+    bool public adding;
     uint256 public numberOfVotes = 0;
     uint256 public numberOfPositiveVotes = 0;
     uint256 private minimumNumberOfVotes;
@@ -23,13 +24,15 @@ contract ContractFeeProposal {
 
     constructor(
         address _author,
-        uint256 _proposedFee,
+        address _memberAddress,
+        bool _adding,
         uint256 _minimumNumberOfVotes,
         uint256 _majorityMargin,
         address _managementContract
     ) public {
         author = _author;
-        proposedFee = _proposedFee;
+        memberAddress = _memberAddress;
+        adding = _adding;
         minimumNumberOfVotes = _minimumNumberOfVotes;
         majorityMargin = _majorityMargin;
         management = _managementContract;
@@ -45,17 +48,9 @@ contract ContractFeeProposal {
 
     /// public
 
-    function getContractFee() public view returns (uint256) {
-        return proposedFee;
-    }
-
-    /**
-     * @return bool proposalPassed, bool proposalExecuted
-     */
-
     function vote(bool _stance, address _origin)
         public
-        returns (bool, bool) {
+        returns (bool) {
         require(msg.sender == management, "not called by management contract");
         require(!proposalExecuted, "proposal was executed");
         require(!voted[_origin], "you can only vote once");
@@ -69,14 +64,17 @@ contract ContractFeeProposal {
         if ((numberOfVotes >= minimumNumberOfVotes)) {
             execute();
             if (proposalPassed) {
-                return(true, true);
+                return true;
             } else {
-                // proposalPassed = false | proposalExecuted = true
-                return(false, true);
+                return false;
             }
         } else {
-            return (false, false);
+            return false;
         }
+    }
+
+    function getMemberAddress() public view returns (address) {
+        return memberAddress;
     }
 
     /// internal
@@ -91,7 +89,7 @@ contract ContractFeeProposal {
         );
 
         proposalExecuted = true;
-        
+
         if (((numberOfPositiveVotes * 100) / numberOfVotes) >= majorityMargin) {
             proposalPassed = true;
         } else {
