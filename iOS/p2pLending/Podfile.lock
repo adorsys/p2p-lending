@@ -1,0 +1,32 @@
+PODS:
+  - BigInt.swift (1.0.0)
+  - CryptoSwift (0.9.0)
+  - secp256k1_ios (0.1.1)
+  - SwiftyJSON (4.1.0)
+  - Web3Swift.io (0.0.1):
+    - BigInt.swift (= 1.0.0)
+    - CryptoSwift (= 0.9.0)
+    - secp256k1_ios (= 0.1.1)
+    - SwiftyJSON (= 4.1.0)
+
+DEPENDENCIES:
+  - Web3Swift.io
+
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - BigInt.swift
+    - CryptoSwift
+    - secp256k1_ios
+    - SwiftyJSON
+    - Web3Swift.io
+
+SPEC CHECKSUMS:
+  BigInt.swift: 1e0ddf08d82166e72dfb0fa8d40301d273081afc
+  CryptoSwift: bca8c5b653dcc2d9734409242a070ff53bafac86
+  secp256k1_ios: 3c94e6cce14ff03924cb6dc10c5017f17011b79d
+  SwiftyJSON: c29297daf073d2aa016295d5809cdd68045c39b3
+  Web3Swift.io: 25ca2ac532ec9cef3085da5c437e9ad6a6ee12d8
+
+PODFILE CHECKSUM: 99f73eecfdc681174eab16c538b6df7b760ebc5d
+
+COCOAPODS: 1.5.3

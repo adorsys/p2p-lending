@@ -1,0 +1,6 @@
+framework module BigInt {
+  umbrella header "BigInt.swift-umbrella.h"
+
+  export *
+  module * { export * }
+}
