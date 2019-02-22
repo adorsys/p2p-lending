@@ -18,7 +18,9 @@ export default {
         state.contractFee = payload.contractFee
         state.contractInstance = payload.contractInstance
         state.icoContractInstance = payload.icoContractInstance
-        state.decimals = payload.decimals
+        state.icoGoal = payload.icoGoal
+        state.icoEtherBalance = payload.icoEtherBalance
+        state.isIcoActive = payload.isIcoActive
         pollContractFee()
         proposalInit()
     },

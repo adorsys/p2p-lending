@@ -12,11 +12,16 @@ const initializeContractHelper = async () => {
         contractInstance: null,
         contractFee: null,
         icoContractInstance: null,
-        decimals: null
+        icoGoal: null,
+        icoEtherBalance: null,
+        isIcoActive: null
     }
 
     payload.contractFee = await contract.methods.contractFee().call()
-    payload.decimals = await icoContract.methods.decimals().call()
+    payload.icoGoal = await icoContract.methods.goal().call()
+    payload.icoEtherBalance = await icoContract.methods.contractEtherBalance().call()
+    payload.isIcoActive = await icoContract.methods.isIcoActive().call()
+
 
     payload.contractInstance = () => {
         return contract

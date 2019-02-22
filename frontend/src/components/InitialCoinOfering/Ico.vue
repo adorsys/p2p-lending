@@ -11,14 +11,9 @@
     >
     <div class="button button--ico" @click="submit">Submit</div>
     <div class="button button--ico" @click="receive">Receive</div>
-    <div class="ico__output">
-      <span>Output:</span>
-      {{ output_1 }}
-    </div>
-    <div class="ico__decimals">
-      <span>Decimals:</span>
-      {{ decimals }}
-    </div>
+    <h3>{{ "ICO active: " +  isIcoActive}}</h3>
+    <h3>{{ "Contract Blance/Goal: " + contractEtherBalance + "/"+icoGoal }}</h3>
+    
   </div>
 </template>
 
@@ -26,12 +21,14 @@
 import { mapState } from 'vuex'
 export default {
   computed: mapState({
-    decimals: state => state.decimals
-  }),
+    icoGoal: state => state.icoGoal,
+    contractEtherBalance: state => state.icoEtherBalance,
+    isIcoActive: state => state.isIcoActive
+  }
+  ),
   data() {
     return {
-      input_1: null,
-      output_1: 0
+      input_1: null
     }
   },
   methods: {

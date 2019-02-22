@@ -10,5 +10,7 @@ export default {
     contractInstance: null,
     icoContractInstance: null,
     contractFee: null,
-    decimals: null
+    icoGoal: null,
+    icoEtherBalance: null,
+    isIcoActive: null
 }
