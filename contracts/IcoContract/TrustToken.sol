@@ -13,7 +13,7 @@ contract TrustToken is EIP20Interface {
 
     //address LendingBoard_add = 0x692a70D2e424a56D2C6C27aA97D1a86395877b3A;
     //LendingBoard LB = LendingBoard(LendingBoard_add);
-    //mapping (address => bool) public is_user_locked;
+    //mapping (address => bool) public isUserLocked;
 
     uint256 public totalSupply;
 
@@ -46,7 +46,7 @@ contract TrustToken is EIP20Interface {
         string memory _tokenSymbol
         */
     ) public {
-        //token_balances[msg.sender] = 1000;               // Give the creator all initial tokens
+        //tokenBalances[msg.sender] = 1000;               // Give the creator all initial tokens
         totalSupply = 1000;                        // Update total supply
         name = "TrustToken";                                   // Set the name for display purposes
         decimals = 0;                            // Amount of decimals for display purposes
@@ -70,37 +70,37 @@ contract TrustToken is EIP20Interface {
     //-------------------------------------------------
     
     
-   /* modifier user_is_not_locked(address user) {
-        require(is_user_locked[user]==false);
+   /* modifier userIsNotLocked(address user) {
+        require(userIsNotLocked[user]==false);
         _;
     }
-    modifier called_by_LB(address add)
+    modifier calledByLB(address add)
     {
          require(add == LendingBoard_add);
         _;
     }
 
-    function vote(uint256 _openProposalIndex, bool _stance) public user_is_not_locked(msg.sender)
+    function vote(uint256 _openProposalIndex, bool _stance) public userIsNotLocked(msg.sender)
     {
-        lock_user(msg.sender);
+        lockUser(msg.sender);
         LB.vote(_openProposalIndex, _stance, msg.sender);
     }
 
-    function lock_user(address user) private
+    function lockUser(address user) private
     {
-        is_user_locked[user]= true;
+        isUserLocked[user]= true;
     }
 
-    function unlock_user(address user) private
+    function unlockUser(address user) private
     {
-         is_user_locked[user]= false;
+         isUserLocked[user]= false;
     }
 
-    function unlock_users(address [] memory users) public called_by_LB(msg.sender)
+    function unlockUsers(address [] memory users) public calledByLB(msg.sender)
     {
         for(uint i; i < users.length; i++)
         {
-            unlock_user(users[i]);
+            unlockUser(users[i]);
         }
 
     }
@@ -170,14 +170,14 @@ contract TrustToken is EIP20Interface {
         
         if(contractEtherBalance >= goal && isIcoActive) // if goal was reached and ico is still active, then distrube token to all participants
         {    
-            distribute_token(); //distribute all tokens to all participants
+            distributeToken(); //distribute all tokens to all participants
             isIcoActive = false; //ico not active nomore
         }
         
 
     }
     
-    function distribute_token() private
+    function distributeToken() private
     {
         for(uint i = 0; i < participants.length; i++)
         {
