@@ -16,7 +16,7 @@
     <h3>{{ "You own: "+ tokenBalanceUser +" "+tokenSymbol}}</h3>
     <h3>{{ "You have already invested : "+ etherBalanceUser +" Ether"}}</h3>
     <h3>{{ "Participants count: " +  icoParticipantCount}}</h3>
-    <h3>{{ "Contract Blance/Goal: " + contractEtherBalance + "/"+icoGoal }}</h3>
+    <h3>{{ "Contract Balnce/Goal: " + contractEtherBalance + "/"+icoGoal + " Ether"}}</h3>
     <h3>{{ "Buy TrustToken"}}</h3>
     <input
       type="text"
@@ -48,6 +48,7 @@ export default {
     tokenSymbol : state => state.icoState.tokenSymbol,
     tokenBalanceUser: state => state.icoState.tokenBalanceUser,
     etherBalanceUser: state => state.icoState.etherBalanceUser
+    
   }
   ),
   showAccount: function() {
@@ -76,6 +77,8 @@ export default {
       console.log(this.$store.state.web3.web3Instance())
       console.log(this.$store.state.icoContractInstance())    
       console.log(await web3.eth)    
+
+      console.log(this.$store.state.web3.web3Instance().utils.fromWei(etherBalanceUser,"ether"))
 
       
     },

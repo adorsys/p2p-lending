@@ -26,15 +26,14 @@ const initializeContractHelper = async () => {
     }
 
     payload.icoPayload.contractFee = await contract.methods.contractFee().call()
-    payload.icoPayload.icoGoal = await icoContract.methods.goal().call()
-    payload.icoPayload.icoEtherBalance = await icoContract.methods.contractEtherBalance().call()
+    payload.icoPayload.icoGoal = web3.utils.fromWei((await icoContract.methods.goal().call()),"ether")
+    payload.icoPayload.icoEtherBalance = web3.utils.fromWei((await icoContract.methods.contractEtherBalance().call()),"ether")
     payload.icoPayload.isIcoActive = await icoContract.methods.isIcoActive().call()
     payload.icoPayload.totalTokenSupply = await icoContract.methods.totalSupply().call()
     payload.icoPayload.icoParticipantCount = await icoContract.methods.getParticipantsCount().call()
     payload.icoPayload.tokenSymbol = await icoContract.methods.symbol().call()
     payload.icoPayload.tokenBalanceUser= await icoContract.methods.balanceOf(await web3.eth.getCoinbase()).call()
-    payload.icoPayload.etherBalanceUser = await icoContract.methods.getEtherBalances().call({from: web3.coinbase})
-
+    payload.icoPayload.etherBalanceUser = web3.utils.fromWei(await icoContract.methods.getEtherBalances().call({from: web3.coinbase}),"ether")
     
     payload.contractInstance = () => {
         return contract
