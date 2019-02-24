@@ -14,6 +14,7 @@
     <h3>{{ "ICO active: " +  isIcoActive}}</h3>
     <h3>{{ "Total TrustToken: " +  totalTokenSupply}}</h3>
     <h3>{{ "You own: "+ tokenBalanceUser +" "+tokenSymbol}}</h3>
+    <h3>{{ "You have already invested : "+ etherBalanceUser +" Ether"}}</h3>
     <h3>{{ "Participants count: " +  icoParticipantCount}}</h3>
     <h3>{{ "Contract Blance/Goal: " + contractEtherBalance + "/"+icoGoal }}</h3>
     <h3>{{ "Buy TrustToken"}}</h3>
@@ -45,7 +46,8 @@ export default {
     totalTokenSupply : state => state.icoState.totalTokenSupply,
     icoParticipantCount : state => state.icoState.icoParticipantCount,    
     tokenSymbol : state => state.icoState.tokenSymbol,
-    tokenBalanceUser: state => state.icoState.tokenBalanceUser
+    tokenBalanceUser: state => state.icoState.tokenBalanceUser,
+    etherBalanceUser: state => state.icoState.etherBalanceUser
   }
   ),
   showAccount: function() {

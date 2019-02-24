@@ -25,6 +25,7 @@ export default {
         state.icoState.tokenSymbol = payload.icoPayload.tokenSymbol 
         state.icoState.tokenBalanceUser = payload.icoPayload.tokenBalanceUser 
         state.icoState.icoParticipantCount = payload.icoPayload.icoParticipantCount 
+        state.icoState.etherBalanceUser = payload.icoPayload.etherBalanceUser 
         pollContractFee()
         proposalInit()
     },

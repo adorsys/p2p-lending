@@ -17,7 +17,9 @@ export default {
         totalTokenSupply: null,
         icoParticipantCount: null,
         tokenSymbol: null,
-        tokenBalanceUser: null
+        tokenBalanceUser: null,
+        etherBalanceUser: null
+
         
     }
     

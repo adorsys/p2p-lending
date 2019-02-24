@@ -19,7 +19,8 @@ const initializeContractHelper = async () => {
             totalTokenSupply: null,
             icoParticipantCount: null,
             tokenSymbol: null,
-            tokenBalanceUser: null
+            tokenBalanceUser: null,
+            etherBalanceUser: null
         }
         
     }
@@ -32,6 +33,7 @@ const initializeContractHelper = async () => {
     payload.icoPayload.icoParticipantCount = await icoContract.methods.getParticipantsCount().call()
     payload.icoPayload.tokenSymbol = await icoContract.methods.symbol().call()
     payload.icoPayload.tokenBalanceUser= await icoContract.methods.balanceOf(await web3.eth.getCoinbase()).call()
+    payload.icoPayload.etherBalanceUser = await icoContract.methods.getEtherBalances().call({from: web3.coinbase})
 
     
     payload.contractInstance = () => {
