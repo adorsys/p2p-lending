@@ -1,5 +1,5 @@
 import { pollWeb3 } from '@/services/web3/pollWeb3'
-import { initializeContract } from '@/services/web3/initializeContract'
+import { initializeLBContract } from '@/services/web3/initializeLBContract'
 import pollContractFee from '@/services/web3/pollContractFee'
 import * as types from '@/util/constants/types'
 import { pollProposals, proposalInit } from '../services/web3/pollProposals'
@@ -11,23 +11,25 @@ export default {
         state.web3.coinbase = payload.web3.coinbase
         state.web3.balance = payload.web3.balance
         state.web3.web3Instance = payload.web3.web3Instance
-        initializeContract()
+        initializeLBContract()
         pollWeb3()
     },
-    [types.INIT_CONTRACT](state, payload) {
+    [types.INIT_LB_CONTRACT](state, payload) {
         state.contractFee = payload.contractFee
         state.contractInstance = payload.contractInstance
-        state.icoContractInstance = payload.icoContractInstance
-        state.icoState.icoGoal = payload.icoPayload.icoGoal
-        state.icoState.icoEtherBalance = payload.icoPayload.icoEtherBalance
-        state.icoState.isIcoActive = payload.icoPayload.isIcoActive
-        state.icoState.totalTokenSupply = payload.icoPayload.totalTokenSupply
-        state.icoState.tokenSymbol = payload.icoPayload.tokenSymbol 
-        state.icoState.tokenBalanceUser = payload.icoPayload.tokenBalanceUser 
-        state.icoState.icoParticipantCount = payload.icoPayload.icoParticipantCount 
-        state.icoState.etherBalanceUser = payload.icoPayload.etherBalanceUser 
         pollContractFee()
         proposalInit()
+    },
+    [types.INIT_ICO_CONTRACT](state, payload) {
+        state.icoContractInstance = payload.icoInstance
+        state.icoState.icoGoal = payload.icoGoal
+        state.icoState.icoEtherBalance = payload.icoEtherBalance
+        state.icoState.isIcoActive = payload.isIcoActive
+        state.icoState.totalTokenSupply = payload.totalTokenSupply
+        state.icoState.icoParticipantCount = payload.icoParticipantCount
+        state.icoState.tokenSymbol = payload.tokenSymbol
+        state.icoState.tokenBalanceUser = payload.tokenBalanceUser
+        state.icoState.etherBalanceUser = payload.etherBalanceUser
     },
     [types.INIT_PROPOSALS](state, payload) {
         state.proposals = payload

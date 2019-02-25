@@ -19,43 +19,41 @@
 import { mapState } from 'vuex'
 
 export default {
-
-  computed: 
-  
-  mapState({
+  computed: mapState({
     icoGoal: state => state.icoState.icoGoal,
-    contractEtherBalance: state => state.icoState.icoEtherBalance
-  }
-  ),
+    icoEtherBalance: state => state.icoState.icoEtherBalance
+  }),
 
   data() {
     return {
-      loaded:false,
+      loaded: false,
       datasets: null,
-      labels: null,
-      option: null
-    
-  }},
-  
-   async mounted () {
-      
-      this.loaded = false
-      try {    
-
-        this.datasets = [
+      labels: [
+        'Total ICO Balance of ' + this.icoEtherBalance + ' Ether',
+        'Needed to reach goal of ' +
+          (this.icoGoal - this.icoEtherBalance) +
+          ' Ether'
+      ],
+      option: {}
+    }
+  },
+  methods: {
+    async getData() {
+      console.log('getdata')
+      this.datasets = [
         {
-          data: await [ this.contractEtherBalance, (this.icoGoal-this.contractEtherBalance) ],
-          backgroundColor: ["#4edf4a", "#c9c9c9"],
-          hoverBackgroundColor: ["#673ab7", "#673ab7"]
-        },
-        this.labels = await ["Total ICO Balance of " +  this.contractEtherBalance+" Ether", "Needed to reach goal of "+ (this.icoGoal-this.contractEtherBalance) +" Ether"],
-        this.option = {}
-        ],
-
-        this.loaded = true
-      } catch (e) {
-        console.error(e)
-      }
+          data: [this.icoEtherBalance, this.icoGoal - this.icoEtherBalance],
+          backgroundColor: ['#4edf4a', '#c9c9c9'],
+          hoverBackgroundColor: ['#673ab7', '#673ab7']
+        }
+      ]
+      this.loaded = true
+    }
+  },
+  mounted() {
+    this.$parent.$on('loaded', () => {
+      this.getData()
+    })
   }
-};
+}
 </script>

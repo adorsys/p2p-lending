@@ -11,11 +11,11 @@
     >
     <div class="button button--ico" @click="submit">Submit</div>
     <div class="button button--ico" @click="receive">Receive</div>
-    <h3>{{ "ICO active: " +  isIcoActive}}</h3>
-    <h3>{{ "Total TrustToken: " +  totalTokenSupply}}</h3>
+    <h3>{{ "ICO active: " + isIcoActive}}</h3>
+    <h3>{{ "Total TrustToken: " + totalTokenSupply}}</h3>
     <h3>{{ "You own: "+ tokenBalanceUser +" "+tokenSymbol}}</h3>
     <h3>{{ "You have already invested : "+ etherBalanceUser +" Ether"}}</h3>
-    <h3>{{ "Participants count: " +  icoParticipantCount}}</h3>
+    <h3>{{ "Participants count: " + icoParticipantCount}}</h3>
     <h3>{{ "Contract Balnce/Goal: " + contractEtherBalance + "/"+icoGoal + " Ether"}}</h3>
     <h3>{{ "Buy TrustToken"}}</h3>
     <input
@@ -28,50 +28,35 @@
     >
     <div class="button button--ico" @click="buyToken">Buy</div>
 
-   <div>
-    <div class="grid">
-      <ChartDoughnut />
-    </div>
-  </div>
-    
+    <ChartDoughnut/>
   </div>
 </template>
 
 <script>
 import { mapState } from 'vuex'
-import ChartDoughnut from "@/components/InitialCoinOfering/chart-doughnut";
+import ChartDoughnut from '@/components/InitialCoinOfering/chart-doughnut'
+import { INIT_ICO_CONTRACT } from '@/util/constants/types'
 
 export default {
-
-   components: {
+  components: {
     ChartDoughnut
   },
-
-  computed: 
-  
-  mapState({
+  computed: mapState({
     icoGoal: state => state.icoState.icoGoal,
     contractEtherBalance: state => state.icoState.icoEtherBalance,
     isIcoActive: state => state.icoState.isIcoActive,
-    totalTokenSupply : state => state.icoState.totalTokenSupply,
-    icoParticipantCount : state => state.icoState.icoParticipantCount,    
-    tokenSymbol : state => state.icoState.tokenSymbol,
+    totalTokenSupply: state => state.icoState.totalTokenSupply,
+    icoParticipantCount: state => state.icoState.icoParticipantCount,
+    tokenSymbol: state => state.icoState.tokenSymbol,
     tokenBalanceUser: state => state.icoState.tokenBalanceUser,
     etherBalanceUser: state => state.icoState.etherBalanceUser
-    
-  }
-  ),
-  showAccount: function() {
-      
-     getTokenBlanceUser()
-    },
+  }),
   data() {
     return {
       input_1: null,
       etherAmount: null
     }
   },
-
   methods: {
     async submit() {
       await this.$store.state
@@ -85,25 +70,31 @@ export default {
         .methods.get()
         .call()
       console.log(this.$store.state.web3.web3Instance())
-      console.log(this.$store.state.icoContractInstance())    
-      console.log(await web3.eth)    
+      console.log(this.$store.state.icoContractInstance())
 
-      console.log(this.$store.state.web3.web3Instance().utils.fromWei(etherBalanceUser,"ether"))
-
-      
+      console.log(
+        this.$store.state.web3
+          .web3Instance()
+          .utils.fromWei(this.etherBalanceUser, 'ether')
+      )
     },
     async buyToken() {
       await this.$store.state
         .icoContractInstance()
         .methods.participate()
-        .send({ from: this.$store.state.web3.coinbase ,
-                value: this.$store.state.web3.web3Instance().utils.toWei(this.etherAmount, "ether")})
-    },
-  
-
+        .send({
+          from: this.$store.state.web3.coinbase,
+          value: this.$store.state.web3
+            .web3Instance()
+            .utils.toWei(this.etherAmount, 'ether')
+        })
+    }
+  },
+  async mounted() {
+    await this.$store.dispatch(INIT_ICO_CONTRACT)
+    this.$emit('loaded')
   }
 }
-
 </script>
 
 <style lang="scss" scoped>

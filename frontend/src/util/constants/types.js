@@ -1,5 +1,6 @@
 export const INIT_CONNECTION = 'initializeConnection'
-export const INIT_CONTRACT = 'initializeContract'
+export const INIT_LB_CONTRACT = 'initializeLbContract'
+export const INIT_ICO_CONTRACT = 'initializeIcoContract'
 export const INIT_PROPOSALS = 'initializeProposals'
 export const POLL_WEB3 = 'pollWeb3'
 export const UPDATE_FEE = 'updateFee'
