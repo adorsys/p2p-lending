@@ -1,7 +1,8 @@
 <template>
   <div class="ico">
     <h1>ICO Management</h1>
-    <input
+    <hr>
+    <!-- <input
       type="text"
       name="ico__input-1"
       id="ico__input-1"
@@ -10,14 +11,18 @@
       placeholder="input-1"
     >
     <div class="button button--ico" @click="submit">Submit</div>
-    <div class="button button--ico" @click="receive">Receive</div>
-    <h3>{{ "ICO active: " + isIcoActive}}</h3>
-    <h3>{{ "Total TrustToken: " + totalTokenSupply}}</h3>
-    <h3>{{ "You own: "+ tokenBalanceUser +" "+tokenSymbol}}</h3>
-    <h3>{{ "You have already invested : "+ etherBalanceUser +" Ether"}}</h3>
-    <h3>{{ "Participants count: " + icoParticipantCount}}</h3>
-    <h3>{{ "Contract Balnce/Goal: " + contractEtherBalance + "/"+icoGoal + " Ether"}}</h3>
+    <div class="button button--ico" @click="receive">Receive</div>-->
+    <div class="ico__details">
+      <h3>{{ "ICO active: " + isIcoActive}}</h3>
+      <h3>{{ "Total TrustToken: " + totalTokenSupply}}</h3>
+      <h3>{{ "Contract Balance/Goal: " + contractEtherBalance + "/"+icoGoal + " Ether"}}</h3>
+      <h3>{{ "You own: "+ tokenBalanceUser +" "+tokenSymbol}}</h3>
+      <h3>{{ "You have already invested : "+ etherBalanceUser +" Ether"}}</h3>
+      <h3>{{ "Participants count: " + icoParticipantCount}}</h3>
+    </div>
+    <hr>
     <h3>{{ "Buy TrustToken"}}</h3>
+
     <input
       type="text"
       name="ico__input-1"
@@ -27,7 +32,6 @@
       placeholder="Ether"
     >
     <div class="button button--ico" @click="buyToken">Buy</div>
-
     <ChartDoughnut/>
   </div>
 </template>
@@ -98,25 +102,21 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+// variables
 $navbar-background-color: #dadada;
 $navbar-hover-color: #f3f3f3;
-$navbar-height: 44px;
-
-$background-color: #dadada;
-$background-color-inactive: #e7e7e7;
-
-$padding-standard: 7px;
-
 $border-color: #a0a0a0;
-$border-width: 2px;
-
-$link-text-color: #666;
 $link-text-color-darkened: #444;
 
 .ico__input {
   padding: 0.7em;
   background-color: $navbar-hover-color;
   border: 2px solid rgba($color: $border-color, $alpha: 0.3);
+}
+
+.ico__details {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
 }
 
 .button {
@@ -139,10 +139,5 @@ $link-text-color-darkened: #444;
 
 .button--ico {
   width: 150px;
-}
-
-.grid {
-  display: grid;
-  row-gap: 2rem;
 }
 </style>

@@ -2,13 +2,14 @@
   <div>
     <h2>Doughnut</h2>
 
-    <div class="card">
+    <div class="card" v-if="loaded">
       <chartjs-doughnut
-        v-if="loaded"
         v-bind:bind="true"
         v-bind:datasets="datasets"
         v-bind:labels="labels"
         v-bind:option="option"
+        :width="mywidth"
+        :height="myheight"
       />
     </div>
   </div>
@@ -26,6 +27,8 @@ export default {
 
   data() {
     return {
+      mywidth: 500,
+      myheight: 100,
       loaded: false,
       datasets: null,
       labels: null,
@@ -33,7 +36,7 @@ export default {
     }
   },
   methods: {
-    async getData() {
+    getData() {
       console.log('getdata')
       this.datasets = [
         {
