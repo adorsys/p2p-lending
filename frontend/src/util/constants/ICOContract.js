@@ -1,4 +1,4 @@
-const icoaddress = '0xfDA933b1cb20118Bb616e8bdc837E0e801812CF2'
+const icoaddress = '0x01613e6af1A88e10A7bFcd2fd47f130168CC399e'
 const icoabi = [
     {
       "constant": true,

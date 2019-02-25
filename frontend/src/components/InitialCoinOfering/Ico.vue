@@ -28,15 +28,25 @@
     >
     <div class="button button--ico" @click="buyToken">Buy</div>
 
-
-
+   <div>
+    <div class="grid">
+      <ChartDoughnut />
+    </div>
+  </div>
     
   </div>
 </template>
 
 <script>
 import { mapState } from 'vuex'
+import ChartDoughnut from "@/components/InitialCoinOfering/chart-doughnut";
+
 export default {
+   
+   components: {
+    ChartDoughnut
+  },
+
   computed: 
   
   mapState({
@@ -138,5 +148,10 @@ $link-text-color-darkened: #444;
 
 .button--ico {
   width: 150px;
+}
+
+.grid {
+  display: grid;
+  row-gap: 2rem;
 }
 </style>
