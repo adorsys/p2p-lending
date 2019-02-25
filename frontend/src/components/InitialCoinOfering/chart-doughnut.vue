@@ -28,12 +28,7 @@ export default {
     return {
       loaded: false,
       datasets: null,
-      labels: [
-        'Total ICO Balance of ' + this.icoEtherBalance + ' Ether',
-        'Needed to reach goal of ' +
-          (this.icoGoal - this.icoEtherBalance) +
-          ' Ether'
-      ],
+      labels: null,
       option: {}
     }
   },
@@ -46,6 +41,12 @@ export default {
           backgroundColor: ['#4edf4a', '#c9c9c9'],
           hoverBackgroundColor: ['#673ab7', '#673ab7']
         }
+      ]
+      this.labels = [
+        'Total ICO Balance of ' + this.icoEtherBalance + ' Ether',
+        'Needed to reach goal of ' +
+          (this.icoGoal - this.icoEtherBalance) +
+          ' Ether'
       ]
       this.loaded = true
     }
