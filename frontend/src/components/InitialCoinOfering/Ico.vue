@@ -42,7 +42,7 @@ import { mapState } from 'vuex'
 import ChartDoughnut from "@/components/InitialCoinOfering/chart-doughnut";
 
 export default {
-   
+
    components: {
     ChartDoughnut
   },
