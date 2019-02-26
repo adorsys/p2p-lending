@@ -18,7 +18,7 @@
       <p v-if="isIcoActive" id="active_green"> ICO is active </p>
       <p v-else id="unactive_red">ICO ist not active</p>
       </div></h3>
-      <h3>{{ "Total TrustToken: " + totalTokenSupply}}</h3>
+      <h3>{{ "Total TrustToken: " + totalTokenSupply+" "+tokenSymbol}}</h3>
       <h3>{{ "Contract Balance/Goal: " + contractEtherBalance + "/"+icoGoal + " Ether"}}</h3>
       <h3>{{ "You own: "+ tokenBalanceUser +" "+tokenSymbol}}</h3>
       <h3>{{ "You have already invested: "+ etherBalanceUser +" Ether"}}</h3>
@@ -42,13 +42,13 @@
     </div>
     
     <div v-else>            
-        <h3 >{{"Send "+ name +" to "}}</h3>
+        <h3 >{{"Send "+ tokenSymbol +" to "}}</h3>
         <input
           type="text"
           name="ico__input-1"
           id="ico__input-1"
           class="ico__input"
-          v-model="tokenAmount"
+          v-model="transferTokenAmount"
           placeholder="TrustToken"
         >
         <input
@@ -61,7 +61,25 @@
         >
         <div class="button button--ico" @click="transfer">Send</div>
         <hr>
-        <h3 >{{"Send "+ name +" to "}}</h3>
+        <h3 >{{"Approve another account to use a certain amount of "+tokenSymbol+" from your account"}}</h3>
+        <input
+          type="text"
+          name="ico__input-1"
+          id="ico__input-1"
+          class="ico__input"
+          v-model="approveTokenAmount"
+          placeholder="TrustToken"
+        >
+        <input
+          type="text"
+          name="ico__input-1"
+          id="ico__input-1"
+          class="ico__input"
+          v-model="approveSpender"
+          placeholder="address"
+        >
+        <div class="button button--ico" @click="approve">Approve</div>
+        <hr>
 
 
     </div>
@@ -96,8 +114,9 @@ export default {
       input_1: null,
       etherAmount: null,
       transferTo: null,
-      from: null,
-      tokenAmount: null
+      transferTokenAmount: null,
+      approveTokenAmount:null,
+      approveSpender: null,
     }
   },
   methods: {
@@ -135,7 +154,15 @@ export default {
     async transfer() {
       await this.$store.state
         .icoContractInstance()
-        .methods.transfer(this.transferTo , (parseInt(this.tokenAmount, 10)))
+        .methods.transfer(this.transferTo , (parseInt(this.transferTokenAmount, 10)))
+        .send({
+          from: this.$store.state.web3.coinbase
+        })
+    },
+    async approve() {
+      await this.$store.state
+        .icoContractInstance()
+        .methods.approve(this.approveSpender , (parseInt(this.approveTokenAmount, 10)))
         .send({
           from: this.$store.state.web3.coinbase
         })
