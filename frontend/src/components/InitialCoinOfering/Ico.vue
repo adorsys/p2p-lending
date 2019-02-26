@@ -60,7 +60,9 @@
           placeholder="to address"
         >
         <div class="button button--ico" @click="transfer">Send</div>
+        
         <hr>
+        
         <h3 >{{"Approve another account to use a certain amount of "+tokenSymbol+" from your account"}}</h3>
         <input
           type="text"
@@ -79,8 +81,10 @@
           placeholder="address"
         >
         <div class="button button--ico" @click="approve">Approve</div>
+       
         <hr>
-         <h3 >{{"Send "+tokenSymbol+" to an account in the name of another account"}}</h3>
+        
+        <h3 >{{"Send "+tokenSymbol+" to an account in the name of another account"}}</h3>
         <input
           type="text"
           name="ico__input-1"
@@ -106,8 +110,21 @@
           placeholder="to address"
         >
         <div class="button button--ico" @click="transferFromMethod">Send</div>
+        
         <hr>
-
+        
+        <h3 >{{"Token amount of address, you are allowed to spend"}}</h3>
+        <h4 >{{"You are allowed to spend "+ tokenAmountAllowsToSpend +" "+ tokenSymbol+ " from entered account"}}</h4>
+        <input
+          type="text"
+          name="ico__input-1"
+          id="ico__input-1"
+          class="ico__input"
+          v-model="checkAddress"
+          placeholder="address"
+        >
+        <div class="button button--ico" @click="checkAllowance">Check</div>
+        
 
     </div>
     
@@ -146,7 +163,9 @@ export default {
       approveSpender: null,
       transferTokenAmountFrom: null,
       transferFrom: null,
-      transferFromTo: null
+      transferFromTo: null,
+      tokenAmountAllowsToSpend: 0,
+      checkAddress: null
 
 
     }
@@ -206,6 +225,12 @@ export default {
         .send({
           from: this.$store.state.web3.coinbase
         })
+    },
+    async checkAllowance() {
+      this.tokenAmountAllowsToSpend = await this.$store.state
+        .icoContractInstance()
+        .methods.allowance(this.checkAddress,this.$store.state.web3.coinbase)
+        .call()
     }
   },
   async mounted() {
