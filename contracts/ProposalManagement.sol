@@ -1,7 +1,5 @@
 pragma solidity ^0.5.0;
 
-import "./ProposalFactory.sol";
-
 contract ProposalManagement {
     /*
      * proposalType == 0 -> invalid proposal
@@ -14,13 +12,13 @@ contract ProposalManagement {
     mapping(address => uint256) public proposalType;
     mapping(address => address[]) private proposals;
     mapping(address => uint256) private memberId;
+    mapping(address => address[]) private lockedUsersPerProposal;
 
     address trustTokenContract;
-    ProposalFactory private proposalFactory;
+    address private proposalFactory;
     uint256 public contractFee;
     uint256 public minimumNumberOfVotes = 1;
     uint256 public majorityMargin = 50;
-    address[] public lockedUsers;
     address[] public members;
 
     modifier onlyMembers() {
@@ -28,19 +26,20 @@ contract ProposalManagement {
         _;
     }
 
+    event ProposalCreated(address proposalAddress, string proposalType);
     event Voted(address proposalAddress, bool stance, address from);
     event ProposalExecuted(address ContractFeeProposal);
     event NewContractFee(uint256 oldFee, uint256 newFee);
     event MembershipChanged(address memberAddress, bool memberStatus);
-    event UnlockUsers(address[] unlockUsers);
+    event CurrentLockedUsers(address[] unlockUsers);
 
     /// constructor
-    constructor() public {
+    constructor(address _proposalFactoryAddress) public {
         members.push(address(0));
         memberId[msg.sender] = members.length;
         members.push(msg.sender);
-        contractFee = 1 finney;
-        proposalFactory = new ProposalFactory();
+        contractFee = 1000 finney;
+        proposalFactory = _proposalFactoryAddress;
     }
 
     /// fallback
@@ -56,23 +55,31 @@ contract ProposalManagement {
             require(memberId[_memberAddress] != 0, "member does not exist");
         }
 
-        address proposal = proposalFactory.newProposal(
-            _memberAddress,
-            _adding,
-            minimumNumberOfVotes,
-            majorityMargin
+        bytes memory payload = abi.encodeWithSignature(
+            "newProposal(address,bool,uint256,uint256)",
+            _memberAddress, _adding, minimumNumberOfVotes, majorityMargin
         );
+        (bool success, bytes memory encodedReturnValue) = proposalFactory.call(payload);
+        require(success, "member proposal failed");
+        address proposal = abi.decode(encodedReturnValue, (address));
+        emit ProposalCreated(proposal, "memberProposal");
 
         proposals[address(this)].push(proposal);
         proposalType[proposal] = _adding ? 2 : 3;
     }
 
     function createContractFeeProposal(uint256 _proposedFee) public onlyMembers {
-        address proposal = proposalFactory.newProposal(
-            _proposedFee * 1 finney,
-            minimumNumberOfVotes,
-            majorityMargin
+        require(_proposedFee >= 1, "Minimum Fee is 0.1 Ether");
+
+        bytes memory payload = abi.encodeWithSignature(
+            "newProposal(uint256,uint256,uint256)",
+            _proposedFee, minimumNumberOfVotes, majorityMargin
         );
+        (bool success, bytes memory encodedReturnValue) = proposalFactory.call(payload);
+        require(success, "contractfee proposal failed");
+        address proposal = abi.decode(encodedReturnValue, (address));
+        emit ProposalCreated(proposal, "contractFeeProposal");
+
         proposals[address(this)].push(proposal);
         proposalType[proposal] = 1;
     }
@@ -81,25 +88,30 @@ contract ProposalManagement {
         uint256 proposalParameter = proposalType[_proposalAddress];
         require(proposalParameter != 0, "Invalid proposalAddress");
 
-        /// vote for proposal at _proposalAddress
+        // vote for proposal at _proposalAddress
         emit Voted(_proposalAddress, _stance, msg.sender);
         bytes memory payload = abi.encodeWithSignature("vote(bool,address)", _stance, msg.sender);
         (bool success, bytes memory encodedReturnValue) = _proposalAddress.call(payload);
-
-        require(success, "voting failed");
-
-        /// decode return values of successful function call
-        bool proposalPassed = abi.decode(encodedReturnValue, (bool));
-        emit ProposalExecuted(_proposalAddress);
-
-        /// handle return values of voting call
-        require(
-            handleVoteReturn(proposalParameter, proposalPassed, _proposalAddress),
-            "processing of vote return failed"
-        );
         
+        // check if voting was successfull
+        require(success, "voting failed");
+        lockedUsersPerProposal[_proposalAddress].push(msg.sender);
 
-        /// unlock users in ICO contract
+        // decode return values of successful function call
+        bool proposalPassed = abi.decode(encodedReturnValue, (bool));
+        if(proposalPassed) {
+            emit ProposalExecuted(_proposalAddress);
+
+            // handle return values of voting call
+            require(
+                handleVoteReturn(proposalParameter, proposalPassed, _proposalAddress),
+                "processing of vote return failed"
+            );
+        
+            // unlock users in ICO contract
+            address[] memory lockedUsers = lockedUsersPerProposal[_proposalAddress];
+            emit CurrentLockedUsers(lockedUsers);
+        }
     }
 
     function getProposals() public view returns (address[] memory) {

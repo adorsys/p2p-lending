@@ -20,7 +20,7 @@ contract ProposalFactory {
     )
         external
         returns(address proposal) {
-        
+
         proposal = address(
             new ContractFeeProposal(
                 msg.sender,

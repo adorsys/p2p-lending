@@ -1,6 +1,7 @@
 pragma solidity ^0.5.0;
 
 contract ContractFeeProposal {
+
     /// variables
     address private author;
     uint256 private proposedFee;
@@ -14,20 +15,19 @@ contract ContractFeeProposal {
     address private management = address(0);
 
     /// fallback
-
     function() external payable {
         revert("Proposals do not accept payments");
     }
 
     /// constructor
-
     constructor(
         address _author,
         uint256 _proposedFee,
         uint256 _minimumNumberOfVotes,
         uint256 _majorityMargin,
         address _managementContract
-    ) public {
+    )
+        public {
         author = _author;
         proposedFee = _proposedFee;
         minimumNumberOfVotes = _minimumNumberOfVotes;
@@ -36,7 +36,6 @@ contract ContractFeeProposal {
     }
 
     /// external
-
     function kill() external {
         require(msg.sender == management, "not called by management contract");
         require(proposalExecuted, "proposal has to be executed first");
@@ -44,11 +43,6 @@ contract ContractFeeProposal {
     }
 
     /// public
-
-    function getContractFee() public view returns (uint256) {
-        return proposedFee;
-    }
-
     /**
      * @return bool proposalPassed, bool proposalExecuted
      */
@@ -79,10 +73,13 @@ contract ContractFeeProposal {
         }
     }
 
+    function getContractFee() public view returns (uint256) {
+        return proposedFee;
+    }
+
     /// internal
 
     /// private
-
     function execute() private {
         require(!proposalExecuted, "proposal was executed");
         require(

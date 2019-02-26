@@ -1,8 +1,6 @@
-const ProposalManagement = artifacts.require(
-    "./ProposalFactory/ProposalManagement.sol"
-);
-const ContractFeeProposal = artifacts.require(
-    "./ProposalFactory/ContractFeeProposal.sol"
+const ProposalManagement = artifacts.require("./ProposalManagement.sol");
+const ProposalFactory = artifacts.require(
+    "./ProposalFactory/ProposalFactory.sol"
 );
 
 contract("ProposalManagement", accounts => {
@@ -17,7 +15,9 @@ contract("ProposalManagement", accounts => {
         firstVoter = accounts[0];
         secondVoter = accounts[1];
         nonMember = accounts[9];
-        proposalManagement = await ProposalManagement.new();
+        proposalManagement = await ProposalManagement.new(
+            ProposalFactory.address
+        );
         await proposalManagement.createContractFeeProposal(4);
     });
 
@@ -29,8 +29,8 @@ contract("ProposalManagement", accounts => {
         );
         assert.strictEqual(
             parseInt(await proposalManagement.contractFee.call(), 10),
-            parseInt(web3.utils.toWei("1", "finney"), 10),
-            "contractFee should equal 1 finney"
+            parseInt(web3.utils.toWei("1", "ether"), 10),
+            "contractFee should equal 1 ether"
         );
         assert.strictEqual(
             parseInt(await proposalManagement.getMembersLength.call(), 10),
@@ -52,12 +52,14 @@ contract("ProposalManagement", accounts => {
     it("Access limitation is working", async () => {
         contractFeeProposal = (await proposalManagement.getProposals.call())[0];
         try {
-            await proposalManagement.vote.call(true, contractFeeProposal, { from: nonMember });
+            await proposalManagement.vote.call(true, contractFeeProposal, {
+                from: nonMember
+            });
         } catch (error) {
             assert(
                 error.message.indexOf("revert") >= 0,
                 "vote from nonMember should revert"
-            )
+            );
         }
-    })
+    });
 });

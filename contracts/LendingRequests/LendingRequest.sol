@@ -32,8 +32,7 @@ contract LendingRequest {
 
     /// constructor should only be callable by the LendingRequestFactory
 
-    constructor
-    (
+    constructor(
         address payable _asker,
         bool _verifiedAsker,
         uint256 _amountAsked,
@@ -42,8 +41,7 @@ contract LendingRequest {
         string memory _purpose,
         address payable _managementContract
     )
-        public
-    {
+        public {
         asker = _asker;
         lender = address(0);
         verifiedAsker = _verifiedAsker;
@@ -57,18 +55,11 @@ contract LendingRequest {
         managementContract = _managementContract;
     }
 
-    function()
-        payable
-        external
-    {
+    function() payable external {
         revert("use deposit to transfer ETH");
     }
 
-    function deposit(address payable _origin)
-        public
-        payable
-        returns( bool )
-    {
+    function deposit(address payable _origin) public payable returns (bool) {
         /*
          * Case 1:
          *          Lending Request is being covered by lender
@@ -107,9 +98,7 @@ contract LendingRequest {
         return false;
     }
 
-    function withdraw(address _origin)
-        public {
-        
+    function withdraw(address _origin) public {
         /*
          * Case 1: ( asker withdraws amountAsked )
          *      checks:
@@ -153,9 +142,7 @@ contract LendingRequest {
         }
     }
 
-    function cleanUp()
-        public
-    {
+    function cleanUp() public {
         require(msg.sender == managementContract, "cleanUp failed");
         emit CollectContractFee(address(this), managementContract);
         selfdestruct(managementContract);

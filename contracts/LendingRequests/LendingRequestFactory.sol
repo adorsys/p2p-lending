@@ -15,20 +15,13 @@ contract LendingRequestFactory {
     address managementContract;
     LendingBoard board;
 
-    constructor( LendingBoard _LendingBoardAddress )
-        public
-    {
+    constructor(LendingBoard _LendingBoardAddress) public {
         managementContract = msg.sender;
         board = _LendingBoardAddress;
     }
 
-    function isVerified( address _user )
-        internal
-        pure
-        returns ( bool )
-    {
+    function isVerified( address _user ) internal pure returns (bool) {
         // TODO: Uport verification
-
         if ( _user != address(0) ) {
             return true;
         }
@@ -38,15 +31,14 @@ contract LendingRequestFactory {
     }
 
 
-    function newLendingRequest
-    ( 
+    function newLendingRequest( 
         uint256 _amount,
         uint256 _paybackAmount,
         string memory _purpose,
         address payable _origin
-    )   public
-        returns ( address lendingRequest )
-    {   
+    )
+        public
+        returns (address lendingRequest) {   
         bool verified = isVerified(_origin);
         uint256 contractFee = board.contractFee();
         
@@ -55,7 +47,6 @@ contract LendingRequestFactory {
                 _origin, verified, _amount, _paybackAmount,
                 contractFee, _purpose, msg.sender)
         );
-
         emit RequestCreated(lendingRequest, _origin, verified, _purpose);
     }
 
@@ -63,5 +54,4 @@ contract LendingRequestFactory {
     function() external payable {
         revert("Factory Contract does NOT accept ether");
     }
-
 }
