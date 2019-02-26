@@ -18,6 +18,7 @@ export default {
         icoParticipantCount: null,
         tokenSymbol: null,
         tokenBalanceUser: null,
-        etherBalanceUser: null
+        etherBalanceUser: null,
+        name: null
     }
 }

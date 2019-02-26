@@ -16,13 +16,16 @@ const initializeIcoContractHelper = async () => {
         icoParticipantCount: null,
         tokenSymbol: null,
         tokenBalanceUser: null,
-        etherBalanceUser: null
+        etherBalanceUser: null,
+        name: null
     }
 
     payload.icoGoal = parseInt(
         await web3.utils.fromWei(await contract.methods.goal().call(), 'ether'),
         10
     )
+
+    payload.name = await contract.methods.name().call()
 
     payload.icoEtherBalance = parseInt(
         await web3.utils.fromWei(

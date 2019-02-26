@@ -13,9 +13,6 @@
     <div class="button button--ico" @click="submit">Submit</div>
     <div class="button button--ico" @click="receive">Receive</div>-->
 
- 
-
-
     <div class="ico__details">
       <h3><div>
       <p v-if="isIcoActive" id="active_green"> ICO is active </p>
@@ -30,21 +27,31 @@
     <hr>
     
     <div v-if="isIcoActive">
-      <h3>{{ "Buy TrustToken"}}</h3>
-      <input
-        type="text"
-        name="ico__input-1"
-        id="ico__input-1"
-        class="ico__input"
-        v-model="etherAmount"
-        placeholder="Ether"
-      >
-      <div class="button button--ico" @click="buyToken">Buy</div>
-    </div>
-    <div v-else>    
-        <h3>{{ "Vorbei"}}</h3>
+        <h3>{{ "Buy TrustToken"}}</h3>
+        <input
+          type="text"
+          name="ico__input-1"
+          id="ico__input-1"
+          class="ico__input"
+          v-model="etherAmount"
+          placeholder="Ether"
+        >
+        <div class="button button--ico" @click="buyToken">Buy</div>
     </div>
     
+    <div v-else>            
+        <h3>{{ "Send "+ name +" to "}}</h3>
+        <input
+          type="text"
+          name="ico__input-1"
+          id="ico__input-1"
+          class="ico__input"
+          v-model="etherAmount"
+          placeholder="Ether"
+        >
+        <div class="button button--ico" @click="buyToken">Buy</div>
+    </div>
+
     <ChartDoughnut/>
   </div>
 </template>
@@ -66,7 +73,8 @@ export default {
     icoParticipantCount: state => state.icoState.icoParticipantCount,
     tokenSymbol: state => state.icoState.tokenSymbol,
     tokenBalanceUser: state => state.icoState.tokenBalanceUser,
-    etherBalanceUser: state => state.icoState.etherBalanceUser
+    etherBalanceUser: state => state.icoState.etherBalanceUser,
+    name: state => state.icoState.name
   }),
   data() {
     return {
