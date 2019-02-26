@@ -12,8 +12,15 @@
     >
     <div class="button button--ico" @click="submit">Submit</div>
     <div class="button button--ico" @click="receive">Receive</div>-->
+
+ 
+
+
     <div class="ico__details">
-      <h3>{{ "ICO active: " + isIcoActive}}</h3>
+      <h3><div>
+      <p v-if="isIcoActive" id="active_green"> ICO is active </p>
+      <p v-else id="unactive_red">ICO ist not active</p>
+      </div></h3>
       <h3>{{ "Total TrustToken: " + totalTokenSupply}}</h3>
       <h3>{{ "Contract Balance/Goal: " + contractEtherBalance + "/"+icoGoal + " Ether"}}</h3>
       <h3>{{ "You own: "+ tokenBalanceUser +" "+tokenSymbol}}</h3>
@@ -21,17 +28,23 @@
       <h3>{{ "Participants count: " + icoParticipantCount}}</h3>
     </div>
     <hr>
-    <h3>{{ "Buy TrustToken"}}</h3>
-
-    <input
-      type="text"
-      name="ico__input-1"
-      id="ico__input-1"
-      class="ico__input"
-      v-model="etherAmount"
-      placeholder="Ether"
-    >
-    <div class="button button--ico" @click="buyToken">Buy</div>
+    
+    <div v-if="isIcoActive">
+      <h3>{{ "Buy TrustToken"}}</h3>
+      <input
+        type="text"
+        name="ico__input-1"
+        id="ico__input-1"
+        class="ico__input"
+        v-model="etherAmount"
+        placeholder="Ether"
+      >
+      <div class="button button--ico" @click="buyToken">Buy</div>
+    </div>
+    <div v-else>    
+        <h3>{{ "Vorbei"}}</h3>
+    </div>
+    
     <ChartDoughnut/>
   </div>
 </template>
@@ -139,5 +152,12 @@ $link-text-color-darkened: #444;
 
 .button--ico {
   width: 150px;
+}
+
+#active_green {
+  color: green;
+}
+#unactive_red {
+  color:red;
 }
 </style>

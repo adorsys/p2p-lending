@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2>Doughnut</h2>
+    <h2>Collected Ether</h2>
 
     <div class="card" v-if="loaded">
       <chartjs-doughnut
