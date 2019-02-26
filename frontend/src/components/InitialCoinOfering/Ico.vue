@@ -36,7 +36,7 @@
           v-model="etherAmount"
           placeholder="Ether"
         >
-        <div class="button button--ico" @click="buyToken">Buy</div>
+        <div class="button button--ico" @click="participate">Buy</div>
 
         <ChartDoughnut/>
     </div>
@@ -57,7 +57,7 @@
           id="ico__input-1"
           class="ico__input"
           v-model="transferTo"
-          placeholder="address"
+          placeholder="to address"
         >
         <div class="button button--ico" @click="transfer">Send</div>
         <hr>
@@ -79,6 +79,33 @@
           placeholder="address"
         >
         <div class="button button--ico" @click="approve">Approve</div>
+        <hr>
+         <h3 >{{"Send "+tokenSymbol+" to an account in the name of another account"}}</h3>
+        <input
+          type="text"
+          name="ico__input-1"
+          id="ico__input-1"
+          class="ico__input"
+          v-model="transferTokenAmountFrom"
+          placeholder="TrustToken"
+        >
+        <input
+          type="text"
+          name="ico__input-1"
+          id="ico__input-1"
+          class="ico__input"
+          v-model="transferFrom"
+          placeholder="from address"
+        >
+        <input
+          type="text"
+          name="ico__input-1"
+          id="ico__input-1"
+          class="ico__input"
+          v-model="transferFromTo"
+          placeholder="to address"
+        >
+        <div class="button button--ico" @click="transferFromMethod">Send</div>
         <hr>
 
 
@@ -117,6 +144,11 @@ export default {
       transferTokenAmount: null,
       approveTokenAmount:null,
       approveSpender: null,
+      transferTokenAmountFrom: null,
+      transferFrom: null,
+      transferFromTo: null
+
+
     }
   },
   methods: {
@@ -140,7 +172,7 @@ export default {
           .utils.fromWei(this.etherBalanceUser, 'ether')
       )
     },
-    async buyToken() {
+    async participate() {
       await this.$store.state
         .icoContractInstance()
         .methods.participate()
@@ -163,6 +195,14 @@ export default {
       await this.$store.state
         .icoContractInstance()
         .methods.approve(this.approveSpender , (parseInt(this.approveTokenAmount, 10)))
+        .send({
+          from: this.$store.state.web3.coinbase
+        })
+    },
+    async transferFromMethod() {
+      await this.$store.state
+        .icoContractInstance()
+        .methods.transferFrom(this.transferFrom,this.transferFromTo,(parseInt(this.transferTokenAmountFrom, 10)))
         .send({
           from: this.$store.state.web3.coinbase
         })
