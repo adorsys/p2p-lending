@@ -21,7 +21,7 @@
       <h3>{{ "Total TrustToken: " + totalTokenSupply}}</h3>
       <h3>{{ "Contract Balance/Goal: " + contractEtherBalance + "/"+icoGoal + " Ether"}}</h3>
       <h3>{{ "You own: "+ tokenBalanceUser +" "+tokenSymbol}}</h3>
-      <h3>{{ "You have already invested : "+ etherBalanceUser +" Ether"}}</h3>
+      <h3>{{ "You have already invested: "+ etherBalanceUser +" Ether"}}</h3>
       <h3>{{ "Participants count: " + icoParticipantCount}}</h3>
     </div>
     <hr>
@@ -37,22 +37,37 @@
           placeholder="Ether"
         >
         <div class="button button--ico" @click="buyToken">Buy</div>
+
+        <ChartDoughnut/>
     </div>
     
     <div v-else>            
-        <h3>{{ "Send "+ name +" to "}}</h3>
+        <h3 >{{"Send "+ name +" to "}}</h3>
         <input
           type="text"
           name="ico__input-1"
           id="ico__input-1"
           class="ico__input"
-          v-model="etherAmount"
-          placeholder="Ether"
+          v-model="tokenAmount"
+          placeholder="TrustToken"
         >
-        <div class="button button--ico" @click="buyToken">Buy</div>
-    </div>
+        <input
+          type="text"
+          name="ico__input-1"
+          id="ico__input-1"
+          class="ico__input"
+          v-model="transferTo"
+          placeholder="address"
+        >
+        <div class="button button--ico" @click="transfer">Send</div>
+        <hr>
+        <h3 >{{"Send "+ name +" to "}}</h3>
 
-    <ChartDoughnut/>
+
+    </div>
+    
+
+    
   </div>
 </template>
 
@@ -79,7 +94,10 @@ export default {
   data() {
     return {
       input_1: null,
-      etherAmount: null
+      etherAmount: null,
+      transferTo: null,
+      from: null,
+      tokenAmount: null
     }
   },
   methods: {
@@ -112,6 +130,14 @@ export default {
           value: this.$store.state.web3
             .web3Instance()
             .utils.toWei(this.etherAmount, 'ether')
+        })
+    },
+    async transfer() {
+      await this.$store.state
+        .icoContractInstance()
+        .methods.transfer(this.transferTo , (parseInt(this.tokenAmount, 10)))
+        .send({
+          from: this.$store.state.web3.coinbase
         })
     }
   },
