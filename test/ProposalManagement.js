@@ -269,6 +269,12 @@ contract("ProposalManagement", accounts => {
     });
 
     it("negative vote for addMemberProposal has expected results", async () => {
+        // get current number of members
+        let oldMemberLength = parseInt(
+            await proposalManagement.getMembersLength.call(),
+            10
+        );
+
         // negative vote for memberProposal to add member
         let proposal = (await proposalManagement.getProposals.call())[1];
         let vote = await proposalManagement.vote(false, proposal, {
@@ -323,7 +329,7 @@ contract("ProposalManagement", accounts => {
         );
         assert.strictEqual(
             newMemberLength,
-            2,
+            oldMemberLength,
             "contract should still only consist of two members"
         );
     });
