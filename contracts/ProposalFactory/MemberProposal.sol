@@ -2,17 +2,19 @@ pragma solidity ^0.5.0;
 
 contract MemberProposal {
     /// variables
+    
     address private author;
+    address private management = address(0);
     address public memberAddress;
     bool public adding;
+    uint256 private majorityMargin;
+    uint256 private minimumNumberOfVotes;
+
+    mapping(address => bool) private voted;
     uint256 public numberOfVotes = 0;
     uint256 public numberOfPositiveVotes = 0;
-    uint256 private minimumNumberOfVotes;
-    uint256 private majorityMargin;
-    mapping(address => bool) private voted;
     bool public proposalPassed = false;
     bool public proposalExecuted = false;
-    address private management = address(0);
 
     /// fallback
 
@@ -48,9 +50,7 @@ contract MemberProposal {
 
     /// public
 
-    function vote(bool _stance, address _origin)
-        public
-        returns (bool) {
+    function vote(bool _stance, address _origin) public returns (bool, bool) {
         require(msg.sender == management, "not called by management contract");
         require(!proposalExecuted, "proposal was executed");
         require(!voted[_origin], "you can only vote once");
@@ -64,12 +64,12 @@ contract MemberProposal {
         if ((numberOfVotes >= minimumNumberOfVotes)) {
             execute();
             if (proposalPassed) {
-                return true;
+                return (true, true);
             } else {
-                return false;
+                return (false, true);
             }
         } else {
-            return false;
+            return (false, false);
         }
     }
 
@@ -78,7 +78,6 @@ contract MemberProposal {
     }
 
     /// internal
-
     /// private
 
     function execute() private {
