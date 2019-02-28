@@ -489,4 +489,99 @@ contract("ProposalManagement", accounts => {
             "member should be firstVoter"
         );
     });
+
+    it("positive vote for removeMemberProposal has expected results", async () => {
+        // get current number of members
+        let oldMemberLength = parseInt(
+            await proposalManagement.getMembersLength.call(),
+            10
+        );
+
+        // positive vote for memberProposal to remove member
+        let proposal = (await proposalManagement.getProposals.call())[2];
+        let vote = await proposalManagement.vote(true, proposal, {
+            from: firstVoter
+        });
+
+        // expected events are triggered
+        assert.strictEqual(
+            vote.logs.length,
+            3,
+            "positive vote should trigger 3 events"
+        );
+
+        // Voted event gets triggered with expected parameters
+        assert.strictEqual(
+            vote.logs[0].event,
+            "Voted",
+            "should be Voted event"
+        );
+        assert.strictEqual(
+            vote.logs[0].args.proposalAddress,
+            proposal,
+            "should be the address of remove MemberProposal"
+        );
+        assert.strictEqual(
+            vote.logs[0].args.stance,
+            true,
+            "should be a positive vote"
+        );
+        assert.strictEqual(
+            vote.logs[0].args.from,
+            firstVoter,
+            "should be a vote from firstVoter"
+        );
+
+        // ProposalExecuted event gets triggered with expected parameters
+        assert.strictEqual(
+            vote.logs[1].event,
+            "ProposalExecuted",
+            "should be ProposalExecuted event"
+        );
+        assert.strictEqual(
+            vote.logs[1].args.executedProposal,
+            proposal,
+            "proposal should have been executed"
+        );
+
+        // MembershipChanged event gets triggered with expected parameters
+        assert.strictEqual(
+            vote.logs[2].event,
+            "MembershipChanged",
+            "should be MembershipChanged"
+        );
+        assert.strictEqual(
+            vote.logs[2].args.memberAddress,
+            firstVoter,
+            "should be firstVoter"
+        );
+        assert.strictEqual(
+            vote.logs[2].args.memberStatus,
+            false,
+            "new memberStatus of firstVoter should be false"
+        );
+
+        // firstVoter was removed from members
+        let newMemberLength = parseInt(
+            await proposalManagement.getMembersLength.call(),
+            10
+        );
+        assert.strictEqual(
+            newMemberLength,
+            oldMemberLength - 1,
+            "should now be 1 member"
+        );
+
+        // firstVoters authorization was revoked
+        try {
+            await proposalManagement.createContractFeeProposal(7, {
+                from: firstVoter
+            });
+        } catch (error) {
+            assert(
+                error.message.indexOf("revert") >= 0,
+                "unauthorized creation of proposal should revert"
+            );
+        }
+    });
 });
