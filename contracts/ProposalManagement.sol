@@ -227,7 +227,7 @@ contract ProposalManagement {
         members.push(_memberAddress);
         emit MembershipChanged(_memberAddress, true);
 
-        if ((members.length / 2) > minimumNumberOfVotes) {
+        if (((members.length / 2) - 1) >= minimumNumberOfVotes) {
             minimumNumberOfVotes++;
         }
     }
@@ -249,7 +249,7 @@ contract ProposalManagement {
         members.length--;
         memberId[_memberAddress] = 0;
         emit MembershipChanged(_memberAddress, false);
-        if ((members.length / 2) < minimumNumberOfVotes) {
+        if (((members.length / 2) - 1) <= minimumNumberOfVotes) {
             minimumNumberOfVotes--;
         }
     }

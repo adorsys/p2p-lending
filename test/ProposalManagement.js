@@ -600,11 +600,18 @@ contract("ProposalManagement", accounts => {
             from: firstVoter
         });
 
-        // add third member to trigger voting parameters to change
+        // add third member
         await proposalManagement.createMemberProposal(thirdVoter, true, {
             from: firstVoter
         });
         proposal = (await proposalManagement.getProposals.call())[3];
+        await proposalManagement.vote(true, proposal, { from: firstVoter });
+
+        // add fourth member
+        await proposalManagement.createMemberProposal(nonMember, true, {
+            from: firstVoter
+        });
+        proposal = (await proposalManagement.getProposals.call())[4];
         await proposalManagement.vote(true, proposal, { from: firstVoter });
 
         // check if minimumNumberOfVotes has changed
@@ -612,6 +619,7 @@ contract("ProposalManagement", accounts => {
             await proposalManagement.minimumNumberOfVotes.call(),
             10
         );
+
         assert.strictEqual(
             newMinNumberOfVotes,
             oldMinNumberOfVotes + 1,
@@ -626,16 +634,17 @@ contract("ProposalManagement", accounts => {
         await proposalManagement.createMemberProposal(thirdVoter, false, {
             from: firstVoter
         });
-        proposal = (await proposalManagement.getProposals.call())[4];
+        proposal = (await proposalManagement.getProposals.call())[5];
 
+        // proposal needs two votes now to pass
         await proposalManagement.vote(true, proposal, { from: firstVoter });
         await proposalManagement.vote(true, proposal, { from: secondVoter });
 
+        // check if minimumNumberOfVotes has changed again
         newMinNumberOfVotes = parseInt(
             await proposalManagement.minimumNumberOfVotes.call(),
             10
         );
-
         assert.strictEqual(
             newMinNumberOfVotes,
             oldMinNumberOfVotes - 1,
