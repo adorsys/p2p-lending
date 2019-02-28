@@ -44,9 +44,9 @@ contract("RequestManagement", accounts => {
         await requestManagement.ask(askAmount, paybackAmount, purpose, {
             from: asker
         });
-        lendingRequestsAmount = await requestManagement.openLendingRequests.call(
+        lendingRequestsAmount = (await requestManagement.getRequests.call(
             asker
-        );
+        )).length;
         askerLendingRequestsAddresses = await requestManagement.getRequests(
             asker,
             { from: firstAccount }

@@ -10,23 +10,16 @@ contract LendingRequestFactory {
     address private managementContract;
     LendingBoard private board;
 
-    /// events
     event RequestCreated(address request, address from, bool verified, string purpose);
-
-    /// fallback
 
     function() external payable {
         revert("Factory Contract does NOT accept ether");
     }
 
-    /// constructor
-
     constructor(LendingBoard _LendingBoardAddress) public {
         managementContract = msg.sender;
         board = _LendingBoardAddress;
     }
-
-    /// external
 
     /**
      * @notice creates a new lendingRequest
@@ -35,7 +28,6 @@ contract LendingRequestFactory {
      * @param _purpose the reason the asker wants to borrow money
      * @param _origin origin address of the call -> address of the asker
      */
-
     function newLendingRequest( 
         uint256 _amount,
         uint256 _paybackAmount,
@@ -57,14 +49,10 @@ contract LendingRequestFactory {
         emit RequestCreated(lendingRequest, _origin, verified, _purpose);
     }
 
-    /// public
-    /// internal
-
     /**
      * @notice checks if the user is known via uPort
      * @param _user address of the user to be verified
      */
-
     function isVerified(address _user) internal pure returns (bool) {
         // TODO: Uport verification
         if(_user != address(0)) {
@@ -74,7 +62,4 @@ contract LendingRequestFactory {
             return false;
         }
     }
-
-    /// private
-
 }

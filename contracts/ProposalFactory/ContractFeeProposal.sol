@@ -1,8 +1,6 @@
 pragma solidity ^0.5.0;
 
 contract ContractFeeProposal {
-    /// variables
-
     address private author;
     address payable private management = address(0);
     uint256 private proposedFee;
@@ -15,13 +13,9 @@ contract ContractFeeProposal {
     bool public proposalPassed = false;
     bool public proposalExecuted = false;
 
-    /// fallback
-
     function() external payable {
         revert("Proposals do not accept payments");
     }
-
-    /// constructor
 
     constructor(
         address _author,
@@ -37,12 +31,9 @@ contract ContractFeeProposal {
         management = _managementContract;
     }
 
-    /// external
-
     /**
      * @notice destroys the proposal contract and forwards the remaining funds to the management contract
      */
-
     function kill() external {
         require(msg.sender == management, "not called by management contract");
         require(proposalExecuted, "proposal has to be executed first");
@@ -56,7 +47,6 @@ contract ContractFeeProposal {
      * @return propPassed true if proposal met the required number of positive votes - false otherwise
      * @return propExecuted true if proposal met the required minimum number of votes - false otherwise
      */
-
     function vote(bool _stance, address _origin) external returns (bool propPassed, bool propExecuted) {
         // check input parameters
         require(msg.sender == management, "not called by management contract");
@@ -67,9 +57,7 @@ contract ContractFeeProposal {
         voted[_origin] = true;
         numberOfVotes += 1;
 
-        if (_stance == true) {
-            numberOfPositiveVotes += 1;
-        }
+        if (_stance) numberOfPositiveVotes++;
 
         // check if execution of proposal should be triggered and update return values
         if ((numberOfVotes >= minimumNumberOfVotes)) {
@@ -87,24 +75,17 @@ contract ContractFeeProposal {
         }
     }
 
-    /// public
-
     /**
      * @notice gets the proposed new contract fee
      * @return the proposed new fee
      */
-
     function getContractFee() public view returns (uint256) {
         return proposedFee;
     }
 
-    /// internal
-    /// private
-
     /**
      * @notice executes the proposal and updates the internal state
      */
-
     function execute() private {
         // check internal state
         require(!proposalExecuted, "proposal was executed");

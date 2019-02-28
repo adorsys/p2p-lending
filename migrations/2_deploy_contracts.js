@@ -5,9 +5,7 @@ const RequestManagement = artifacts.require(
 const ProposalFactory = artifacts.require(
     "./ProposalFactory/ProposalFactory.sol"
 );
-const ProposalManagement = artifacts.require(
-    "./ProposalFactory/ProposalManagement.sol"
-);
+const ProposalManagement = artifacts.require("./ProposalManagement.sol");
 
 const fs = require("fs");
 const path = require("path");

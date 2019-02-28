@@ -1,14 +1,10 @@
 pragma solidity ^0.5.0;
 
 contract LendingRequest {
-    /// modifiers
-
     modifier onlyRecognized() {
         require(msg.sender == asker || msg.sender == lender, "unauthorized function call");
         _;
     }
-
-    /// variables
 
     address payable private managementContract;
 
@@ -26,21 +22,15 @@ contract LendingRequest {
     bool public moneyLent;
     bool public debtSettled;
 
-    /// events
-
     event MoneyLent( address lendingRequest, uint256 amount );
     event DebtSettled( address lendingRequest, uint256 amount );
     event MoneyWithdrawn( address lendingRequest, uint256 amount );
     event LendingRequestReset( address lendingRequest );
     event CollectContractFee( address lendingRequest, address managementAddress );
 
-    /// fallback
-
     function() payable external {
         revert("use deposit to transfer ETH");
     }
-
-    /// constructor
 
     constructor(
         address payable _asker,
@@ -63,14 +53,11 @@ contract LendingRequest {
         managementContract = _managementContract;
     }
 
-    /// external
-
     /**
      * @notice deposit the ether that is being sent with the function call
      * @param _origin the address of the initial caller of the function
      * @return true on success - false otherwise
      */
-
     function deposit(address payable _origin) external payable returns (bool) {
         /*
          * Case 1:
@@ -88,7 +75,6 @@ contract LendingRequest {
          *              has to be paid back by the asker
          *              must be paid back in one transaction and has to include contractFee
          */
-
         if (!moneyLent) {
             require(_origin != asker, "Asker & Lender have to differ");
             require(msg.value == amountAsked, "msg.value");
@@ -97,8 +83,7 @@ contract LendingRequest {
             lender = _origin;
             emit MoneyLent(address(this), msg.value);
             return true;
-        }
-        else if (moneyLent && !debtSettled) {
+        } else if (moneyLent && !debtSettled) {
             require(_origin == asker, "Can only be paid back by the asker");
             require(msg.value == (paybackAmount + contractFee), "not paybackAmount + contractFee");
 
@@ -116,7 +101,6 @@ contract LendingRequest {
      * @notice withdraw the current balance of the contract
      * @param _origin the address of the initial caller of the function
      */
-
     function withdraw(address _origin) external onlyRecognized {
         /*
          * Case 1: ( asker withdraws amountAsked )
@@ -134,7 +118,6 @@ contract LendingRequest {
          *          debt has to be repaid first
          *      contractFee has to remain with the contract
          */
-
         require(moneyLent, "can only be called after money was lent");
         require(lender != address(0), "lender has to be initialized");
 
@@ -143,8 +126,7 @@ contract LendingRequest {
             withdrawnByAsker = true;
             emit MoneyWithdrawn(address(this), address(this).balance);
             asker.transfer(address(this).balance);
-        }
-        else if (_origin == lender) {
+        } else if (_origin == lender) {
             if (!debtSettled) {
                 require(!withdrawnByAsker, "Asker has already withdrawn the funds");
                 moneyLent = false;
@@ -156,8 +138,7 @@ contract LendingRequest {
                 emit MoneyWithdrawn(address(this), address(this).balance);
                 lender.transfer(address(this).balance - (contractFee * 1 ether));
             }
-        }
-        else {
+        } else {
             revert("Error");
         }
     }
@@ -165,14 +146,9 @@ contract LendingRequest {
     /**
      * @notice destroys the lendingRequest contract and forwards all remaining funds to the management contract
      */
-
     function cleanUp() external {
         require(msg.sender == managementContract, "cleanUp failed");
         emit CollectContractFee(address(this), managementContract);
         selfdestruct(managementContract);
     }
-
-    /// public
-    /// internal
-    /// private
 }

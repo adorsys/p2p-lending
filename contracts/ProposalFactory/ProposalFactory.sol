@@ -4,23 +4,21 @@ import "./ContractFeeProposal.sol";
 import "./MemberProposal.sol";
 
 contract ProposalFactory {
-    /// constructor
-    /// fallback
-
     function() external payable {
         revert("ProposalFactory does not accept payments");
     }
 
-    /// external
-
+    /**
+     * @notice creates a new contractFee proposal
+     * @param _proposedFee the suggested new fee
+     * @param _minimumNumberOfVotes the minimum number of votes needed to execute the proposal
+     * @param _majorityMargin the percentage of positive votes needed for proposal to pass
+     */
     function newProposal(
         uint256 _proposedFee,
         uint256 _minimumNumberOfVotes,
         uint256 _majorityMargin
-    )
-        external
-        returns(address proposal) {
-
+    ) external returns(address proposal) {
         proposal = address(
             new ContractFeeProposal(
                 msg.sender,
@@ -32,15 +30,19 @@ contract ProposalFactory {
         );
     }
 
+    /**
+     * @notice creates a new member proposal
+     * @param _memberAddress address of the member
+     * @param _adding true to add member - false to remove member
+     * @param _minimumNumberOfVotes the minimum number of votes needed to execute the proposal
+     * @param _majorityMargin the percentage of positive votes needed for proposal to pass
+     */
     function newProposal(
         address _memberAddress,
         bool _adding,
         uint256 _minimumNumberOfVotes,
         uint256 _majorityMargin
-    )
-        external
-        returns (address proposal) {
-        
+    ) external returns (address proposal) {
         proposal = address(
             new MemberProposal(
                 msg.sender,
@@ -52,8 +54,4 @@ contract ProposalFactory {
             )
         );
     }
-    
-    /// public
-    /// internal
-    /// private
 }

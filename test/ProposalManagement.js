@@ -594,7 +594,7 @@ contract("ProposalManagement", accounts => {
             10
         );
 
-        // positive vote for memberProposal to add thirdVoter
+        // positive vote for memberProposal to add second
         let proposal = (await proposalManagement.getProposals.call())[1];
         await proposalManagement.vote(true, proposal, {
             from: firstVoter
@@ -604,14 +604,7 @@ contract("ProposalManagement", accounts => {
         await proposalManagement.createMemberProposal(thirdVoter, true, {
             from: firstVoter
         });
-        proposal = (await proposalManagement.getProposals.call())[3];
-        await proposalManagement.vote(true, proposal, { from: firstVoter });
-
-        // add fourth member
-        await proposalManagement.createMemberProposal(nonMember, true, {
-            from: firstVoter
-        });
-        proposal = (await proposalManagement.getProposals.call())[4];
+        proposal = (await proposalManagement.getProposals.call())[2];
         await proposalManagement.vote(true, proposal, { from: firstVoter });
 
         // check if minimumNumberOfVotes has changed
@@ -626,16 +619,15 @@ contract("ProposalManagement", accounts => {
             "minimumNumberOfVotes should be increased to 2"
         );
 
-        // remove third member to trigger voting parameters to change again
-
         oldMinNumberOfVotes = newMinNumberOfVotes;
 
-        // positive votes for memberProposal to remove thirdVoter
+        // create remove memberProposal to trigger voting rules change again
         await proposalManagement.createMemberProposal(thirdVoter, false, {
             from: firstVoter
         });
-        proposal = (await proposalManagement.getProposals.call())[5];
+        proposal = (await proposalManagement.getProposals.call())[2];
 
+        // positive votes for memberProposal to remove thirdVoter
         // proposal needs two votes now to pass
         await proposalManagement.vote(true, proposal, { from: firstVoter });
         await proposalManagement.vote(true, proposal, { from: secondVoter });
