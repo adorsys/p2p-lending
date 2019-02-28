@@ -584,4 +584,62 @@ contract("ProposalManagement", accounts => {
             );
         }
     });
+
+    it("minimumNumberOfVotes gets modified when members are added or removed", async () => {
+        // minimumNumberOfVotes gets modified when (members.length / 2) > minimumNumberOfVotes
+
+        // get old vote parameters
+        let oldMinNumberOfVotes = parseInt(
+            await proposalManagement.minimumNumberOfVotes.call(),
+            10
+        );
+
+        // positive vote for memberProposal to add thirdVoter
+        let proposal = (await proposalManagement.getProposals.call())[1];
+        await proposalManagement.vote(true, proposal, {
+            from: firstVoter
+        });
+
+        // add third member to trigger voting parameters to change
+        await proposalManagement.createMemberProposal(thirdVoter, true, {
+            from: firstVoter
+        });
+        proposal = (await proposalManagement.getProposals.call())[3];
+        await proposalManagement.vote(true, proposal, { from: firstVoter });
+
+        // check if minimumNumberOfVotes has changed
+        let newMinNumberOfVotes = parseInt(
+            await proposalManagement.minimumNumberOfVotes.call(),
+            10
+        );
+        assert.strictEqual(
+            newMinNumberOfVotes,
+            oldMinNumberOfVotes + 1,
+            "minimumNumberOfVotes should be increased to 2"
+        );
+
+        // remove third member to trigger voting parameters to change again
+
+        oldMinNumberOfVotes = newMinNumberOfVotes;
+
+        // positive votes for memberProposal to remove thirdVoter
+        await proposalManagement.createMemberProposal(thirdVoter, false, {
+            from: firstVoter
+        });
+        proposal = (await proposalManagement.getProposals.call())[4];
+
+        await proposalManagement.vote(true, proposal, { from: firstVoter });
+        await proposalManagement.vote(true, proposal, { from: secondVoter });
+
+        newMinNumberOfVotes = parseInt(
+            await proposalManagement.minimumNumberOfVotes.call(),
+            10
+        );
+
+        assert.strictEqual(
+            newMinNumberOfVotes,
+            oldMinNumberOfVotes - 1,
+            "minimumNumberOfVotes should be reduced to 1 again"
+        );
+    });
 });
