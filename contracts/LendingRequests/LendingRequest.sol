@@ -1,6 +1,30 @@
 pragma solidity ^0.5.0;
 
 contract LendingRequest {
+    /// modifiers
+
+    modifier onlyRecognized() {
+        require(msg.sender == asker || msg.sender == lender, "unauthorized function call");
+        _;
+    }
+
+    /// variables
+
+    address payable private managementContract;
+
+    address payable public asker;
+    address payable public lender;
+    bool private withdrawnByAsker = false;
+    bool public withdrawnByLender = false;
+
+    bool private verifiedAsker;
+
+    uint256 public amountAsked;
+    uint256 public paybackAmount;
+    uint256 public contractFee;
+    string public purpose;
+    bool public moneyLent;
+    bool public debtSettled;
 
     /// events
 
@@ -9,28 +33,14 @@ contract LendingRequest {
     event MoneyWithdrawn( address lendingRequest, uint256 amount );
     event LendingRequestReset( address lendingRequest );
     event CollectContractFee( address lendingRequest, address managementAddress );
-    
-    /// variables
 
-    address payable private managementContract;
+    /// fallback
 
-    address payable public asker;
-    address payable public lender;
+    function() payable external {
+        revert("use deposit to transfer ETH");
+    }
 
-    bool private verifiedAsker;
-
-    uint256 public amountAsked;
-    uint256 public paybackAmount;
-    uint256 public contractFee;
-    uint256 public creationTime;
-    string public purpose;
-    bool public moneyLent;
-    bool public debtSettled;
-
-    bool private withdrawnByAsker = false;
-    bool public withdrawnByLender = false;
-
-    /// constructor should only be callable by the LendingRequestFactory
+    /// constructor
 
     constructor(
         address payable _asker,
@@ -40,8 +50,7 @@ contract LendingRequest {
         uint256 _contractFee,
         string memory _purpose,
         address payable _managementContract
-    )
-        public {
+    ) public {
         asker = _asker;
         lender = address(0);
         verifiedAsker = _verifiedAsker;
@@ -49,23 +58,26 @@ contract LendingRequest {
         paybackAmount = _paybackAmount;
         contractFee = _contractFee;
         purpose = _purpose;
-        creationTime = now;
         moneyLent = false;
         debtSettled = false;
         managementContract = _managementContract;
     }
 
-    function() payable external {
-        revert("use deposit to transfer ETH");
-    }
+    /// external
 
-    function deposit(address payable _origin) public payable returns (bool) {
+    /**
+     * @notice deposit the ether that is being sent with the function call
+     * @param _origin the address of the initial caller of the function
+     * @return true on success - false otherwise
+     */
+
+    function deposit(address payable _origin) external payable returns (bool) {
         /*
          * Case 1:
          *          Lending Request is being covered by lender
          *          checks:
-         *              must not be covered twice
-         *              must not be covered if the debt has been settled
+         *              must not be covered twice (!moneyLent)
+         *              must not be covered if the debt has been settled 
          *              must not be covered by the asker
          *              has to be covered with one transaction
          * Case 2:
@@ -80,6 +92,7 @@ contract LendingRequest {
         if (!moneyLent) {
             require(_origin != asker, "Asker & Lender have to differ");
             require(msg.value == amountAsked, "msg.value");
+
             moneyLent = true;
             lender = _origin;
             emit MoneyLent(address(this), msg.value);
@@ -88,6 +101,7 @@ contract LendingRequest {
         else if (moneyLent && !debtSettled) {
             require(_origin == asker, "Can only be paid back by the asker");
             require(msg.value == (paybackAmount + contractFee), "not paybackAmount + contractFee");
+
             debtSettled = true;
             emit DebtSettled(address(this), msg.value);
             return true;
@@ -98,7 +112,12 @@ contract LendingRequest {
         return false;
     }
 
-    function withdraw(address _origin) public {
+    /**
+     * @notice withdraw the current balance of the contract
+     * @param _origin the address of the initial caller of the function
+     */
+
+    function withdraw(address _origin) external onlyRecognized {
         /*
          * Case 1: ( asker withdraws amountAsked )
          *      checks:
@@ -118,6 +137,7 @@ contract LendingRequest {
 
         require(moneyLent, "can only be called after money was lent");
         require(lender != address(0), "lender has to be initialized");
+
         if (_origin == asker) {
             require(!debtSettled, "debt was settled");
             withdrawnByAsker = true;
@@ -142,9 +162,17 @@ contract LendingRequest {
         }
     }
 
-    function cleanUp() public {
+    /**
+     * @notice destroys the lendingRequest contract and forwards all remaining funds to the management contract
+     */
+
+    function cleanUp() external {
         require(msg.sender == managementContract, "cleanUp failed");
         emit CollectContractFee(address(this), managementContract);
         selfdestruct(managementContract);
     }
+
+    /// public
+    /// internal
+    /// private
 }
