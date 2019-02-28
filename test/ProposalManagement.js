@@ -179,7 +179,7 @@ contract("ProposalManagement", accounts => {
             "second event should be ProposalExecuted"
         );
         assert.strictEqual(
-            vote.logs[1].args.ContractFeeProposal,
+            vote.logs[1].args.executedProposal,
             proposal,
             "execute should log the correct proposal"
         );
@@ -236,7 +236,7 @@ contract("ProposalManagement", accounts => {
             "second event should be ProposalExecuted"
         );
         assert.strictEqual(
-            vote.logs[1].args.ContractFeeProposal,
+            vote.logs[1].args.executedProposal,
             proposal,
             "execute should log the correct proposal"
         );
@@ -317,7 +317,7 @@ contract("ProposalManagement", accounts => {
             "second event should be ProposalExecuted"
         );
         assert.strictEqual(
-            vote.logs[1].args.ContractFeeProposal,
+            vote.logs[1].args.executedProposal,
             proposal,
             "execute should log the correct proposal"
         );
@@ -331,6 +331,162 @@ contract("ProposalManagement", accounts => {
             newMemberLength,
             oldMemberLength,
             "contract should still only consist of two members"
+        );
+    });
+
+    it("positive vote for addMemberProposal has expected results", async () => {
+        // get current number of members
+        let oldMemberLength = parseInt(
+            await proposalManagement.getMembersLength.call(),
+            10
+        );
+
+        // positive vote for memberProposal to add member
+        let proposal = (await proposalManagement.getProposals.call())[1];
+        let vote = await proposalManagement.vote(true, proposal, {
+            from: firstVoter
+        });
+
+        // expected events are triggered
+        assert.strictEqual(
+            vote.logs.length,
+            3,
+            "positive vote should trigger 2 events"
+        );
+
+        // Voted event gets triggered with expected parameters
+        assert.strictEqual(
+            vote.logs[0].event,
+            "Voted",
+            "first event should be Voted"
+        );
+        assert.strictEqual(
+            vote.logs[0].args.proposalAddress,
+            proposal,
+            "should be a vote for the expected proposal"
+        );
+        assert.strictEqual(
+            vote.logs[0].args.stance,
+            true,
+            "should be a positive vote"
+        );
+        assert.strictEqual(
+            vote.logs[0].args.from,
+            firstVoter,
+            "should be a vote from firstVoter"
+        );
+
+        // ProposalExecuted event gets triggered with expected parameters
+        assert.strictEqual(
+            vote.logs[1].event,
+            "ProposalExecuted",
+            "second event should be ProposalExecuted"
+        );
+        assert.strictEqual(
+            vote.logs[1].args.executedProposal,
+            proposal,
+            "execute should log the correct proposal"
+        );
+
+        // MembershipChanged event gets triggered with expected parameters
+        assert.strictEqual(
+            vote.logs[2].event,
+            "MembershipChanged",
+            "should be MembershipChanged event"
+        );
+        assert.strictEqual(
+            vote.logs[2].args.memberAddress,
+            secondVoter,
+            "should be the address of the secondVoter"
+        );
+        assert.strictEqual(
+            vote.logs[2].args.memberStatus,
+            true,
+            "membership status of secondVoter should be true"
+        );
+
+        // member was not added to contract
+        let newMemberLength = parseInt(
+            await proposalManagement.getMembersLength.call(),
+            10
+        );
+        assert.strictEqual(
+            newMemberLength,
+            oldMemberLength + 1,
+            "secondVoter should have been added to members"
+        );
+    });
+
+    it("negative vote for removeMemberProposal has expected results", async () => {
+        // get current number of members
+        let oldMemberLength = parseInt(
+            await proposalManagement.getMembersLength.call(),
+            10
+        );
+
+        // negative vote for memberProposal to remove member
+        let proposal = (await proposalManagement.getProposals.call())[2];
+        let vote = await proposalManagement.vote(false, proposal, {
+            from: firstVoter
+        });
+
+        // expected events are triggered
+        assert.strictEqual(
+            vote.logs.length,
+            2,
+            "negative vote should only trigger 2 events"
+        );
+
+        // Voted event gets triggered with expected parameters
+        assert.strictEqual(
+            vote.logs[0].event,
+            "Voted",
+            "should be Voted event"
+        );
+        assert.strictEqual(
+            vote.logs[0].args.proposalAddress,
+            proposal,
+            "should be the address of remove MemberProposal"
+        );
+        assert.strictEqual(
+            vote.logs[0].args.stance,
+            false,
+            "should be a negative vote"
+        );
+        assert.strictEqual(
+            vote.logs[0].args.from,
+            firstVoter,
+            "should be a vote from firstVoter"
+        );
+
+        // ProposalExecuted event gets triggered with expected parameters
+        assert.strictEqual(
+            vote.logs[1].event,
+            "ProposalExecuted",
+            "should be ProposalExecuted event"
+        );
+        assert.strictEqual(
+            vote.logs[1].args.executedProposal,
+            proposal,
+            "proposal should have been executed"
+        );
+
+        // firstVoter is still a member
+        let newMemberLength = parseInt(
+            await proposalManagement.getMembersLength.call(),
+            10
+        );
+        assert.strictEqual(
+            newMemberLength,
+            oldMemberLength,
+            "should still be two members"
+        );
+
+        let memberAddress = await proposalManagement.members.call(1);
+        assert.strictEqual(
+            memberAddress,
+            firstVoter,
+            "member should be firstVoter"
         );
     });
 });

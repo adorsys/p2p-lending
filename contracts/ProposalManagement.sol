@@ -28,7 +28,7 @@ contract ProposalManagement {
 
     event ProposalCreated(address proposalAddress, string proposalType);
     event Voted(address proposalAddress, bool stance, address from);
-    event ProposalExecuted(address ContractFeeProposal);
+    event ProposalExecuted(address executedProposal);
     event NewContractFee(uint256 oldFee, uint256 newFee);
     event MembershipChanged(address memberAddress, bool memberStatus);
     event CurrentLockedUsers(address[] unlockUsers);
@@ -45,34 +45,44 @@ contract ProposalManagement {
     /// fallback
     /// external
     /// public
-    
+
     /**
      * @notice creates a proposal contract to change the fee used in LendingRequests
-     * @param _proposedFee the new fee that is being suggested
+     * @param _proposedFee the new fee in range [1 ... x] which corresponds to [0.1 ... x] ETH
      * @dev only callable by registered members
      */
 
     function createContractFeeProposal(uint256 _proposedFee) public onlyMembers {
         require(_proposedFee >= 1, "Minimum Fee is 0.1 Ether");
+
+        // input is in range [1 ... x] which corresponds to [0.1 ... x] ETH
         uint256 feeInFinney = _proposedFee * 100 finney;
 
+        // prepare payload for function call - no spaces for parameters
         bytes memory payload = abi.encodeWithSignature(
             "newProposal(uint256,uint256,uint256)",
             feeInFinney, minimumNumberOfVotes, majorityMargin
         );
-        (bool success, bytes memory encodedReturnValue) = proposalFactory.call(payload);
-        require(success, "contractfee proposal failed");
-        address proposal = abi.decode(encodedReturnValue, (address));
-        emit ProposalCreated(proposal, "contractFeeProposal");
 
+        (bool success, bytes memory encodedReturnValue) = proposalFactory.call(payload);
+
+        // check if function call was successful
+        require(success, "contractfee proposal failed");
+
+        // decode return value to address
+        address proposal = abi.decode(encodedReturnValue, (address));
+
+        // add created proposal to management structure and set correct proposal type
         proposals[address(this)].push(proposal);
         proposalType[proposal] = 1;
+
+        emit ProposalCreated(proposal, "contractFeeProposal");
     }
 
     /**
      * @notice creates a proposal contract to change membership status for the member
      * @param _memberAddress the address of the member
-     * @param _adding true if member is to be added false otherwise 
+     * @param _adding true if member is to be added false otherwise
      * @dev only callable by registered members
      */
 
@@ -113,7 +123,7 @@ contract ProposalManagement {
         emit Voted(_proposalAddress, _stance, msg.sender);
         bytes memory payload = abi.encodeWithSignature("vote(bool,address)", _stance, msg.sender);
         (bool success, bytes memory encodedReturnValue) = _proposalAddress.call(payload);
-        
+
         // check if voting was successfull
         require(success, "voting failed");
         lockedUsersPerProposal[_proposalAddress].push(msg.sender);
@@ -127,7 +137,7 @@ contract ProposalManagement {
             handleVoteReturn(proposalParameter, proposalPassed, _proposalAddress),
             "processing of vote return failed"
         );
-        
+
         // unlock users in ICO contract
         // address[] memory lockedUsers = lockedUsersPerProposal[_proposalAddress];
         // emit CurrentLockedUsers(lockedUsers);
@@ -169,28 +179,28 @@ contract ProposalManagement {
                 // get new contract fee from proposal
                 bytes memory payload = abi.encodeWithSignature("getContractFee()");
                 (bool success, bytes memory encodedReturnValue) = _proposalAddress.call(payload);
-                
+
                 // throw if function call failed
                 require(success, "could not get new contract fee");
 
                 // decode contract fee
                 uint256 newContractFee = abi.decode(encodedReturnValue, (uint256));
                 uint256 oldContractFee = contractFee;
-                
+
                 // update contract fee
                 setFee(newContractFee);
                 emit NewContractFee(oldContractFee, newContractFee);
             }
             // remove proposal from openProposals
             return true;
-            
+
         /// case: memberProposal
         } else if(_parameter == 2 || _parameter == 3) {
             if(_passed) {
                 // get member address
                 bytes memory payload = abi.encodeWithSignature("getMemberAddress()");
                 (bool success, bytes memory encodedReturnValue) = _proposalAddress.call(payload);
-                
+
                 // throw if function call failed
                 require(success, "could not get memberAddress");
 
