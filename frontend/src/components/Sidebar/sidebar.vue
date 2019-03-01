@@ -16,7 +16,7 @@
           <li class="sidebar__menu--link" @click="isShowing = false">
             <router-link :to="{ name: 'lendingboard' }" class="sidebar__menu--router">Lending Board</router-link>
           </li>
-          <li class="sidebar__menu--router">
+          <li class="sidebar__menu--router" @click="isShowing = false">
             <router-link :to="{ name: 'ico' }" class="sidebar__menu--router">ICO</router-link>
           </li>
           <li class="sidebar__menu--router">

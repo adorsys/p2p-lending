@@ -254,6 +254,8 @@ export default {
 }
 
 .ico__details {
+  margin-top: 15px;
+  margin-bottom: 15px;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
 }
