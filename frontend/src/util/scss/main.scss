@@ -77,7 +77,7 @@ body {
   background: $background-color;
   color: $link-text-color;
   padding: 8px;
-  min-width: 30px;
+  min-width: 20%;
   height: 30px;
   border-right: 1px solid $border-color;
 }
@@ -88,17 +88,13 @@ body {
 
 .table__data {
   text-align: center;
-  margin: 0;
-  padding: 0;
-  width: auto;
   padding: 12px;
   border: 1px solid $border-color;
 }
 
-.table__data--vote {
+.table__data--buttons {
   margin: 0;
   padding: 0;
-  width: 100%;
 }
 
 .table__data:first-of-type {

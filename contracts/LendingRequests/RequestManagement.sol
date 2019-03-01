@@ -116,7 +116,14 @@ contract RequestManagement is Ownable {
     function getProposalParameters(address payable _lendingRequest)
         public
         view
-        returns (uint256 askAmount, uint256 paybackAmount, uint256 contractFee, string memory purpose) {
+        returns (
+            address asker,
+            uint256 askAmount,
+            uint256 paybackAmount,
+            uint256 contractFee,
+            string memory purpose
+        ) {
+        asker = LendingRequest(_lendingRequest).asker();
         askAmount = LendingRequest(_lendingRequest).amountAsked();
         paybackAmount = LendingRequest(_lendingRequest).paybackAmount();
         contractFee = LendingRequest(_lendingRequest).contractFee();

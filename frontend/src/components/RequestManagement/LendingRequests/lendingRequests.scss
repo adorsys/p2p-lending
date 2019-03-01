@@ -5,6 +5,18 @@
   margin-bottom: 25px;
 }
 
-.button--claim {
+.button--lend {
   width: 100px;
+}
+
+.table__data--trusted {
+  color: green;
+}
+.table__data--untrusted {
+  color: red;
+}
+
+.table__data--lend {
+  margin: 0;
+  padding: 0;
 }

@@ -56,13 +56,33 @@ export default {
     return {
       askAmount: null,
       paybackAmount: null,
-      requestPurpose: null
+      requestPurpose: null,
+      contract: null
     }
   },
   methods: {
-    createRequest() {
-      console.log('submit')
+    async createRequest() {
+      if (
+        this.askAmount !== null &&
+        this.paybackAmount !== null &&
+        this.requestPurpose !== null
+      ) {
+        console.log(parseInt(this.askAmount, 10))
+        console.log(parseInt(this.paybackAmount, 10))
+        console.log(this.requestPurpose)
+        await this.contract()
+          .methods.ask(
+            parseInt(this.askAmount, 10),
+            parseInt(this.paybackAmount, 10),
+            this.requestPurpose
+          )
+          .send({ from: this.$store.state.web3.coinbase })
+        this.$parent.$emit('lendingRequestCreated')
+      }
     }
+  },
+  mounted() {
+    this.contract = this.$parent.$parent.requestManagementContract
   }
 }
 </script>

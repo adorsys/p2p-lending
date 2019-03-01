@@ -23,7 +23,7 @@
       </div>
     </transition>
     <transition>
-      <div class="sidebar__overlay" v-if="isShowing"></div>
+      <div class="sidebar__overlay" v-if="isShowing" @click="$parent.$emit('toggleSidebar')"></div>
     </transition>
   </div>
 </template>

@@ -14,7 +14,7 @@
           <tr class="table__row" v-for="p in proposals" :key="p.idx">
             <td class="table__data">{{p.author}}</td>
             <td class="table__data">{{p.description}}</td>
-            <td class="table__data table__data--vote">
+            <td class="table__data table__data--buttons">
               <div v-on:click="vote(p.id, true)" class="button button--table button--vote">Agree</div>
               <div v-on:click="vote(p.id, false)" class="button button--table button--vote">Disagree</div>
             </td>
