@@ -17,7 +17,6 @@ contract TrustToken is EIP20Interface {
 
     uint256 public totalSupply;
 
-
     uint256 constant private MAX_UINT256 = 2**256 - 1;
     mapping (address => uint256) private tokenBalances;
     mapping (address => uint256) public etherBalances;
@@ -36,6 +35,7 @@ contract TrustToken is EIP20Interface {
     uint public goal = 10 ether;
     uint public contractEtherBalance = 0 ether;
     bool public isIcoActive= true;
+    uint public price = 0 ether;
 
     uint storeDate;
 
@@ -51,14 +51,9 @@ contract TrustToken is EIP20Interface {
         name = "TrustToken";                                   // Set the name for display purposes
         decimals = 0;                            // Amount of decimals for display purposes
         symbol = "TT";                               // Set the symbol for display purposes
-
     }
 
-    function getEtherBalances() public view returns(uint)
-    {
-        return (etherBalances[msg.sender]);
-    }
-    //-------------------------------------------------
+     //-------------------------------------------------
     function set(uint x) public {
         storeDate = x;
         
@@ -176,19 +171,32 @@ contract TrustToken is EIP20Interface {
         
 
     }
-    
-    function distributeToken() private
+  
+    function distributeToken() private 
     {
         for(uint i = 0; i < participants.length; i++)
         {
             tokenBalances[ participants[i] ] =(  (etherBalances[ participants[i] ]) * totalSupply ) / contractEtherBalance;//Token = (Ether/contractEtherBalance) * totalSupply
-            
             emit Transfer( 0x0000000000000000000000000000000000000000, participants[i], tokenBalances[ participants[i] ]);
         }
+        
+
     }
     
     function getParticipantsCount() public view returns(uint)
     {
         return(participants.length);
     }
+
+    function payFees () external payable
+    {
+        contractEtherBalance += msg.value;
+    } 
+
+
+    function getEtherBalances() public view returns(uint)
+    {
+        return (etherBalances[msg.sender]);
+    }
+   
 }

@@ -26,7 +26,7 @@
     </div>
     <hr>
     
-    <div v-if="isIcoActive">
+    <div v-if="isIcoActive" >
         <h3>{{ "Buy TrustToken"}}</h3>
         <input
           type="text"
