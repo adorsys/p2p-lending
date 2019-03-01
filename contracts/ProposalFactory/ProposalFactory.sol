@@ -1,63 +1,57 @@
 pragma solidity ^0.5.0;
 
 import "./ContractFeeProposal.sol";
+import "./MemberProposal.sol";
 
-contract ProposalFactory {    
-    /// constructor
-
-    /// fallback
-
+contract ProposalFactory {
     function() external payable {
         revert("ProposalFactory does not accept payments");
     }
 
-    /// external
-
-    /// public
-
-    function newContractFeeProposal(uint256 _proposedFee, address _origin)
-        public
-        returns(address contractFeeProposal) {
-
-        uint256 minimumNumberOfVotes = getMinimumNumberOfVotes();
-        uint256 majorityMargin = getMajorityMargin();
-        
-        contractFeeProposal = address(new ContractFeeProposal(
-            _origin,
-            _proposedFee,
-            minimumNumberOfVotes,
-            majorityMargin,
-            msg.sender
-        ));
+    /**
+     * @notice creates a new contractFee proposal
+     * @param _proposedFee the suggested new fee
+     * @param _minimumNumberOfVotes the minimum number of votes needed to execute the proposal
+     * @param _majorityMargin the percentage of positive votes needed for proposal to pass
+     */
+    function newProposal(
+        uint256 _proposedFee,
+        uint256 _minimumNumberOfVotes,
+        uint256 _majorityMargin
+    ) external returns(address proposal) {
+        proposal = address(
+            new ContractFeeProposal(
+                msg.sender,
+                _proposedFee,
+                _minimumNumberOfVotes,
+                _majorityMargin,
+                msg.sender
+            )
+        );
     }
 
-    function castVote(
-        address payable _proposalAddress,
-        bool _stance
-    )
-        public {
-        
-        ContractFeeProposal proposal = ContractFeeProposal(_proposalAddress);
-        proposal.vote(_stance, msg.sender);
+    /**
+     * @notice creates a new member proposal
+     * @param _memberAddress address of the member
+     * @param _adding true to add member - false to remove member
+     * @param _minimumNumberOfVotes the minimum number of votes needed to execute the proposal
+     * @param _majorityMargin the percentage of positive votes needed for proposal to pass
+     */
+    function newProposal(
+        address _memberAddress,
+        bool _adding,
+        uint256 _minimumNumberOfVotes,
+        uint256 _majorityMargin
+    ) external returns (address proposal) {
+        proposal = address(
+            new MemberProposal(
+                msg.sender,
+                _memberAddress,
+                _adding,
+                _minimumNumberOfVotes,
+                _majorityMargin,
+                msg.sender
+            )
+        );
     }
-
-    /// internal
-
-    function getMinimumNumberOfVotes()
-        internal
-        pure
-        returns (uint256) {
-        
-        return 1;
-    }
-
-    function getMajorityMargin()
-        internal
-        pure
-        returns (uint256) {
-        
-        return 50;
-    }
-
-    /// private
 }

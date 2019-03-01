@@ -1,9 +1,10 @@
 pragma solidity ^0.5.0;
 
-contract ContractFeeProposal {
+contract MemberProposal {
     address private author;
-    address payable private management = address(0);
-    uint256 private proposedFee;
+    address private management = address(0);
+    address public memberAddress;
+    bool public adding;
     uint256 private majorityMargin;
     uint256 private minimumNumberOfVotes;
 
@@ -19,13 +20,15 @@ contract ContractFeeProposal {
 
     constructor(
         address _author,
-        uint256 _proposedFee,
+        address _memberAddress,
+        bool _adding,
         uint256 _minimumNumberOfVotes,
         uint256 _majorityMargin,
-        address payable _managementContract
+        address _managementContract
     ) public {
         author = _author;
-        proposedFee = _proposedFee;
+        memberAddress = _memberAddress;
+        adding = _adding;
         minimumNumberOfVotes = _minimumNumberOfVotes;
         majorityMargin = _majorityMargin;
         management = _managementContract;
@@ -37,7 +40,7 @@ contract ContractFeeProposal {
     function kill() external {
         require(msg.sender == management, "not called by management contract");
         require(proposalExecuted, "proposal has to be executed first");
-        selfdestruct(management);
+        selfdestruct(msg.sender);
     }
 
     /**
@@ -57,7 +60,9 @@ contract ContractFeeProposal {
         voted[_origin] = true;
         numberOfVotes += 1;
 
-        if (_stance) numberOfPositiveVotes++;
+        if (_stance) {
+            numberOfPositiveVotes++;
+        }
 
         // check if execution of proposal should be triggered and update return values
         if ((numberOfVotes >= minimumNumberOfVotes)) {
@@ -76,27 +81,25 @@ contract ContractFeeProposal {
     }
 
     /**
-     * @notice gets the proposed new contract fee
-     * @return the proposed new fee
+     * @notice gets the address of the member
+     * @return memberAddress of the proposal
      */
-    function getContractFee() public view returns (uint256) {
-        return proposedFee;
+    function getMemberAddress() public view returns (address) {
+        return memberAddress;
     }
 
     /**
      * @notice executes the proposal and updates the internal state
      */
     function execute() private {
-        // check internal state
         require(!proposalExecuted, "proposal was executed");
         require(
             numberOfVotes >= minimumNumberOfVotes,
             "requirements for execution not met"
         );
 
-        // update the internal state
         proposalExecuted = true;
-        
+
         if (((numberOfPositiveVotes * 100) / numberOfVotes) >= majorityMargin) {
             proposalPassed = true;
         } else {

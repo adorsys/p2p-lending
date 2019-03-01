@@ -1,36 +1,52 @@
 <template>
   <div>
-    <hr>
-    <div class="LendingBoardInputLabels">
-      <label for="lending-board-input-fee">Proposed Fee:</label>
-      <label for="lending-board-input-address">Member Address:</label>
-      <label for="lending-board-input-name">Member Name:</label>
-    </div>
-    <div class="LendingBoardInputs">
-      <div>
-        <input type="text" id="lending-board-input-fee" v-model="proposedFee" placeholder="0.0 ETH">
-      </div>
-      <div>
-        <input
-          type="text"
-          id="lending-board-input-address"
-          v-model="memberAddress"
-          placeholder="Member Address ( 0x0 )"
-        >
-      </div>
-      <div>
-        <input
-          type="text"
-          id="lending-board-input-name"
-          v-model="memberName"
-          placeholder="Member Name"
-        >
-      </div>
-    </div>
-    <div class="lending-board-buttons">
-      <button @click="changeFee">Change Fee</button>
-      <button @click="addMember">Add Member</button>
-      <button @click="removeMember">Remove Member</button>
+    <div class="subtitle">Board Inputs:</div>
+    <div class="userInput">
+      <label
+        for="userInput__input--contractFee"
+        class="userInput__label userInput__label--contractFee"
+      >Proposed Fee:</label>
+      <label
+        for="userInput__input--memberAddress"
+        class="userInput__label userInput__label--memberAddress"
+      >Member Address:</label>
+      <label
+        for="userInput__input--memberName"
+        class="userInput__label userInput__label--memberName"
+      >Member Name:</label>
+      <input
+        type="text"
+        id="userInput__input--contractFee"
+        class="userInput__inputField userInput__inputField--contractFee"
+        placeholder="0.0 ETH"
+        v-model="proposedFee"
+      >
+      <input
+        type="text"
+        id="userInput__input--memberAddress"
+        class="userInput__inputField userInput__inputField--memberAddress"
+        placeholder="Member Address ( 0x0 )"
+        v-model="memberAddress"
+      >
+      <input
+        type="text"
+        id="userInput__input--memberName"
+        class="userInput__inputField userInput__inputField--memberName"
+        placeholder="Member Name"
+        v-model="memberName"
+      >
+      <div
+        class="button button--lendingBoard userInput__button--changeFee"
+        @click="changeFee"
+      >Change Fee</div>
+      <div
+        class="button button--lendingBoard userInput__button--addMember"
+        @click="addMember"
+      >Add Member</div>
+      <div
+        class="button button--lendingBoard userInput__button--removeMember"
+        @click="removeMember"
+      >Remove Member</div>
     </div>
   </div>
 </template>
@@ -109,6 +125,6 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 @import '@/components/LendingBoard/Inputs/inputs.scss';
 </style>
