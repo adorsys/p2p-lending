@@ -73,6 +73,22 @@ contract RequestManagement is Ownable {
     }
 
     /**
+     * @notice transfers current contract balance to the owner of the contract
+     * @dev should be called before relinquishing the contract
+     */
+    function withdrawFees() public onlyOwner {
+        owner.transfer(address(this).balance);
+    }
+
+    /**
+     * @notice Destroys the management contract
+     * @dev deletes the contract and transfers the contract balance to the owner
+     */
+    function kill() public onlyOwner {
+        selfdestruct(owner);
+    }
+
+    /**
      * @notice gets the lendingRequests for the specified user
      * @param _user user you want to see the lendingRequests of
      * @return the lendingRequests for _user
@@ -91,19 +107,20 @@ contract RequestManagement is Ownable {
     }
 
     /**
-     * @notice transfers current contract balance to the owner of the contract
-     * @dev should be called before relinquishing the contract
+     * @notice gets askAmount, paybackAmount and purpose to given proposalAddress
+     * @param _lendingRequest the address to get the parameters from
+     * @return askAmount of the proposal
+     * @return paybackAmount of the proposal
+     * @return purpose of the proposal
      */
-    function withdrawFees() public onlyOwner {
-        owner.transfer(address(this).balance);
-    }
-
-    /**
-     * @notice Destroys the management contract
-     * @dev deletes the contract and transfers the contract balance to the owner
-     */
-    function kill() public onlyOwner {
-        selfdestruct(owner);
+    function getProposalParameters(address payable _lendingRequest)
+        public
+        view
+        returns (uint256 askAmount, uint256 paybackAmount, uint256 contractFee, string memory purpose) {
+        askAmount = LendingRequest(_lendingRequest).amountAsked();
+        paybackAmount = LendingRequest(_lendingRequest).paybackAmount();
+        contractFee = LendingRequest(_lendingRequest).contractFee();
+        purpose = LendingRequest(_lendingRequest).purpose();
     }
 
     /**

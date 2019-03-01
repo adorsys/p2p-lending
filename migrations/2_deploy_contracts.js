@@ -30,6 +30,14 @@ module.exports = async deployer => {
     );
 
     await deployer.deploy(RequestManagement, LendingBoard.address);
+
+    // generate contract info for request management
+    await writeContractInfo(
+        "requestmanagement",
+        RequestManagement.abi,
+        RequestManagement.address
+    );
+
     await deployer.deploy(ProposalFactory);
     await deployer.deploy(ProposalManagement, ProposalFactory.address);
 };
