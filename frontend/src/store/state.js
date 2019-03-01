@@ -19,6 +19,7 @@ export default {
         tokenSymbol: null,
         tokenBalanceUser: null,
         etherBalanceUser: null,
-        name: null
+        name: null,
+        decimals: null
     }
 }

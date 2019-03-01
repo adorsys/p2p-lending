@@ -31,6 +31,7 @@ export default {
         state.icoState.tokenBalanceUser = payload.tokenBalanceUser
         state.icoState.etherBalanceUser = payload.etherBalanceUser
         state.icoState.name = payload.name
+        state.icoState.decimals = payload.decimals
 
     },
     [types.INIT_PROPOSALS](state, payload) {

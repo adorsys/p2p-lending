@@ -127,6 +127,9 @@
         
 
     </div>
+
+    <h3>{{decimals}}</h3>
+
     
 
     
@@ -151,7 +154,8 @@ export default {
     tokenSymbol: state => state.icoState.tokenSymbol,
     tokenBalanceUser: state => state.icoState.tokenBalanceUser,
     etherBalanceUser: state => state.icoState.etherBalanceUser,
-    name: state => state.icoState.name
+    name: state => state.icoState.name,
+    decimals : state => state.icoState.decimals
   }),
   data() {
     return {
@@ -240,12 +244,8 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
-// variables
-$navbar-background-color: #dadada;
-$navbar-hover-color: #f3f3f3;
-$border-color: #a0a0a0;
-$link-text-color-darkened: #444;
+<style lang="scss">
+@import '../../util/scss/variables';
 
 .ico__input {
   padding: 0.7em;
@@ -256,24 +256,6 @@ $link-text-color-darkened: #444;
 .ico__details {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-}
-
-.button {
-  all: unset;
-  display: inline-block;
-  margin-top: 25px;
-  margin-right: 0.5em;
-  margin-bottom: 25px;
-  margin-left: 0.5em;
-  padding: 0.5em 1.25em;
-  width: 70px;
-  cursor: pointer;
-  background: $navbar-background-color;
-  color: $link-text-color-darkened;
-  border: 1px solid rgba($color: $border-color, $alpha: 0.3);
-  border-radius: 2px;
-  box-shadow: 0 0px 12px -6px rgba($color: #000000, $alpha: 0.3);
-  font-weight: 600;
 }
 
 .button--ico {

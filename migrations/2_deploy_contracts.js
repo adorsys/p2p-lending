@@ -30,6 +30,12 @@ module.exports = async deployer => {
     await deployer.deploy(LendingBoard, minimumQuorum, majorityMargin);
 
     await writeContractInfo(
+        "icocontract",
+        TrustToken.abi,
+        TrustToken.address
+    );
+    
+    await writeContractInfo(
         "lendingboard",
         LendingBoard.abi,
         LendingBoard.address
