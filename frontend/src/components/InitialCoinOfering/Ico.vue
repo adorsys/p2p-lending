@@ -127,11 +127,7 @@
         
 
     </div>
-
-    <h3>{{decimals}}</h3>
-
     
-
     
   </div>
 </template>
@@ -205,36 +201,41 @@ export default {
             .web3Instance()
             .utils.toWei(this.etherAmount, 'ether')
         })
+        
     },
     async transfer() {
+      let transferAmount = await this.$store.state.web3.web3Instance().utils.toWei(this.transferTokenAmount, "ether")
       await this.$store.state
         .icoContractInstance()
-        .methods.transfer(this.transferTo , (parseInt(this.transferTokenAmount, 10)))
+        .methods.transfer(this.transferTo , transferAmount)
         .send({
           from: this.$store.state.web3.coinbase
         })
     },
     async approve() {
+      let transferAmount = await this.$store.state.web3.web3Instance().utils.toWei(this.approveTokenAmount, "ether")
       await this.$store.state
         .icoContractInstance()
-        .methods.approve(this.approveSpender , (parseInt(this.approveTokenAmount, 10)))
+        .methods.approve(this.approveSpender , transferAmount)
         .send({
           from: this.$store.state.web3.coinbase
         })
     },
     async transferFromMethod() {
+      let transferAmount = await this.$store.state.web3.web3Instance().utils.toWei(this.transferTokenAmountFrom, "ether")
       await this.$store.state
         .icoContractInstance()
-        .methods.transferFrom(this.transferFrom,this.transferFromTo,(parseInt(this.transferTokenAmountFrom, 10)))
+        .methods.transferFrom(this.transferFrom,this.transferFromTo,transferAmount)
         .send({
           from: this.$store.state.web3.coinbase
         })
     },
     async checkAllowance() {
-      this.tokenAmountAllowsToSpend = await this.$store.state
+      
+      this.tokenAmountAllowsToSpend = await this.$store.state.web3.web3Instance().utils.fromWei( await this.$store.state
         .icoContractInstance()
         .methods.allowance(this.checkAddress,this.$store.state.web3.coinbase)
-        .call()
+        .call(), "ether")
     }
   },
   async mounted() {

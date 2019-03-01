@@ -47,10 +47,11 @@ contract TrustToken is EIP20Interface {
         */
     ) public {
         //tokenBalances[msg.sender] = 1000;               // Give the creator all initial tokens
-        totalSupply = 100 * (10 ** uint(decimals));                        // Update total supply
         name = "TrustToken";                                   // Set the name for display purposes
-        decimals = 0;                            // Amount of decimals for display purposes
+        decimals = 18;                                // Amount of decimals for display purposes
         symbol = "TT";                               // Set the symbol for display purposes
+        totalSupply = 100 * (10 ** uint(decimals));  // Update total supply
+
     }
 
      //-------------------------------------------------
