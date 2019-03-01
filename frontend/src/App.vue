@@ -24,11 +24,5 @@ export default {
 </script>
 
 <style lang="scss">
-#app {
-  font-family: 'Fira Code', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
+@import './util/scss/main';
 </style>

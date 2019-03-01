@@ -1,0 +1,126 @@
+@import './variables';
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Lucida Sans Unicode', Arial;
+  font-weight: 400;
+  margin-top: 55px;
+  background-color: $navbar-hover-color;
+  text-align: center;
+}
+
+.separator {
+  color: $background-color;
+}
+
+.button {
+  all: unset;
+  display: inline-block;
+  margin-top: 25px;
+  margin-right: 0.5em;
+  margin-bottom: 25px;
+  margin-left: 0.5em;
+  padding: 0.5em 1.25em;
+  width: 70px;
+  cursor: pointer;
+  background: $background-color;
+  color: $link-text-color-darkened;
+  border: 1px solid rgba($color: $border-color, $alpha: 0.3);
+  border-radius: 2px;
+  box-shadow: 0 0px 12px -6px rgba($color: #000000, $alpha: 0.3);
+  font-weight: 600;
+}
+
+.title {
+  font-weight: 800;
+  font-size: 2.8rem;
+  color: $link-text-color-darkened;
+  margin-bottom: 0.3em;
+  text-decoration: underline;
+}
+
+.subtitle {
+  font-weight: 600;
+  font-size: 1.7rem;
+  color: $link-text-color-darkened;
+  margin-top: 1em;
+  margin-bottom: 1em;
+  text-decoration: underline;
+}
+
+.button--table {
+  margin: 7px;
+  margin-left: 7%;
+  margin-right: 7%;
+  padding: 5px;
+  background: $background-color-inactive;
+}
+
+.table {
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 2em;
+  margin-bottom: 20px;
+  border-collapse: collapse;
+  border: 1px solid $background-color;
+  width: 90%;
+}
+
+.table__head {
+  text-transform: uppercase;
+  text-align: center;
+  background: $background-color;
+  color: $link-text-color;
+  padding: 8px;
+  min-width: 30px;
+  height: 30px;
+  border-right: 1px solid $border-color;
+}
+
+.table__head:last-of-type {
+  border-right: none;
+}
+
+.table__data {
+  text-align: center;
+  margin: 0;
+  padding: 0;
+  width: auto;
+  padding: 12px;
+  border: 1px solid $border-color;
+}
+
+.table__data--vote {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
+.table__data:first-of-type {
+  border-left: none;
+}
+
+.table__data:last-of-type {
+  border-right: none;
+}
+
+.table__row:first-of-type .table__data {
+  border-top: none;
+}
+
+.table__row:last-of-type .table__data {
+  border-bottom: none;
+}
+
+.table__row:nth-child(2n) .table__data {
+  background: $background-color-inactive;
+}
+
+.table__row:nth-child(2n) .button--table {
+  background: $navbar-hover-color;
+}

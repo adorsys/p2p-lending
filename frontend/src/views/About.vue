@@ -4,3 +4,9 @@
     <p>This is an About Page</p>
   </div>
 </template>
+
+<style lang="scss">
+.about {
+  text-align: center;
+}
+</style>
