@@ -139,12 +139,26 @@ contract TrustToken is EIP20Interface {
         return allowed[_owner][_spender];
     }
 
+    using address_make_payable for address;
+
     function participate () external payable{
         
         if(isIcoActive)
         {
-            etherBalances[msg.sender] += msg.value; //add to senders ether_balance
-            contractEtherBalance += msg.value; // add to contract_balance
+            uint allowedToAdd = msg.value;
+
+            if( (contractEtherBalance + msg.value) > goal)
+            {
+                allowedToAdd = goal - contractEtherBalance;
+                //msg.sender.make_payable().transfer(contractEtherBalance + msg.value - goal);
+                address add1= msg.sender;
+                address payable addr2 = add1.make_payable();
+                addr2.transfer(contractEtherBalance + msg.value - goal);
+
+            }
+
+            etherBalances[msg.sender] += allowedToAdd; //add to senders ether_balance
+            contractEtherBalance += allowedToAdd; // add to contract_balance
             
             for(uint i = 0; i < participants.length; i++) // go trough all participants
             {
@@ -172,6 +186,8 @@ contract TrustToken is EIP20Interface {
         
 
     }
+
+
   
     function distributeToken() private 
     {
@@ -201,3 +217,12 @@ contract TrustToken is EIP20Interface {
     }
    
 }
+
+
+library address_make_payable {
+    function make_payable(address x) internal pure returns (address payable) {
+        return address(uint160(x));
+    }
+}
+
+
