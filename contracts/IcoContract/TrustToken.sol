@@ -4,7 +4,7 @@ Implements EIP20 token standard: https://github.com/ethereum/EIPs/blob/master/EI
 pragma solidity ^0.5.0;                                                 // Solidity compiler version
 import "./EIP20Interface.sol";
 
-/// @notice library makes any address into a payable address
+/// @notice Library makes any address into a payable address
 library address_make_payable {
     function make_payable(address x) internal pure returns (address payable) {
         return address(uint160(x));
@@ -15,7 +15,7 @@ contract TrustToken is EIP20Interface {
 
     using address_make_payable for address;                             // use this library
 
-    address public management;
+    address public proposalManagement;                                          // address of ProposalManagement
     bool private setManagementLock = false;
     mapping (address => bool) public isUserLocked;
 
@@ -61,72 +61,79 @@ contract TrustToken is EIP20Interface {
     
     //-------------------------------------------------
     
-    /// @notice checks if token of '_user' are not locked
+    /* nicht gebraucht
+    /// @notice Checks if token of '_user' are not locked
     /// @param _user The address of an user
     modifier userIsNotLocked(address _user) {
         require(isUserLocked[_user]==false, "user is locked");
         _;
     }
-    /// @notice checks if '_user' is a Trustee
+    */
+    /// @notice Checks if '_user' is a Trustee
     /// @param _user The address of an user
     modifier isTrusteeMod(address _user) {
         require(isTrustee[_user] == true, "can only be called by a trustee");
         _;
     }
-    /// @notice checkss if '_add' is the address of ProposalManagement
+    /// @notice Checkss if '_add' is the address of ProposalManagement
     /// @param _add The address that should be checked
     modifier calledByProposalManagement(address _add)
     {
-         require(_add == management, "has to be called by proposalManagement");
+         require(_add == proposalManagement, "has to be called by proposalManagement");
         _;
     }
 
-    /// @notice sets the proposalManagement address
-    /// @param _management the address of the proposalManagement
+    /// @notice Sets the proposalManagement address
+    /// @param _management The address of the proposalManagement
+    // @msg.sender The address who ever calls this function 
     function setManagement(address _management) public {
         if (setManagementLock) {
-            require(msg.sender == address(management), "only callable by management");
+            require(msg.sender == address(proposalManagement), "only callable by management");
         }
         setManagementLock = true;
-        management = _management;
+        proposalManagement = _management;
     }
 
+    
+    /// @notice Creates a proposal contract to change membership status for the member
+    /// @param _memberAddress The address of the member
+    /// @param _adding True if member is to be added false otherwise
+    /// @dev Only callable by Trustees
     function createMemberProposal(address _memberAddress, bool _adding) public isTrusteeMod(msg.sender) {
         bytes memory payload = abi.encodeWithSignature("createMemberProposal(address,bool)", _memberAddress, _adding);
-        (bool success, ) = management.call(payload);
+        (bool success, ) = proposalManagement.call(payload);
         require(success, "create Member failed");
     }
 
-    /// @notice vote for a proposal at '_proposalAddress' with '_stance'
-    /// @param _stance true if you want to cast a positive vote, false otherwise
-    /// @param _proposalAddress the address of the proposal you want to vote for
-    /// @dev isTrusteeMod only callable by Trustess 
-    /// @dev userIsNotLocked only callable by user whos token are not locked
+    /// @notice Vote for a proposal at '_proposalAddress' with '_stance'
+    /// @param _stance True if you want to cast a positive vote, false otherwise
+    /// @param _proposalAddress The address of the proposal you want to vote for
+    /// @dev isTrusteeMod Only callable by Trustess 
     function vote(bool _stance, address _proposalAddress) public isTrusteeMod(msg.sender)
     {
         lockUser(msg.sender);
         bytes memory payload = abi.encodeWithSignature("vote(bool,address,address)", _stance, _proposalAddress, msg.sender);
-        (bool success, ) = management.call(payload);
+        (bool success, ) = proposalManagement.call(payload);
         require(success, "vote in ico contract failed");
     }
 
-    /// @notice locks the token of '_user'
+    /// @notice Locks the token of '_user'
     /// @param _user Address of user to lock
     function lockUser(address _user) private
     {
         isUserLocked[_user]= true;
     }
 
-    /// @notice unlocks token of a user
+    /// @notice Unlocks token of a user
     /// @param _user Address of user to unlock
     function unlockUser(address _user) private
     {
          isUserLocked[_user]= false;
     }
 
-    /// @notice unlocks token of a list of users
+    /// @notice Unlocks token of a list of users
     /// @param _users List of users to unlock
-    /// @dev calledByLB only callable by Trustess 
+    /// @dev calledByLB Only callable by Trustess 
     function unlockUsers(address [] memory _users) public calledByProposalManagement(msg.sender)
     {
         for(uint i; i < _users.length; i++)
@@ -136,7 +143,7 @@ contract TrustToken is EIP20Interface {
 
     }
 
-    /// @notice send '_value' token to '_to' from 'msg.sender'
+    /// @notice Send '_value' token to '_to' from 'msg.sender'
     /// @param _to The address of the recipient
     /// @param _value The amount of token to be transferred
     /// @return Whether the transfer was successful or not
@@ -148,7 +155,7 @@ contract TrustToken is EIP20Interface {
         return true;
     }
 
-    /// @notice send '_value' token to '_to' from '_from' on the condition it is approved by '_from'
+    /// @notice Send '_value' token to '_to' from '_from' on the condition it is approved by '_from'
     /// @param _from The address of the sender
     /// @param _to The address of the recipient
     /// @param _value The amount of token to be transferred
@@ -192,7 +199,7 @@ contract TrustToken is EIP20Interface {
     }
 
     
-    /// @notice invest Ether to become a Trustee and get token when ICO is not active anymore
+    /// @notice Invest Ether to become a Trustee and get token when ICO is not active anymore
     function participate () external payable{
         
         if(isIcoActive)
@@ -250,7 +257,7 @@ contract TrustToken is EIP20Interface {
     }
 
 
-    /// @notice distribute tokenSupply between all Trustees
+    /// @notice Distribute tokenSupply between all Trustees
     function distributeToken() private 
     {
         for(uint i = 0; i < participants.length; i++)  // go trough all Trustees
@@ -267,12 +274,14 @@ contract TrustToken is EIP20Interface {
         return(participants.length);
     }
 
-    function payFees () external payable
+    /// @notice Track incoming Ether
+    /// @param _value The amount of Ether
+    function payFees (uint _value) external
     {
-        contractEtherBalance += msg.value;
+        contractEtherBalance += _value;
     } 
 
-    /// @return ether balance of 'msg.sender'
+    /// @return Ether balance of 'msg.sender'
     function getEtherBalances() public view returns(uint)
     {
         return (etherBalances[msg.sender]);
