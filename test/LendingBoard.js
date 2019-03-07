@@ -1,4 +1,4 @@
-const LendingBoard = artifacts.require("./LendingBoard.sol");
+const LendingBoard = artifacts.require("LendingBoard");
 
 contract("LendingBoard", accounts => {
     before(async () => {
