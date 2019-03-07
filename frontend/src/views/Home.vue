@@ -3,7 +3,7 @@
     <div class="title">Lending Requests</div>
     <hr class="separator">
     <hr class="separator">
-    <Requests
+    <OpenRequests
       @openRequestOverlay="openRequestCreation"
       :contract="requestManagementContract"
       :web3="web3"
@@ -15,18 +15,21 @@
           :contract="requestManagementContract"
         />
       </transition>
-    </Requests>
+    </OpenRequests>
+    <UserRequests/>
   </div>
 </template>
 
 <script>
-import Requests from '@/components/RequestManagement/LendingRequests/lendingRequests'
+import OpenRequests from '@/components/RequestManagement/LendingRequests/openLendingRequests'
+import UserRequests from '@/components/RequestManagement/LendingRequests/userLendingRequests'
 import CreateRequest from '../components/RequestManagement/CreateLendingRequest/createLendingRequest'
 import { initializeRequestManagementContract } from '@/services/web3/requestManagement/initializeRmContract'
 
 export default {
   components: {
-    Requests,
+    OpenRequests,
+    UserRequests,
     CreateRequest
   },
   data() {

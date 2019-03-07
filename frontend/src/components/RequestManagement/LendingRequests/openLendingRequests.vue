@@ -14,7 +14,7 @@
     </div>
     <hr class="separator">
     <div class="request__management">
-      <div class="subtitle">Open Lending Requests</div>
+      <div class="subtitle subtitle--lendingRequest">Open Lending Requests</div>
       <table class="table" v-if="allProposals.length !== 0">
         <thead>
           <tr>
@@ -63,8 +63,7 @@
 export default {
   data() {
     return {
-      allProposals: [],
-      myProposals: []
+      allProposals: []
     }
   },
   props: {
@@ -82,7 +81,6 @@ export default {
       const account = await this.web3.eth.getCoinbase()
       try {
         this.allProposals = []
-        this.myProposals = []
         const openRequests = await contract.methods
           .getRequests(contractAddress)
           .call({ from: account })
@@ -117,7 +115,7 @@ export default {
   watch: {
     contract: {
       handler: function(contractInstance) {
-        let contractAddress = contractInstance._address
+        const contractAddress = contractInstance._address
         this.getRequests(contractInstance, contractAddress)
         // eslint-disable-next-line no-undef
         ethereum.on('accountsChanged', () => {
@@ -130,5 +128,5 @@ export default {
 </script>
 
 <style lang="scss">
-@import './lendingRequests';
+@import './openLendingRequests';
 </style>
