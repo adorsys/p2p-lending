@@ -6,7 +6,10 @@
         class="button button--lendingRequest"
         @click="$emit('openRequestOverlay')"
       >Create Lending Request</div>
-      <div class="button button--lendingRequest" @click="getRequests">Get Lending Request</div>
+      <div
+        class="button button--lendingRequest"
+        @click="getRequests(contract, contract._address)"
+      >Get Lending Request</div>
       <slot/>
     </div>
     <hr class="separator">
@@ -60,45 +63,44 @@ export default {
       proposals: []
     }
   },
+  props: ['contract'],
   methods: {
     claim(address) {
       console.log('lending : ' + address)
     },
-    async getRequests() {
-      // TODO: implement functionality to check if address has lending requests to query
-
-      let contractAddress = this.$parent.requestManagementContract()._address
-
+    async getRequests(contract, contractAddress) {
       try {
-        let openRequests = await this.$parent
-          .requestManagementContract()
-          .methods.getRequests(contractAddress)
+        this.proposals = []
+        const openRequests = await contract.methods
+          .getRequests(contractAddress)
           .call({ from: this.$store.state.web3.coinbase })
 
         if (openRequests.length !== 0) {
-          let proposalParameters = await this.$parent
-            .requestManagementContract()
-            .methods.getProposalParameters(openRequests[0])
-            .call({ from: this.$store.state.web3.coinbase })
-
-          this.proposals = [
-            {
+          for (let i = 0; i < openRequests.length; i++) {
+            const proposalParameters = await contract.methods
+              .getProposalParameters(openRequests[i])
+              .call()
+            const prop = {
               author: proposalParameters.asker,
               askAmount: proposalParameters.askAmount + ' ETH',
               paybackAmount: proposalParameters.paybackAmount + ' ETH',
               trusted: false
             }
-          ]
+            this.proposals.push(prop)
+          }
         }
       } catch (error) {
         console.log(error)
       }
     }
   },
-  mounted() {
-    this.$on('lendingRequestCreated', () => {
-      console.log('creation logged')
-    })
+  watch: {
+    contract: {
+      handler: function(contractInstance) {
+        let contractAddress = contractInstance._address
+        this.getRequests(contractInstance, contractAddress)
+      }
+    }
   }
 }
 </script>

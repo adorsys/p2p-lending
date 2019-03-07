@@ -10,10 +10,5 @@ export const initializeRequestManagementContract = async () => {
         requestManagementABI,
         requestManagementAddress
     )
-
-    let contractInstance = () => {
-        return contract
-    }
-
-    return contractInstance
+    return contract
 }

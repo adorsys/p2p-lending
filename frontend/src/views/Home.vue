@@ -3,9 +3,13 @@
     <div class="title">Lending Requests</div>
     <hr class="separator">
     <hr class="separator">
-    <Requests @openRequestOverlay="createRequest = true">
+    <Requests @openRequestOverlay="openRequestCreation" :contract="requestManagementContract">
       <transition>
-        <CreateRequest v-if="createRequest" @closeRequestOverlay="createRequest = false"/>
+        <CreateRequest
+          v-if="createRequest"
+          @closeRequestOverlay="closeRequestCreation"
+          :contract="requestManagementContract"
+        />
       </transition>
     </Requests>
   </div>
@@ -28,8 +32,11 @@ export default {
     }
   },
   methods: {
-    toggleCreation() {
+    openRequestCreation() {
       this.createRequest = true
+    },
+    closeRequestCreation() {
+      this.createRequest = false
     }
   },
   async mounted() {
