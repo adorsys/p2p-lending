@@ -1,7 +1,8 @@
-const LendingRequest = artifacts.require("./LendingRequest.sol");
+const LendingRequest = artifacts.require("LendingRequest");
+const TrustToken = artifacts.require("TrustToken");
 
 contract("LendingRequest", accounts => {
-    before(async () => {
+    beforeEach(async () => {
         asker = accounts[0];
         lender = accounts[1];
         managementContract = accounts[2];
@@ -14,7 +15,8 @@ contract("LendingRequest", accounts => {
             web3.utils.toWei("2", "ether"),
             web3.utils.toWei("1", "ether"),
             "food",
-            managementContract
+            managementContract,
+            TrustToken.address
         );
     });
 
