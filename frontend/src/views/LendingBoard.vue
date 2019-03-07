@@ -13,7 +13,7 @@
 
 <script>
 import { mapState } from 'vuex'
-import LendingBoardInputs from '@/components/LendingBoard/Inputs/inputs'
+import LendingBoardInputs from '@/components/LendingBoard/Inputs/lendingBoardInputs'
 import Proposals from '@/components/LendingBoard/Proposals/proposals'
 
 export default {

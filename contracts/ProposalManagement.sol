@@ -6,15 +6,18 @@ contract ProposalManagement {
      * proposalType == 1 -> contractFee proposal
      * proposalType == 2 -> addMember proposal
      * proposalType == 3 -> removeMember proposal
-     * proposalType == 4 -> allowance proposal
      */
     mapping(address => uint256) public proposalType;
-    mapping(address => address[]) private proposals;
     mapping(address => uint256) private memberId;
     mapping(address => address[]) private lockedUsersPerProposal;
+    mapping(address => uint256) private userProposalLocks;
+    mapping(address => address[]) private unlockUsers;
+
+    address[] private proposals;
 
     address private trustTokenContract;
     address private proposalFactory;
+
     uint256 public contractFee;
     uint256 public minimumNumberOfVotes = 1;
     uint256 public majorityMargin = 50;
@@ -32,12 +35,18 @@ contract ProposalManagement {
     event MembershipChanged(address memberAddress, bool memberStatus);
     event CurrentLockedUsers(address[] unlockUsers);
 
-    constructor(address _proposalFactoryAddress) public {
+    constructor(address _proposalFactoryAddress, address _trustTokenContract) public {
         members.push(address(0));
         memberId[msg.sender] = members.length;
         members.push(msg.sender);
         contractFee = 1000 finney;
         proposalFactory = _proposalFactoryAddress;
+        trustTokenContract = _trustTokenContract;
+
+        // update ICO Contract with own address
+        bytes memory payload = abi.encodeWithSignature("setManagement(address)", address(this));
+        (bool success, ) = trustTokenContract.call(payload);
+        require(success, "update of TrustToken failed");
     }
 
     /**
@@ -68,7 +77,7 @@ contract ProposalManagement {
         address proposal = abi.decode(encodedReturnValue, (address));
 
         // add created proposal to management structure and set correct proposal type
-        proposals[address(this)].push(proposal);
+        proposals.push(proposal);
         proposalType[proposal] = 1;
         emit ProposalCreated(proposal, "contractFeeProposal");
     }
@@ -79,8 +88,9 @@ contract ProposalManagement {
      * @param _adding true if member is to be added false otherwise
      * @dev only callable by registered members
      */
-    function createMemberProposal(address _memberAddress, bool _adding) public onlyMembers {
+    function createMemberProposal(address _memberAddress, bool _adding) public {
         // validate input
+        require(msg.sender == trustTokenContract, "can only be called by ico contract");
         require(_memberAddress != address(0), "invalid memberAddress");
         if(_adding) {
             require(memberId[_memberAddress] == 0, "cannot add member twice");
@@ -104,7 +114,7 @@ contract ProposalManagement {
         address proposal = abi.decode(encodedReturnValue, (address));
 
         // add created proposal to management structure and set correct proposal type
-        proposals[address(this)].push(proposal);
+        proposals.push(proposal);
         proposalType[proposal] = _adding ? 2 : 3;
         emit ProposalCreated(proposal, "memberProposal");
     }
@@ -115,21 +125,31 @@ contract ProposalManagement {
      * @param _proposalAddress the address of the proposal you want to vote for
      * @dev only callable by registered members
      */
-    function vote(bool _stance, address _proposalAddress) public onlyMembers {
+    function vote(bool _stance, address _proposalAddress, address _origin) public {
         // validate input
         uint256 proposalParameter = proposalType[_proposalAddress];
         require(proposalParameter != 0, "Invalid proposalAddress");
 
+        if (proposalParameter == 1) {
+            require(memberId[msg.sender] != 0, "you need to be a member");
+        } else if (proposalParameter == 2 || proposalParameter == 3) {
+            require(msg.sender == trustTokenContract, "vote for member proposal has to come from ico contract");
+        }
+
         // vote for proposal at _proposalAddress
-        bytes memory payload = abi.encodeWithSignature("vote(bool,address)", _stance, msg.sender);
+        bytes memory payload = abi.encodeWithSignature("vote(bool,address)", _stance, _origin);
         (bool success, bytes memory encodedReturnValue) = _proposalAddress.call(payload);
 
         // check if voting was successfull
         require(success, "voting failed");
 
-        // lock voting user
-        lockedUsersPerProposal[_proposalAddress].push(msg.sender);
-        emit Voted(_proposalAddress, _stance, msg.sender);
+        // lock voting user if vote is for a member proposal
+        if (proposalParameter == 2 || proposalParameter == 3) {
+            lockedUsersPerProposal[_proposalAddress].push(_origin);
+            // update number of locks for voting user
+            userProposalLocks[_origin]++;
+        }
+        emit Voted(_proposalAddress, _stance, _origin);
 
         // decode return values to check if proposal passed
         (bool proposalPassed, bool proposalExecuted) = abi.decode(encodedReturnValue, (bool, bool));
@@ -141,18 +161,44 @@ contract ProposalManagement {
                 handleVoteReturn(proposalParameter, proposalPassed, _proposalAddress),
                 "processing of vote return failed"
             );
+
+            if (proposalParameter == 2 || proposalParameter == 3) {
+                // get locked users for proposal
+                address[] memory lockedUsers = lockedUsersPerProposal[_proposalAddress];
+
+                for(uint256 i = 0; i < lockedUsers.length; i++) {
+                    // if user is locked for 1 proposal remember user for unlocking
+                    if (userProposalLocks[lockedUsers[i]] == 1) {
+                        unlockUsers[_proposalAddress].push(lockedUsers[i]);
+                    }
+                    // decrease locked count for all users locked for the current proposal
+                    userProposalLocks[lockedUsers[i]]--;
+                }
+                // 
+                payload = abi.encodeWithSignature("unlockUsers(address[])", unlockUsers[_proposalAddress]);
+                
+                (success, ) = trustTokenContract.call(payload);
+                require(success, "unlocking failed");
+            }
         }
 
-        // unlock users in ICO contract
-        // address[] memory lockedUsers = lockedUsersPerProposal[_proposalAddress];
-        // emit CurrentLockedUsers(lockedUsers);
     }
 
     /**
-     * @dev returns all saved proposals
+     * @notice returns number of proposals
+     * @return proposals.length
+     */
+    function getProposalsLength() public view returns (uint256) {
+        return proposals.length;
+    }
+
+    /**
+     * @notice returns all saved proposals
+     * @return proposals or [] if empty
      */
     function getProposals() public view returns (address[] memory) {
-        return(proposals[address(this)]);
+        address[] memory empty = new address[](0);
+        return proposals.length != 0 ? proposals : empty;
     }
 
     /**
@@ -275,17 +321,26 @@ contract ProposalManagement {
         // validate input
         require(proposalType[_request] != 0, "invalid request");
 
+        // prepare payload to destroy request
+        bytes memory payload = abi.encodeWithSignature("kill()");
+
+        // execute function call
+        (bool success, ) = _request.call(payload);
+
+        // throw if error
+        require(success, "destruction of request failed");
+
         // remove _request from the management contract
-        for(uint256 i = 0; i < proposals[address(this)].length; i++) {
+        for(uint256 i = 0; i < proposals.length; i++) {
             // get index of _request in proposals array
-            address currentRequest = proposals[address(this)][i];
+            address currentRequest = proposals[i];
             if(currentRequest == _request) {
                 // move _request to the end of the array
-                for(uint256 j = i; j < proposals[address(this)].length - 1; j++) {
-                    proposals[address(this)][j] = proposals[address(this)][j + 1];
+                for(uint256 j = i; j < proposals.length - 1; j++) {
+                    proposals[j] = proposals[j + 1];
                 }
                 // removes last element of storage array
-                proposals[address(this)].pop();
+                proposals.pop();
                 break;
             }
         }

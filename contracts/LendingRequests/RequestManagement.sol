@@ -11,8 +11,8 @@ contract RequestManagement is Ownable {
     mapping(address => address[]) private lendingRequests;
     mapping(address => bool) private validRequest;
 
-    constructor(LendingBoard _LendingBoardAddress) public {
-        lendingRequestFactory = new LendingRequestFactory(_LendingBoardAddress);
+    constructor(LendingBoard _LendingBoardAddress, address payable _trustToken) public {
+        lendingRequestFactory = new LendingRequestFactory(_LendingBoardAddress, _trustToken);
     }
 
     /**
@@ -73,24 +73,6 @@ contract RequestManagement is Ownable {
     }
 
     /**
-     * @notice gets the lendingRequests for the specified user
-     * @param _user user you want to see the lendingRequests of
-     * @return the lendingRequests for _user
-     */
-    function getRequests(address _user) public view returns(address[] memory) {
-        require(lendingRequests[_user].length > 0, "user has no requests");
-        return lendingRequests[_user];
-    }
-
-    /**
-     * @notice get the current ether balance of the management contract
-     * @return current balance of the contract
-     */
-    function contractBalance() public onlyOwner view returns(uint256) {
-        return address(this).balance;
-    }
-
-    /**
      * @notice transfers current contract balance to the owner of the contract
      * @dev should be called before relinquishing the contract
      */
@@ -104,6 +86,48 @@ contract RequestManagement is Ownable {
      */
     function kill() public onlyOwner {
         selfdestruct(owner);
+    }
+
+    /**
+     * @notice gets the lendingRequests for the specified user
+     * @param _user user you want to see the lendingRequests of
+     * @return the lendingRequests for _user
+     */
+    function getRequests(address _user) public view returns(address[] memory) {
+        address[] memory empty = new address[](0);
+        return lendingRequests[_user].length != 0 ? lendingRequests[_user] : empty;
+    }
+
+    /**
+     * @notice get the current ether balance of the management contract
+     * @return current balance of the contract
+     */
+    function contractBalance() public onlyOwner view returns(uint256) {
+        return address(this).balance;
+    }
+
+    /**
+     * @notice gets askAmount, paybackAmount and purpose to given proposalAddress
+     * @param _lendingRequest the address to get the parameters from
+     * @return askAmount of the proposal
+     * @return paybackAmount of the proposal
+     * @return purpose of the proposal
+     */
+    function getProposalParameters(address payable _lendingRequest)
+        public
+        view
+        returns (
+            address asker,
+            uint256 askAmount,
+            uint256 paybackAmount,
+            uint256 contractFee,
+            string memory purpose
+        ) {
+        asker = LendingRequest(_lendingRequest).asker();
+        askAmount = LendingRequest(_lendingRequest).amountAsked();
+        paybackAmount = LendingRequest(_lendingRequest).paybackAmount();
+        contractFee = LendingRequest(_lendingRequest).contractFee();
+        purpose = LendingRequest(_lendingRequest).purpose();
     }
 
     /**

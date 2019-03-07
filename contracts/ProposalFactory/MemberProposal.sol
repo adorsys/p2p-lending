@@ -1,7 +1,6 @@
 pragma solidity ^0.5.0;
 
 contract MemberProposal {
-    address private author;
     address private management = address(0);
     address public memberAddress;
     bool public adding;
@@ -19,14 +18,12 @@ contract MemberProposal {
     }
 
     constructor(
-        address _author,
         address _memberAddress,
         bool _adding,
         uint256 _minimumNumberOfVotes,
         uint256 _majorityMargin,
         address _managementContract
     ) public {
-        author = _author;
         memberAddress = _memberAddress;
         adding = _adding;
         minimumNumberOfVotes = _minimumNumberOfVotes;

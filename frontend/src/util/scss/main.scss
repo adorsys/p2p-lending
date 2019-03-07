@@ -47,8 +47,8 @@ body {
   font-weight: 600;
   font-size: 1.7rem;
   color: $link-text-color-darkened;
-  margin-top: 1em;
-  margin-bottom: 1em;
+  margin-top: 15px;
+  margin-bottom: 10px;
   text-decoration: underline;
 }
 
@@ -77,7 +77,7 @@ body {
   background: $background-color;
   color: $link-text-color;
   padding: 8px;
-  min-width: 30px;
+  min-width: 20%;
   height: 30px;
   border-right: 1px solid $border-color;
 }
@@ -88,17 +88,13 @@ body {
 
 .table__data {
   text-align: center;
-  margin: 0;
-  padding: 0;
-  width: auto;
   padding: 12px;
   border: 1px solid $border-color;
 }
 
-.table__data--vote {
+.table__data--buttons {
   margin: 0;
   padding: 0;
-  width: 100%;
 }
 
 .table__data:first-of-type {
@@ -123,4 +119,29 @@ body {
 
 .table__row:nth-child(2n) .button--table {
   background: $navbar-hover-color;
+}
+
+.userInput {
+  margin-top: 2em;
+  margin-bottom: 0.5em;
+  display: grid;
+  grid-template-columns: 5% 30% 15% 15% 30% 5%;
+  grid-template-rows: auto;
+  justify-items: center;
+}
+
+.userInput__inputField {
+  padding: 1em;
+  margin-bottom: 0.3em;
+  text-align: center;
+  background-color: $navbar-hover-color;
+  border: 2px solid rgba($color: $border-color, $alpha: 0.3);
+  width: 75%;
+}
+
+.userInput__label {
+  color: $link-text-color;
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-bottom: 0.5em;
 }

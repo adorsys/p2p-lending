@@ -3,11 +3,6 @@ Implements EIP20 token standard: https://github.com/ethereum/EIPs/blob/master/EI
 .*/
 pragma solidity ^0.5.0;                                                 // Solidity compiler version
 import "./EIP20Interface.sol";
-//import "./LendingBoard.sol"; //interface statt import
-
-//interface LendingBoard{
-//  funtion vote(uint256, bool) public returns(uint256);
-//}
 
 /// @notice library makes any address into a payable address
 library address_make_payable {
@@ -20,11 +15,10 @@ contract TrustToken is EIP20Interface {
 
     using address_make_payable for address;                             // use this library
 
-    //address LendingBoard_add = 0x692a70D2e424a56D2C6C27aA97D1a86395877b3A;
-    //LendingBoard LB = LendingBoard(LendingBoard_add);
-    //mapping (address => bool) public isUserLocked;
+    address public management;
+    bool private setManagementLock = false;
+    mapping (address => bool) public isUserLocked;
 
-    
     uint256 public totalSupply;                                         // total amount of tokens
 
     uint256 constant private MAX_UINT256 = 2**256 - 1;                  // biggest number, that is possible in datatype uint
@@ -49,7 +43,6 @@ contract TrustToken is EIP20Interface {
         string memory _tokenName,
         uint8 _decimalUnits,
         string memory _tokenSymbol
-        
     ) public {
         name = _tokenName;                                              // Set the name of tokens for display purposes
         decimals = _decimalUnits;                                       // Amount of decimals for display purposes
@@ -70,22 +63,38 @@ contract TrustToken is EIP20Interface {
     
     /// @notice checks if token of '_user' are not locked
     /// @param _user The address of an user
-   /* modifier userIsNotLocked(address _user) {
-        require(isUserLocked[_user]==false);
+    modifier userIsNotLocked(address _user) {
+        require(isUserLocked[_user]==false, "user is locked");
         _;
     }
     /// @notice checks if '_user' is a Trustee
     /// @param _user The address of an user
     modifier isTrusteeMod(address _user) {
-        require(isTrustee[_user] == true);
+        require(isTrustee[_user] == true, "can only be called by a trustee");
         _;
     }
     /// @notice checkss if '_add' is the address of ProposalManagement
     /// @param _add The address that should be checked
-    modifier calledByLB(address _add)
+    modifier calledByProposalManagement(address _add)
     {
-         require(_add == LendingBoard_add);
+         require(_add == management, "has to be called by proposalManagement");
         _;
+    }
+
+    /// @notice sets the proposalManagement address
+    /// @param _management the address of the proposalManagement
+    function setManagement(address _management) public {
+        if (setManagementLock) {
+            require(msg.sender == address(management), "only callable by management");
+        }
+        setManagementLock = true;
+        management = _management;
+    }
+
+    function createMemberProposal(address _memberAddress, bool _adding) public isTrusteeMod(msg.sender) {
+        bytes memory payload = abi.encodeWithSignature("createMemberProposal(address,bool)", _memberAddress, _adding);
+        (bool success, ) = management.call(payload);
+        require(success, "create Member failed");
     }
 
     /// @notice vote for a proposal at '_proposalAddress' with '_stance'
@@ -93,11 +102,12 @@ contract TrustToken is EIP20Interface {
     /// @param _proposalAddress the address of the proposal you want to vote for
     /// @dev isTrusteeMod only callable by Trustess 
     /// @dev userIsNotLocked only callable by user whos token are not locked
-    /// @msg.sender The Address who called this function
-    function vote(bool _stance, address _proposalAddress) public userIsNotLocked(msg.sender) isTrusteeMod(msg.sender)
+    function vote(bool _stance, address _proposalAddress) public isTrusteeMod(msg.sender)
     {
         lockUser(msg.sender);
-        LB.vote(_stance,_proposalAddress,msg.sender);
+        bytes memory payload = abi.encodeWithSignature("vote(bool,address,address)", _stance, _proposalAddress, msg.sender);
+        (bool success, ) = management.call(payload);
+        require(success, "vote in ico contract failed");
     }
 
     /// @notice locks the token of '_user'
@@ -117,7 +127,7 @@ contract TrustToken is EIP20Interface {
     /// @notice unlocks token of a list of users
     /// @param _users List of users to unlock
     /// @dev calledByLB only callable by Trustess 
-    function unlockUsers(address [] memory _users) public calledByLB(msg.sender)
+    function unlockUsers(address [] memory _users) public calledByProposalManagement(msg.sender)
     {
         for(uint i; i < _users.length; i++)
         {
@@ -125,8 +135,6 @@ contract TrustToken is EIP20Interface {
         }
 
     }
-    
-    */
 
     /// @notice send '_value' token to '_to' from 'msg.sender'
     /// @param _to The address of the recipient
@@ -146,14 +154,14 @@ contract TrustToken is EIP20Interface {
     /// @param _value The amount of token to be transferred
     /// @return Whether the transfer was successful or not
     function transferFrom(address _from, address _to, uint256 _value) public //user_is_not_locked(_from)
-    returns (bool success)
+        returns (bool success)
     {
         uint256 allowance = allowed[_from][msg.sender]; // save value of 'allowed' on the position of '_from' and 'msg.sender'
         require(tokenBalances[_from] >= _value && allowance >= _value); // requires token balance of '_from' to be equal or greater than 'value'
                                                                         // also 'allowance' has to be equal or greater than '_value' to execute the following code
         tokenBalances[_to] += _value;                                   
         tokenBalances[_from] -= _value;
-        if (allowance < MAX_UINT256) {                                  // allowance cant be creater than 'MAX_UINT256'
+        if (allowance < MAX_UINT256) {                                  // allowance cant be greater than 'MAX_UINT256'
             allowed[_from][msg.sender] -= _value;
         }
         emit Transfer(_from, _to, _value); //display transaction between '_from' and '_to'
@@ -275,6 +283,5 @@ contract TrustToken is EIP20Interface {
     event Transfer(address indexed _from, address indexed _to, uint256 _value);
     event Approval(address indexed _owner, address indexed _spender, uint256 _value);
 }
-
 
 
