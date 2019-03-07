@@ -3,7 +3,11 @@
     <div class="title">Lending Requests</div>
     <hr class="separator">
     <hr class="separator">
-    <Requests @openRequestOverlay="openRequestCreation" :contract="requestManagementContract">
+    <Requests
+      @openRequestOverlay="openRequestCreation"
+      :contract="requestManagementContract"
+      :web3="web3"
+    >
       <transition>
         <CreateRequest
           v-if="createRequest"
@@ -28,6 +32,7 @@ export default {
   data() {
     return {
       requestManagementContract: null,
+      web3: null,
       createRequest: false
     }
   },
@@ -40,7 +45,9 @@ export default {
     }
   },
   async mounted() {
-    this.requestManagementContract = await initializeRequestManagementContract()
+    const initialize = await initializeRequestManagementContract()
+    this.requestManagementContract = initialize.contract
+    this.web3 = initialize.web3
   }
 }
 </script>

@@ -15,7 +15,7 @@
     <hr class="separator">
     <div class="request__management">
       <div class="subtitle">Open Lending Requests</div>
-      <table class="table" v-if="proposals.length !== 0">
+      <table class="table" v-if="allProposals.length !== 0">
         <thead>
           <tr>
             <th class="table__head">Asker</th>
@@ -26,10 +26,10 @@
           </tr>
         </thead>
         <tbody>
-          <tr class="table__row" v-for="p in proposals" :key="p.idx">
+          <tr class="table__row" v-for="p in allProposals" :key="p.idx">
             <td class="table__data">{{ p.author }}</td>
-            <td class="table__data">{{ p.askAmount }}</td>
-            <td class="table__data">{{ p.paybackAmount }}</td>
+            <td class="table__data">{{ p.askAmount + ' ETH' }}</td>
+            <td class="table__data">{{ p.paybackAmount + ' ETH' }}</td>
             <td class="table__data" v-if="p.trusted">
               <div class="table__data--trusted">Yes</div>
             </td>
@@ -37,12 +37,15 @@
               <div class="table__data--untrusted">No</div>
             </td>
             <td class="table__data table__data--buttons">
-              <div v-on:click="claim(p.address)" class="button button--table button--lend">Lend</div>
+              <div
+                v-on:click="lend(p.address, p.askAmount)"
+                class="button button--table button--lend"
+              >Lend</div>
             </td>
           </tr>
         </tbody>
       </table>
-      <table class="table" v-if="proposals.length === 0">
+      <table class="table" v-if="allProposals.length === 0">
         <thead>
           <tr class="table__row">
             <th class="table__head">Lending Requests</th>
@@ -60,33 +63,50 @@
 export default {
   data() {
     return {
-      proposals: []
+      allProposals: [],
+      myProposals: []
     }
   },
-  props: ['contract'],
+  props: {
+    contract: Object,
+    web3: Object
+  },
   methods: {
-    claim(address) {
-      console.log('lending : ' + address)
+    async lend(address, amount) {
+      const lendAmount = this.web3.utils.toWei(String(amount), 'Ether')
+      await this.contract.methods
+        .deposit(address)
+        .send({ value: lendAmount, from: this.web3.coinbase })
     },
     async getRequests(contract, contractAddress) {
+      const account = await this.web3.eth.getCoinbase()
       try {
-        this.proposals = []
+        this.allProposals = []
+        this.myProposals = []
         const openRequests = await contract.methods
           .getRequests(contractAddress)
-          .call({ from: this.$store.state.web3.coinbase })
-
+          .call({ from: account })
         if (openRequests.length !== 0) {
           for (let i = 0; i < openRequests.length; i++) {
             const proposalParameters = await contract.methods
               .getProposalParameters(openRequests[i])
               .call()
-            const prop = {
-              author: proposalParameters.asker,
-              askAmount: proposalParameters.askAmount + ' ETH',
-              paybackAmount: proposalParameters.paybackAmount + ' ETH',
-              trusted: false
+            if (
+              String(account).toUpperCase() !==
+              proposalParameters.asker.toUpperCase()
+            ) {
+              const prop = {
+                address: openRequests[i],
+                author: proposalParameters.asker,
+                askAmount: proposalParameters.askAmount / 10 ** 18,
+                paybackAmount: proposalParameters.paybackAmount / 10 ** 18,
+                trusted: false,
+                lent: proposalParameters.lent
+              }
+              if (prop.lent === false) {
+                this.allProposals.push(prop)
+              }
             }
-            this.proposals.push(prop)
           }
         }
       } catch (error) {
@@ -99,6 +119,10 @@ export default {
       handler: function(contractInstance) {
         let contractAddress = contractInstance._address
         this.getRequests(contractInstance, contractAddress)
+        // eslint-disable-next-line no-undef
+        ethereum.on('accountsChanged', () => {
+          this.getRequests(this.contract, this.contract._address)
+        })
       }
     }
   }

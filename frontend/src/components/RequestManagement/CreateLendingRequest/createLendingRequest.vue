@@ -67,12 +67,14 @@ export default {
         this.paybackAmount !== null &&
         this.requestPurpose !== null
       ) {
+        const askWei = this.$store.state.web3
+          .web3Instance()
+          .utils.toWei(this.askAmount, 'Ether')
+        const paybackWei = this.$store.state.web3
+          .web3Instance()
+          .utils.toWei(this.paybackAmount, 'Ether')
         await this.contract.methods
-          .ask(
-            parseInt(this.askAmount, 10),
-            parseInt(this.paybackAmount, 10),
-            this.requestPurpose
-          )
+          .ask(askWei, paybackWei, this.requestPurpose)
           .send({ from: this.$store.state.web3.coinbase })
         this.$emit('closeRequestOverlay')
       }

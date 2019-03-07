@@ -109,25 +109,36 @@ contract RequestManagement is Ownable {
     /**
      * @notice gets askAmount, paybackAmount and purpose to given proposalAddress
      * @param _lendingRequest the address to get the parameters from
+     * @return asker address of the asker
+     * @return lender address of the lender
      * @return askAmount of the proposal
      * @return paybackAmount of the proposal
+     * @return contractFee the contract fee for the lending request
      * @return purpose of the proposal
+     * @return lent wheather the money was lent or not
+     * @return debtSettled wheather the debt was settled by the asker
      */
     function getProposalParameters(address payable _lendingRequest)
         public
         view
         returns (
             address asker,
+            address lender,
             uint256 askAmount,
             uint256 paybackAmount,
             uint256 contractFee,
-            string memory purpose
+            string memory purpose,
+            bool lent,
+            bool debtSettled
         ) {
         asker = LendingRequest(_lendingRequest).asker();
+        lender = LendingRequest(_lendingRequest).lender();
         askAmount = LendingRequest(_lendingRequest).amountAsked();
         paybackAmount = LendingRequest(_lendingRequest).paybackAmount();
         contractFee = LendingRequest(_lendingRequest).contractFee();
         purpose = LendingRequest(_lendingRequest).purpose();
+        lent = LendingRequest(_lendingRequest).moneyLent();
+        debtSettled = LendingRequest(_lendingRequest).debtSettled();
     }
 
     /**

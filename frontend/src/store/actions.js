@@ -18,6 +18,10 @@ export default {
         let payload = await getOpenProposals()
         commit(types.INIT_PROPOSALS, payload)
     },
+    async [types.UPDATE_PROPOSALS]({ commit }) {
+        let payload = await getOpenProposals()
+        commit(types.UPDATE_PROPOSALS, payload)
+    },
     async [types.POLL_WEB3]({ commit }) {
         let payload = await pollHelper()
         commit(types.POLL_WEB3, payload)
