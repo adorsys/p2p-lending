@@ -11,8 +11,8 @@ contract RequestManagement is Ownable {
     mapping(address => address[]) private lendingRequests;
     mapping(address => bool) private validRequest;
 
-    constructor(LendingBoard _LendingBoardAddress) public {
-        lendingRequestFactory = new LendingRequestFactory(_LendingBoardAddress);
+    constructor(LendingBoard _LendingBoardAddress, address payable _trustToken) public {
+        lendingRequestFactory = new LendingRequestFactory(_LendingBoardAddress, _trustToken);
     }
 
     /**
@@ -94,8 +94,8 @@ contract RequestManagement is Ownable {
      * @return the lendingRequests for _user
      */
     function getRequests(address _user) public view returns(address[] memory) {
-        require(lendingRequests[_user].length > 0, "user has no requests");
-        return lendingRequests[_user];
+        address[] memory empty = new address[](0);
+        return lendingRequests[_user].length != 0 ? lendingRequests[_user] : empty;
     }
 
     /**

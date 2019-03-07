@@ -8,6 +8,7 @@ interface LendingBoard {
 
 contract LendingRequestFactory {
     address private managementContract;
+    address payable private trustToken;
     LendingBoard private board;
 
     event RequestCreated(address request, address from, bool verified, string purpose);
@@ -16,9 +17,10 @@ contract LendingRequestFactory {
         revert("Factory Contract does NOT accept ether");
     }
 
-    constructor(LendingBoard _LendingBoardAddress) public {
+    constructor(LendingBoard _LendingBoardAddress, address payable _trustToken) public {
         managementContract = msg.sender;
         board = _LendingBoardAddress;
+        trustToken = _trustToken;
     }
 
     /**
@@ -44,7 +46,7 @@ contract LendingRequestFactory {
         lendingRequest = address(
             new LendingRequest(
                 _origin, verified, _amount, _paybackAmount,
-                contractFee, _purpose, msg.sender)
+                contractFee, _purpose, msg.sender, trustToken)
         );
         emit RequestCreated(lendingRequest, _origin, verified, _purpose);
     }

@@ -75,19 +75,21 @@ export default {
           .methods.getRequests(contractAddress)
           .call({ from: this.$store.state.web3.coinbase })
 
-        let returnValue = await this.$parent
-          .requestManagementContract()
-          .methods.getProposalParameters(openRequests[0])
-          .call({ from: this.$store.state.web3.coinbase })
+        if (openRequests.length !== 0) {
+          let proposalParameters = await this.$parent
+            .requestManagementContract()
+            .methods.getProposalParameters(openRequests[0])
+            .call({ from: this.$store.state.web3.coinbase })
 
-        this.proposals = [
-          {
-            author: returnValue.asker,
-            askAmount: returnValue.askAmount + ' ETH',
-            paybackAmount: returnValue.paybackAmount + ' ETH',
-            trusted: false
-          }
-        ]
+          this.proposals = [
+            {
+              author: proposalParameters.asker,
+              askAmount: proposalParameters.askAmount + ' ETH',
+              paybackAmount: proposalParameters.paybackAmount + ' ETH',
+              trusted: false
+            }
+          ]
+        }
       } catch (error) {
         console.log(error)
       }

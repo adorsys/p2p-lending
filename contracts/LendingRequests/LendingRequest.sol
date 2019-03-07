@@ -7,6 +7,7 @@ contract LendingRequest {
     }
 
     address payable private managementContract;
+    address payable private trustToken;
 
     address payable public asker;
     address payable public lender;
@@ -39,7 +40,8 @@ contract LendingRequest {
         uint256 _paybackAmount,
         uint256 _contractFee,
         string memory _purpose,
-        address payable _managementContract
+        address payable _managementContract,
+        address payable _trustToken
     ) public {
         asker = _asker;
         lender = address(0);
@@ -51,6 +53,7 @@ contract LendingRequest {
         moneyLent = false;
         debtSettled = false;
         managementContract = _managementContract;
+        trustToken = _trustToken;
     }
 
     /**
@@ -148,7 +151,7 @@ contract LendingRequest {
      */
     function cleanUp() external {
         require(msg.sender == managementContract, "cleanUp failed");
-        emit CollectContractFee(address(this), managementContract);
-        selfdestruct(managementContract);
+        emit CollectContractFee(address(this), trustToken);
+        selfdestruct(trustToken);
     }
 }
