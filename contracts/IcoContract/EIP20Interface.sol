@@ -1,6 +1,6 @@
 // Abstract contract for the full ERC 20 Token standard
 // https://github.com/ethereum/EIPs/blob/master/EIPS/eip-20.md
-pragma solidity ^0.5.0;
+pragma solidity ^0.5.0; // Solidity compiler version
 
 
 contract EIP20Interface {

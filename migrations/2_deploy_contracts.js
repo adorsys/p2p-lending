@@ -21,13 +21,20 @@ const configPath = path.join(
     "deployed-config.json"
 );
 
+//constructor parameter LendingBoard
 const minimumQuorum = 1;
 const majorityMargin = 50;
 
+//constructor parameter TrustToken
+const name = "TrustToken";                                   
+const decimals = 18;                                
+const symbol = "TT";                               
+const totalSupply = 100;
+
 module.exports = async deployer => {
     await generateContractDeploymentConfig();
-    await deployer.deploy(TrustToken);
-    await deployer.deploy(LendingBoard, minimumQuorum, majorityMargin);
+    await deployer.deploy(TrustToken,totalSupply,name,decimals,symbol);
+    await deployer.deploy(LendingBoard,minimumQuorum,majorityMargin);
 
     await writeContractInfo(
         "icocontract",
