@@ -7,9 +7,7 @@ contract("LendingRequestFactory", accounts => {
     beforeEach(async () => {
         asker = accounts[0];
         lender = accounts[1];
-        lendingBoard = await LendingBoard.new(1, 50, { from: asker });
         lendingRequestFactory = await LendingRequestFactory.new(
-            lendingBoard.address,
             TrustToken.address,
             { from: asker }
         );

@@ -4,15 +4,19 @@ import "../Ownable.sol";
 import "./LendingRequestFactory.sol";
 
 // TODO: change RequestManagement to use deployed RequestFactory via call
-/// @author 
+/// @author Daniel Hohner
 contract RequestManagement is Ownable {
     LendingRequestFactory lendingRequestFactory;
+
+    event RequestCreated(address request);
+    event Deposit(address request);
+    event Withdraw(address request);
 
     mapping(address => address[]) private lendingRequests;
     mapping(address => bool) private validRequest;
 
-    constructor(LendingBoard _LendingBoardAddress, address payable _trustToken) public {
-        lendingRequestFactory = new LendingRequestFactory(_LendingBoardAddress, _trustToken);
+    constructor(address payable _trustToken) public {
+        lendingRequestFactory = new LendingRequestFactory(_trustToken);
     }
 
     /**
@@ -36,6 +40,7 @@ contract RequestManagement is Ownable {
 
         // mark created lendingRequest as a valid request
         validRequest[request] = true;
+        emit RequestCreated(request);
     }
 
     /**
@@ -49,6 +54,7 @@ contract RequestManagement is Ownable {
                 LendingRequest(_lendingRequest).deposit.value(msg.value)(msg.sender),
                 "Deposit failed"
         );
+        emit Deposit(_lendingRequest);
     }
 
     /**
@@ -59,6 +65,7 @@ contract RequestManagement is Ownable {
         require(validRequest[_lendingRequest], "invalid request");
 
         LendingRequest(_lendingRequest).withdraw(msg.sender);
+        emit Withdraw(_lendingRequest);
         
         // if paybackAmount was withdrawn by lender reduce number of openRequests for asker
         if(LendingRequest(_lendingRequest).withdrawnByLender()) {
@@ -127,18 +134,17 @@ contract RequestManagement is Ownable {
             uint256 askAmount,
             uint256 paybackAmount,
             uint256 contractFee,
-            string memory purpose,
-            bool lent,
-            bool debtSettled
+            string memory purpose
         ) {
-        asker = LendingRequest(_lendingRequest).asker();
-        lender = LendingRequest(_lendingRequest).lender();
-        askAmount = LendingRequest(_lendingRequest).amountAsked();
-        paybackAmount = LendingRequest(_lendingRequest).paybackAmount();
-        contractFee = LendingRequest(_lendingRequest).contractFee();
-        purpose = LendingRequest(_lendingRequest).purpose();
-        lent = LendingRequest(_lendingRequest).moneyLent();
-        debtSettled = LendingRequest(_lendingRequest).debtSettled();
+        (asker, lender, askAmount, paybackAmount, contractFee, purpose) =
+            LendingRequest(_lendingRequest).getProposalParameters();
+    }
+
+    function getProposalState(address payable _lendingRequest)
+        public
+        view
+        returns (bool verifiedAsker, bool lent, bool withdrawnByAsker, bool debtSettled) {
+        return LendingRequest(_lendingRequest).getProposalState();
     }
 
     /**

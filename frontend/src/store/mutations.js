@@ -3,6 +3,7 @@ import { initializeContract } from '@/services/web3/initializeContract'
 import pollContractFee from '@/services/web3/pollContractFee'
 import * as types from '@/util/constants/types'
 import * as poll from '../services/web3/pollProposals'
+import { initializeRequestManagementContract } from '../services/web3/requestManagement/initializeRmContract'
 
 export default {
     [types.INIT_CONNECTION](state, payload) {
@@ -12,6 +13,7 @@ export default {
         state.web3.balance = payload.web3.balance
         state.web3.web3Instance = payload.web3.web3Instance
         initializeContract()
+        initializeRequestManagementContract()
         pollWeb3()
     },
     [types.INIT_CONTRACT](state, payload) {
@@ -19,6 +21,9 @@ export default {
         state.contractInstance = payload.contractInstance
         pollContractFee()
         poll.proposalInit()
+    },
+    [types.INIT_REQUESTMANAGEMENT](state, payload) {
+        state.requestManagementInstance = payload
     },
     [types.INIT_PROPOSALS](state, payload) {
         state.proposals = payload

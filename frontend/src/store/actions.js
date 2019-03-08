@@ -4,6 +4,7 @@ import getOpenProposals from '../util/proposalHelpers'
 import initializeConnection from '@/services/web3/initializeConnection'
 import { initializeContractHelper } from '@/services/web3/initializeContract'
 import { pollHelper } from '@/services/web3/pollWeb3'
+import { requestManagementHelper } from '../services/web3/requestManagement/initializeRmContract'
 
 export default {
     async [types.INIT_CONNECTION]({ commit }) {
@@ -13,6 +14,10 @@ export default {
     async [types.INIT_CONTRACT]({ commit }) {
         let payload = await initializeContractHelper()
         commit(types.INIT_CONTRACT, payload)
+    },
+    async [types.INIT_REQUESTMANAGEMENT]({ commit }) {
+        let payload = await requestManagementHelper()
+        commit(types.INIT_REQUESTMANAGEMENT, payload)
     },
     async [types.INIT_PROPOSALS]({ commit }) {
         let payload = await getOpenProposals()

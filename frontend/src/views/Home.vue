@@ -3,11 +3,7 @@
     <div class="title">Lending Requests</div>
     <hr class="separator">
     <hr class="separator">
-    <OpenRequests
-      @openRequestOverlay="openRequestCreation"
-      :contract="requestManagementContract"
-      :web3="web3"
-    >
+    <OpenRequests @openRequestOverlay="openRequestCreation" :contract="requestManagementContract">
       <transition>
         <CreateRequest
           v-if="createRequest"
@@ -16,20 +12,17 @@
         />
       </transition>
     </OpenRequests>
-    <UserRequests/>
   </div>
 </template>
 
 <script>
 import OpenRequests from '@/components/RequestManagement/LendingRequests/openLendingRequests'
-import UserRequests from '@/components/RequestManagement/LendingRequests/userLendingRequests'
 import CreateRequest from '../components/RequestManagement/CreateLendingRequest/createLendingRequest'
-import { initializeRequestManagementContract } from '@/services/web3/requestManagement/initializeRmContract'
+// import { requestManagementHelper } from '@/services/web3/requestManagement/initializeRmContract'
 
 export default {
   components: {
     OpenRequests,
-    UserRequests,
     CreateRequest
   },
   data() {
@@ -48,9 +41,9 @@ export default {
     }
   },
   async mounted() {
-    const initialize = await initializeRequestManagementContract()
-    this.requestManagementContract = initialize.contract
-    this.web3 = initialize.web3
+    // const initialize = await requestManagementHelper()
+    // this.requestManagementContract = initialize.contract
+    // this.web3 = initialize.web3
   }
 }
 </script>
