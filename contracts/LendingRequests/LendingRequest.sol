@@ -50,7 +50,7 @@ contract LendingRequest {
      * @param _origin the address of the initial caller of the function
      * @return true on success - false otherwise
      */
-    function deposit(address payable _origin) external payable returns (bool) {
+    function deposit(address payable _origin) external payable returns (bool originIsLender, bool originIsAsker) {
         /*
          * Case 1:
          *          Lending Request is being covered by lender
@@ -73,18 +73,19 @@ contract LendingRequest {
 
             moneyLent = true;
             lender = _origin;
-            return true;
+            originIsLender = true;
+            originIsAsker = false;
         } else if (moneyLent && !debtSettled) {
             require(_origin == asker, "Can only be paid back by the asker");
             require(msg.value == (paybackAmount + contractFee), "not paybackAmount + contractFee");
 
             debtSettled = true;
-            return true;
+            originIsLender = false;
+            originIsAsker = true;
         }
         else {
             revert("Error");
         }
-        return false;
     }
 
     /**

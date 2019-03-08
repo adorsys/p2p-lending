@@ -41,5 +41,10 @@ export default {
     [types.UPDATE_FEE](state, payload) {
         state.contractFee = payload
         pollContractFee()
+    },
+    [types.UPDATE_REQUESTS](state, payload) {
+        payload.forEach(element => {
+            state.allRequests.push(element)
+        })
     }
 }

@@ -28,6 +28,7 @@
               class="button button--table button--userTable"
               v-if="p.status === 'Withdrawn'"
             >Deposit</div>
+            <span v-if="p.status !== 'Withdrawn' && p.status !== 'Withdrawable'">n/a</span>
           </td>
         </tr>
       </tbody>

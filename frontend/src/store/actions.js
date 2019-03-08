@@ -5,6 +5,7 @@ import initializeConnection from '@/services/web3/initializeConnection'
 import { initializeContractHelper } from '@/services/web3/initializeContract'
 import { pollHelper } from '@/services/web3/pollWeb3'
 import { requestManagementHelper } from '../services/web3/requestManagement/initializeRmContract'
+import { requestHelper } from '../services/web3/requestManagement/getLendingRequests'
 
 export default {
     async [types.INIT_CONNECTION]({ commit }) {
@@ -33,5 +34,9 @@ export default {
     },
     async [types.UPDATE_FEE]({ commit }, payload) {
         commit(types.UPDATE_FEE, payload)
+    },
+    async [types.UPDATE_REQUESTS]({ commit }, contract) {
+        let payload = await requestHelper(contract)
+        commit(types.UPDATE_REQUESTS, payload)
     }
 }

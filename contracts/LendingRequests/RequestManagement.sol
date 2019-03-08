@@ -9,7 +9,8 @@ contract RequestManagement is Ownable {
     LendingRequestFactory lendingRequestFactory;
 
     event RequestCreated(address request);
-    event Deposit(address request);
+    event RequestGranted(address request, address lender);
+    event DebtPaid(address request, address asker);
     event Withdraw(address request);
 
     mapping(address => address[]) private lendingRequests;
@@ -50,11 +51,14 @@ contract RequestManagement is Ownable {
     function deposit(address payable _lendingRequest) public payable {
         require(validRequest[_lendingRequest], "invalid request");
         require(msg.value > 0, "cannot call deposit without sending ether");
-        require(
-                LendingRequest(_lendingRequest).deposit.value(msg.value)(msg.sender),
-                "Deposit failed"
-        );
-        emit Deposit(_lendingRequest);
+        (bool lender, bool asker) = LendingRequest(_lendingRequest).deposit.value(msg.value)(msg.sender);
+        require(lender || asker, "Deposit failed");
+        
+        if (lender) {
+            emit RequestGranted(_lendingRequest, msg.sender);
+        } else if (asker) {
+            emit DebtPaid(_lendingRequest, msg.sender);
+        }
     }
 
     /**

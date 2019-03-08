@@ -8,6 +8,7 @@ export default {
     },
     requestManagementInstance: null,
     proposals: [],
+    allRequests: [],
     contractInstance: null,
     contractFee: null
 }

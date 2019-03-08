@@ -12,7 +12,7 @@
     <hr class="separator">
     <div class="request__management">
       <div class="subtitle subtitle--lendingRequest">Open Lending Requests</div>
-      <table class="table" v-if="allProposals.length !== 0">
+      <table class="table" v-if="openRequests.length !== 0">
         <thead>
           <tr>
             <th class="table__head">Asker</th>
@@ -24,7 +24,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr class="table__row" v-for="p in allProposals" :key="p.idx">
+          <tr class="table__row" v-for="p in openRequests" :key="p.idx">
             <td class="table__data">{{ p.author }}</td>
             <td class="table__data">{{ p.askAmount + ' ETH' }}</td>
             <td class="table__data">{{ p.paybackAmount + ' ETH' }}</td>
@@ -44,7 +44,7 @@
           </tr>
         </tbody>
       </table>
-      <table class="table" v-if="allProposals.length === 0">
+      <table class="table" v-if="openRequests.length === 0">
         <thead>
           <tr class="table__row">
             <th class="table__head">Lending Requests</th>
@@ -60,13 +60,17 @@
 
 <script>
 import { mapState } from 'vuex'
+import { UPDATE_REQUESTS } from '@/util/constants/types'
+
 export default {
   computed: mapState({
-    contract: state => state.requestManagementInstance
+    contract: state => state.requestManagementInstance,
+    allRequests: state => state.allRequests
   }),
   data() {
     return {
-      allProposals: []
+      openRequests: [],
+      txHash: null
     }
   },
   methods: {
@@ -82,49 +86,24 @@ export default {
       const account = await this.$store.state.web3
         .web3Instance()
         .eth.getCoinbase()
-      try {
-        this.allProposals = []
-        const openRequests = await this.contract()
-          .methods.getRequests(this.contract()._address)
-          .call({ from: account })
-        if (openRequests.length !== 0) {
-          for (let i = 0; i < openRequests.length; i++) {
-            const proposalParameters = await this.contract()
-              .methods.getProposalParameters(openRequests[i])
-              .call()
-            const proposalState = await this.contract()
-              .methods.getProposalState(openRequests[i])
-              .call()
-            if (
-              String(account).toUpperCase() !==
-              proposalParameters.asker.toUpperCase()
-            ) {
-              const prop = {
-                address: openRequests[i],
-                author: proposalParameters.asker,
-                askAmount: proposalParameters.askAmount / 10 ** 18,
-                paybackAmount: proposalParameters.paybackAmount / 10 ** 18,
-                purpose: proposalParameters.purpose,
-                trusted: proposalState.trusted,
-                lent: proposalState.lent
-              }
-              if (prop.lent === false) {
-                this.allProposals.push(prop)
-              }
-            }
-          }
+      this.allRequests.forEach(element => {
+        console.log(element.asker)
+        if (
+          String(account).toUpperCase() === String(element.asker).toUpperCase()
+        ) {
+          this.openRequests.push(element)
         }
-      } catch (error) {
-        console.log(error)
-      }
+      })
     },
     requestCreatedListener() {
       // Request Created Listener
       this.contract()
         .events.RequestCreated()
-        .once('data', async () => {
-          await this.getRequests()
-          this.requestCreatedListener()
+        .on('data', event => {
+          if (this.txHash !== event.transactionHash) {
+            this.txHash = event.transactionHash
+            this.getRequests()
+          }
         })
     },
     depositListener() {
@@ -142,11 +121,11 @@ export default {
       handler: function(contractInstance) {
         if (contractInstance !== null && contractInstance !== undefined) {
           // requestManagement was initialized -> get all open lending requests
-          this.getRequests()
+          this.$store.dispatch(UPDATE_REQUESTS, contractInstance)
 
           // start event listeners for request management
           this.requestCreatedListener()
-          this.depositListener()
+          // this.depositListener()
 
           // reload requests on account change
           // eslint-disable-next-line no-undef
