@@ -139,7 +139,7 @@ export default {
     },
     allRequests: {
       handler: function() {
-        console.log('allRequests changed')
+        this.getRequests()
       }
     }
   }
