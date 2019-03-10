@@ -1,7 +1,8 @@
+<!--Directory: P2P-Lending/frontend/src/components/InitialCoinOffering/chart-doughnut.vue-->
 <template>
   <div>
     <h2>Collected Ether</h2>
-
+    <!--if data from TrustToken-Contract had been loaded-->
     <div class="card" v-if="loaded">
       <chartjs-doughnut
         v-bind:bind="true"
@@ -20,7 +21,7 @@
 import { mapState } from 'vuex'
 
 export default {
-  computed: mapState({
+  computed: mapState({ //get data from TrustToken contract
     icoGoal: state => state.icoState.icoGoal,
     icoEtherBalance: state => state.icoState.icoEtherBalance
   }),
@@ -50,7 +51,7 @@ export default {
           (this.icoGoal - this.icoEtherBalance) +
           ' Ether'
       ]
-      this.loaded = true
+      this.loaded = true //data from TrustToken had been loaded
     }
   },
   watch: {
