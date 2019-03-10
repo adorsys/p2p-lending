@@ -69,8 +69,6 @@ const initializeIcoContractHelper = async () => {
         return contract
     }
 
-    console.log(payload)
-
     return payload
 }
 

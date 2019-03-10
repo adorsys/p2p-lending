@@ -1,17 +1,7 @@
 <template>
   <div class="ico">
-    <h1>ICO Management</h1>
+    <div class="title">ICO Management</div>
     <hr>
-    <!-- <input
-      type="text"
-      name="ico__input-1"
-      id="ico__input-1"
-      class="ico__input"
-      v-model="input_1"
-      placeholder="input-1"
-    >
-    <div class="button button--ico" @click="submit">Submit</div>
-    <div class="button button--ico" @click="receive">Receive</div>-->
     <div class="ico__details">
       <h3>
         <div>
@@ -19,16 +9,18 @@
           <p v-else class="inactive_red">ICO ist not active</p>
         </div>
       </h3>
-      <h3>{{ "Total TrustToken: " + totalTokenSupply+" "+tokenSymbol}}</h3>
-      <h3>{{ "Contract Balance/Goal: " + contractEtherBalance + "/"+icoGoal + " Ether"}}</h3>
-      <h3>{{ "You own: "+ tokenBalanceUser +" "+tokenSymbol}}</h3>
-      <h3>{{ "You have already invested: "+ etherBalanceUser +" Ether"}}</h3>
-      <h3>{{ "Participants count: " + icoParticipantCount}}</h3>
+      <div class="ico__details__text">{{ "Total TrustToken: " + totalTokenSupply+" "+tokenSymbol}}</div>
+      <div
+        class="ico__details__text"
+      >{{ "Contract Balance/Goal: " + contractEtherBalance + "/"+icoGoal + " Ether"}}</div>
+      <div class="ico__details__text">{{ "You own: "+ tokenBalanceUser +" "+tokenSymbol}}</div>
+      <div class="ico__details__text">{{ "You have already invested: "+ etherBalanceUser +" Ether"}}</div>
+      <div class="ico__details__text">{{ "Participants count: " + icoParticipantCount}}</div>
     </div>
     <hr>
 
     <div v-if="isIcoActive">
-      <h3>{{ "Buy TrustToken"}}</h3>
+      <div class="ico__subtitle">{{ "Buy TrustToken"}}</div>
       <input
         type="text"
         name="ico__input-1"
@@ -43,7 +35,7 @@
     </div>
 
     <div v-else>
-      <h3>{{"Send "+ tokenSymbol +" to "}}</h3>
+      <div class="ico__subtitle">{{"Send "+ tokenSymbol +" to "}}</div>
       <input
         type="text"
         name="ico__input-1"
@@ -64,7 +56,9 @@
 
       <hr>
 
-      <h3>{{"Approve another account to use a certain amount of "+tokenSymbol+" from your account"}}</h3>
+      <div
+        class="ico__subtitle"
+      >{{"Approve another account to use a certain amount of "+tokenSymbol+" from your account"}}</div>
       <input
         type="text"
         name="ico__input-1"
@@ -85,7 +79,9 @@
 
       <hr>
 
-      <h3>{{"Send "+tokenSymbol+" to an account in the name of another account"}}</h3>
+      <div
+        class="ico__subtitle"
+      >{{"Send "+tokenSymbol+" to an account in the name of another account"}}</div>
       <input
         type="text"
         name="ico__input-1"
@@ -114,8 +110,10 @@
 
       <hr>
 
-      <h3>{{"Token amount of address, you are allowed to spend"}}</h3>
-      <h4>{{"You are allowed to spend "+ tokenAmountAllowsToSpend +" "+ tokenSymbol+ " from entered account"}}</h4>
+      <div class="ico__subtitle">{{"Token amount of address, you are allowed to spend"}}</div>
+      <div
+        class="ico__subsubtitle"
+      >{{"You are allowed to spend "+ tokenAmountAllowsToSpend +" "+ tokenSymbol+ " from entered account"}}</div>
       <input
         type="text"
         name="ico__input-1"
@@ -166,26 +164,6 @@ export default {
     }
   },
   methods: {
-    async submit() {
-      await this.$store.state
-        .icoContractInstance()
-        .methods.set(parseInt(this.input_1, 10))
-        .send({ from: this.$store.state.web3.coinbase })
-    },
-    async receive() {
-      this.output_1 = await this.$store.state
-        .icoContractInstance()
-        .methods.get()
-        .call()
-      console.log(this.$store.state.web3.web3Instance())
-      console.log(this.$store.state.icoContractInstance())
-
-      console.log(
-        this.$store.state.web3
-          .web3Instance()
-          .utils.fromWei(this.etherBalanceUser, 'ether')
-      )
-    },
     async participate() {
       await this.$store.state
         .icoContractInstance()
@@ -249,38 +227,12 @@ export default {
         )
     }
   },
-  async mounted() {
-    await this.$store.dispatch(INIT_ICO_CONTRACT)
-    this.$emit('loaded')
+  mounted() {
+    this.$store.dispatch(INIT_ICO_CONTRACT)
   }
 }
 </script>
 
 <style lang="scss">
-@import '../../util/scss/variables';
-
-.ico__input {
-  padding: 0.7em;
-  background-color: $navbar-hover-color;
-  border: 2px solid rgba($color: $border-color, $alpha: 0.3);
-}
-
-.ico__details {
-  margin-top: 15px;
-  margin-bottom: 15px;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-}
-
-.button--ico {
-  width: 150px;
-}
-
-.active_green {
-  color: green;
-}
-
-.inactive_red {
-  color: red;
-}
+@import './Ico.scss';
 </style>

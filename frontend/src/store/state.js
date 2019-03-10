@@ -23,18 +23,5 @@ export default {
     proposals: [],
     allRequests: [],
     contractInstance: null,
-    icoContractInstance: null,
-    contractFee: null,
-    icoState: {
-        icoGoal: null,
-        icoEtherBalance: null,
-        isIcoActive: null,
-        totalTokenSupply: null,
-        icoParticipantCount: null,
-        tokenSymbol: null,
-        tokenBalanceUser: null,
-        etherBalanceUser: null,
-        name: null,
-        decimals: null
-    }
+    contractFee: null
 }
