@@ -31,11 +31,7 @@ contract("RequestManagement", accounts => {
     let contractFee;
 
     beforeEach(async () => {
-        lendingBoard = await LendingBoard.new(1, 50);
-        requestManagement = await RequestManagement.new(
-            lendingBoard.address,
-            TrustToken.address
-        );
+        requestManagement = await RequestManagement.new(TrustToken.address);
 
         firstAccount = accounts[0];
         asker = accounts[1];
@@ -65,12 +61,6 @@ contract("RequestManagement", accounts => {
     });
 
     it("contracts deployed", async () => {
-        assert.notStrictEqual(
-            lendingBoard.address,
-            0x0,
-            "lending board does not have address"
-        );
-
         assert.notStrictEqual(
             requestManagement.address,
             0x0,

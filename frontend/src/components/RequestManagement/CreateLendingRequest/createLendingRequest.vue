@@ -24,7 +24,7 @@
             id="userInput__inputField--askAmount"
             class="userInput__inputField userInput__inputField--askAmount"
             v-model="askAmount"
-            placeholder="Ask Amount in [0.1 ... x] ETH"
+            placeholder="Ask Amount in ETH"
           >
           <input
             type="text"
@@ -51,13 +51,16 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 export default {
+  computed: mapState({
+    contract: state => state.requestManagementInstance
+  }),
   data() {
     return {
       askAmount: null,
       paybackAmount: null,
-      requestPurpose: null,
-      contract: null
+      requestPurpose: null
     }
   },
   methods: {
@@ -65,24 +68,23 @@ export default {
       if (
         this.askAmount !== null &&
         this.paybackAmount !== null &&
+        this.paybackAmount > this.askAmount &&
         this.requestPurpose !== null
       ) {
-        console.log(parseInt(this.askAmount, 10))
-        console.log(parseInt(this.paybackAmount, 10))
-        console.log(this.requestPurpose)
+        const askWei = this.$store.state.web3
+          .web3Instance()
+          .utils.toWei(this.askAmount, 'Ether')
+        const paybackWei = this.$store.state.web3
+          .web3Instance()
+          .utils.toWei(this.paybackAmount, 'Ether')
         await this.contract()
-          .methods.ask(
-            parseInt(this.askAmount, 10),
-            parseInt(this.paybackAmount, 10),
-            this.requestPurpose
-          )
+          .methods.ask(askWei, paybackWei, this.requestPurpose)
           .send({ from: this.$store.state.web3.coinbase })
-        this.$parent.$emit('lendingRequestCreated')
+        this.$emit('closeRequestOverlay')
+      } else {
+        console.log('invalid input')
       }
     }
-  },
-  mounted() {
-    this.contract = this.$parent.$parent.requestManagementContract
   }
 }
 </script>

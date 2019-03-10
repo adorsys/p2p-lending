@@ -6,7 +6,9 @@ export default {
         balance: null,
         web3Instance: null
     },
+    requestManagementInstance: null,
     proposals: [],
+    allRequests: [],
     contractInstance: null,
     icoContractInstance: null,
     contractFee: null,

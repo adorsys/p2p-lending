@@ -2,18 +2,24 @@ import {
     requestManagementAddress,
     requestManagementABI
 } from '@/util/constants/requestManagementContract'
+import store from '@/store/'
+import { INIT_REQUESTMANAGEMENT } from '@/util/constants/types'
+
 import getWeb3 from '@/services/web3/getWeb3'
 
-export const initializeRequestManagementContract = async () => {
-    let web3 = await getWeb3()
-    let contract = await new web3.eth.Contract(
+export const requestManagementHelper = async () => {
+    let web3Instance = await getWeb3()
+    let contractInstance = await new web3Instance.eth.Contract(
         requestManagementABI,
         requestManagementAddress
     )
-
-    let contractInstance = () => {
-        return contract
+    const contract = () => {
+        return contractInstance
     }
 
-    return contractInstance
+    return contract
+}
+
+export const initializeRequestManagementContract = () => {
+    store.dispatch(INIT_REQUESTMANAGEMENT)
 }

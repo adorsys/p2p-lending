@@ -3,37 +3,47 @@
     <div class="title">Lending Requests</div>
     <hr class="separator">
     <hr class="separator">
-    <Requests @openRequestOverlay="createRequest = true">
+    <OpenRequests @openRequestOverlay="openRequestCreation" :contract="requestManagementContract">
       <transition>
-        <CreateRequest v-if="createRequest" @closeRequestOverlay="createRequest = false"/>
+        <CreateRequest
+          v-if="createRequest"
+          @closeRequestOverlay="closeRequestCreation"
+          :contract="requestManagementContract"
+        />
       </transition>
-    </Requests>
+    </OpenRequests>
   </div>
 </template>
 
 <script>
-import Requests from '@/components/RequestManagement/LendingRequests/lendingRequests'
+import OpenRequests from '@/components/RequestManagement/LendingRequests/openLendingRequests'
 import CreateRequest from '../components/RequestManagement/CreateLendingRequest/createLendingRequest'
-import { initializeRequestManagementContract } from '@/services/web3/requestManagement/initializeRmContract'
+// import { requestManagementHelper } from '@/services/web3/requestManagement/initializeRmContract'
 
 export default {
   components: {
-    Requests,
+    OpenRequests,
     CreateRequest
   },
   data() {
     return {
       requestManagementContract: null,
+      web3: null,
       createRequest: false
     }
   },
   methods: {
-    toggleCreation() {
+    openRequestCreation() {
       this.createRequest = true
+    },
+    closeRequestCreation() {
+      this.createRequest = false
     }
   },
   async mounted() {
-    this.requestManagementContract = await initializeRequestManagementContract()
+    // const initialize = await requestManagementHelper()
+    // this.requestManagementContract = initialize.contract
+    // this.web3 = initialize.web3
   }
 }
 </script>

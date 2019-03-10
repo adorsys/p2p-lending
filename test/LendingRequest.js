@@ -37,24 +37,6 @@ contract("LendingRequest", accounts => {
             value: web3.utils.toWei("1", "ether")
         });
 
-        // triggers the MoneyLent Event with expected parameters
-        assert.strictEqual(deposit.logs.length, 1, "should trigger 1 event");
-        assert.strictEqual(
-            deposit.logs[0].event,
-            "MoneyLent",
-            "should be MoneyLent"
-        );
-        assert.strictEqual(
-            deposit.logs[0].args.lendingRequest,
-            lendingRequest.address,
-            "should be lendingRequest"
-        );
-        assert.strictEqual(
-            parseInt(deposit.logs[0].args.amount, 10),
-            parseInt(web3.utils.toWei("1", "ether"), 10),
-            "should be 1 ETH"
-        );
-
         // sets moneyLent flag, registers lender and rejects further deposits
         let moneyLent = await lendingRequest.moneyLent.call();
         assert.strictEqual(

@@ -29,10 +29,10 @@ export default new Router({
                 import(/* webpackChunkName: "lendingBoard" */ './views/LendingBoard.vue')
         },
         {
-            path: '/ico',
-            name: 'ico',
+            path: '/userrequests',
+            name: 'userrequests',
             component: () =>
-                import(/* webpackChunkName: "ico" */ './views/ICO.vue')
+                import(/* webpackChunkName: "userRequests" */ './views/UserRequests.vue')
         }
     ]
 })
