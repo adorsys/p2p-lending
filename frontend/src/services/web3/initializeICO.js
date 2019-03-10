@@ -21,17 +21,50 @@ const initializeIcoContractHelper = async () => {
         decimals: null
     }
 
-    payload.icoGoal = parseFloat(await web3.utils.fromWei(await contract.methods.goal().call(), 'ether'),10)
+    payload.icoGoal = parseFloat(
+        await web3.utils.fromWei(await contract.methods.goal().call(), 'ether'),
+        10
+    )
     payload.decimals = parseFloat(await contract.methods.decimals().call())
     payload.name = await contract.methods.name().call()
-    payload.icoEtherBalance = parseFloat(await web3.utils.fromWei(await contract.methods.contractEtherBalance().call(),'ether'),10)
+    payload.icoEtherBalance = parseFloat(
+        await web3.utils.fromWei(
+            await contract.methods.contractEtherBalance().call(),
+            'ether'
+        ),
+        10
+    )
     payload.isIcoActive = await contract.methods.isIcoActive().call()
-    payload.totalTokenSupply = parseFloat(await web3.utils.fromWei(await contract.methods.totalSupply().call(),'ether'),10)
-    payload.icoParticipantCount = parseFloat(await contract.methods.getParticipantsCount().call(),10)
+    payload.totalTokenSupply = parseFloat(
+        await web3.utils.fromWei(
+            await contract.methods.totalSupply().call(),
+            'ether'
+        ),
+        10
+    )
+    payload.icoParticipantCount = parseFloat(
+        await contract.methods.getParticipantsCount().call(),
+        10
+    )
     payload.tokenSymbol = await contract.methods.symbol().call()
-    payload.tokenBalanceUser = parseFloat(await web3.utils.fromWei(await contract.methods.balanceOf(await web3.eth.getCoinbase()).call(),'ether'),10)
-    payload.etherBalanceUser = parseFloat(await web3.utils.fromWei(await contract.methods.getEtherBalances().call({ from: await web3.eth.getCoinbase() })),10)
-    
+    payload.tokenBalanceUser = parseFloat(
+        await web3.utils.fromWei(
+            await contract.methods
+                .balanceOf(await web3.eth.getCoinbase())
+                .call(),
+            'ether'
+        ),
+        10
+    )
+    payload.etherBalanceUser = parseFloat(
+        await web3.utils.fromWei(
+            await contract.methods
+                .getEtherBalances()
+                .call({ from: await web3.eth.getCoinbase() })
+        ),
+        10
+    )
+
     payload.icoInstance = () => {
         return contract
     }

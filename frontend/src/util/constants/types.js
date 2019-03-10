@@ -4,6 +4,7 @@ export const INIT_LB_CONTRACT = 'initializeLbContract'
 export const INIT_ICO_CONTRACT = 'initializeIcoContract'
 =======
 export const INIT_CONTRACT = 'initializeContract'
+export const INIT_ICO_CONTRACT = 'intitializeIcoContract'
 export const INIT_REQUESTMANAGEMENT = 'initializeRequestManagementContract'
 >>>>>>> dah_requestManagement_frontend
 export const INIT_PROPOSALS = 'initializeProposals'

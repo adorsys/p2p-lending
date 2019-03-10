@@ -37,7 +37,6 @@ export default {
   },
   methods: {
     getData() {
-      console.log('getdata')
       this.datasets = [
         {
           data: [this.icoEtherBalance, this.icoGoal - this.icoEtherBalance],
@@ -54,10 +53,19 @@ export default {
       this.loaded = true
     }
   },
+  watch: {
+    icoEtherBalance: {
+      handler: function(etherBalance) {
+        if (etherBalance !== null) {
+          this.getData()
+        }
+      }
+    }
+  },
   mounted() {
-    this.$parent.$on('loaded', () => {
+    if (this.icoEtherBalance !== null) {
       this.getData()
-    })
+    }
   }
 }
 </script>
