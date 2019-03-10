@@ -1,6 +1,5 @@
-/*
-Implements EIP20 token standard: https://github.com/ethereum/EIPs/blob/master/EIPS/eip-20.md
-.*/
+// Directory: P2P-Lending/contracts/IcoContract/TrustToken.sol
+//Implements EIP20 token standard: https://github.com/ethereum/EIPs/blob/master/EIPS/eip-20.md
 pragma solidity ^0.5.0;                                                 // Solidity compiler version
 import "./EIP20Interface.sol";
 
@@ -15,9 +14,9 @@ contract TrustToken is EIP20Interface {
 
     using address_make_payable for address;                             // use this library
 
-    address public proposalManagement;                                          // address of ProposalManagement
-    bool private setManagementLock = false;
-    mapping (address => bool) public isUserLocked;
+    address public proposalManagement;                                  // address of ProposalManagement
+    bool private setManagementLock = false;                             // to check if ProposalManagement address is already set
+    mapping (address => bool) public isUserLocked;                      // to check if token of address are locked
 
     uint256 public totalSupply;                                         // total amount of tokens
 
@@ -258,7 +257,7 @@ contract TrustToken is EIP20Interface {
 
 
     /// @notice Distribute tokenSupply between all Trustees
-    function distributeToken() private 
+    function distributeToken() private //nach BA diese Funktion public machen
     {
         for(uint i = 0; i < participants.length; i++)  // go trough all Trustees
         {

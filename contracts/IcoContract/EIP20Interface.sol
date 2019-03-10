@@ -1,3 +1,4 @@
+// Directory: P2P-Lending/contracts/IcoContract/EIP20Interface.sol
 // Abstract contract for the full ERC 20 Token standard
 // https://github.com/ethereum/EIPs/blob/master/EIPS/eip-20.md
 pragma solidity ^0.5.0; // Solidity compiler version
