@@ -25,7 +25,7 @@
         </thead>
         <tbody>
           <tr class="table__row" v-for="p in openRequests" :key="p.idx">
-            <td class="table__data">{{ p.author }}</td>
+            <td class="table__data">{{ p.asker }}</td>
             <td class="table__data">{{ p.askAmount + ' ETH' }}</td>
             <td class="table__data">{{ p.paybackAmount + ' ETH' }}</td>
             <td class="table__data">{{ p.purpose }}</td>
@@ -83,15 +83,17 @@ export default {
         .send({ value: lendAmount, from: this.$store.state.web3.coinbase })
     },
     async getRequests() {
+      this.openRequests = []
       const account = await this.$store.state.web3
         .web3Instance()
         .eth.getCoinbase()
       this.allRequests.forEach(element => {
-        console.log(element.asker)
         if (
-          String(account).toUpperCase() === String(element.asker).toUpperCase()
+          String(account).toUpperCase() !== String(element.asker).toUpperCase()
         ) {
-          this.openRequests.push(element)
+          if (element.lent === false) {
+            this.openRequests.push(element)
+          }
         }
       })
     },
@@ -102,7 +104,7 @@ export default {
         .on('data', event => {
           if (this.txHash !== event.transactionHash) {
             this.txHash = event.transactionHash
-            this.getRequests()
+            this.$store.dispatch(UPDATE_REQUESTS, this.contract)
           }
         })
     },
@@ -133,6 +135,11 @@ export default {
             this.getRequests()
           })
         }
+      }
+    },
+    allRequests: {
+      handler: function() {
+        console.log('allRequests changed')
       }
     }
   }
