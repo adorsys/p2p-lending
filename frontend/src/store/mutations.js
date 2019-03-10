@@ -22,6 +22,19 @@ export default {
         pollContractFee()
         poll.proposalInit()
     },
+    [types.INIT_ICO_CONTRACT](state, payload) {
+        state.icoContractInstance = payload.icoInstance
+        state.icoState.icoGoal = payload.icoGoal
+        state.icoState.icoEtherBalance = payload.icoEtherBalance
+        state.icoState.isIcoActive = payload.isIcoActive
+        state.icoState.totalTokenSupply = payload.totalTokenSupply
+        state.icoState.icoParticipantCount = payload.icoParticipantCount
+        state.icoState.tokenSymbol = payload.tokenSymbol
+        state.icoState.tokenBalanceUser = payload.tokenBalanceUser
+        state.icoState.etherBalanceUser = payload.etherBalanceUser
+        state.icoState.name = payload.name
+        state.icoState.decimals = payload.decimals
+    },
     [types.INIT_REQUESTMANAGEMENT](state, payload) {
         state.requestManagementInstance = payload
     },

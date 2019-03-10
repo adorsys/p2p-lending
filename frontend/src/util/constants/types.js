@@ -1,5 +1,6 @@
 export const INIT_CONNECTION = 'initializeConnection'
 export const INIT_CONTRACT = 'initializeContract'
+export const INIT_ICO_CONTRACT = 'intitializeIcoContract'
 export const INIT_REQUESTMANAGEMENT = 'initializeRequestManagementContract'
 export const INIT_PROPOSALS = 'initializeProposals'
 export const UPDATE_PROPOSALS = 'updateProposals'

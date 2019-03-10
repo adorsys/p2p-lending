@@ -5,6 +5,10 @@ import store from './store'
 
 Vue.config.productionTip = false
 
+import 'chart.js'
+import 'hchs-vue-charts'
+Vue.use(window.VueCharts)
+
 new Vue({
     router,
     store,

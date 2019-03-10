@@ -32,6 +32,8 @@ module.exports = async deployer => {
         tokenSymbol
     );
 
+    await writeContractInfo("icocontract", TrustToken.abi, TrustToken.address);
+
     await writeContractInfo(
         "lendingboard",
         LendingBoard.abi,
