@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import UserRequests from '@/components/RequestManagement/LendingRequests/userLendingRequests'
+import UserRequests from '@/components/RequestManagement/UserRequests/userRequests'
 
 export default {
   components: {

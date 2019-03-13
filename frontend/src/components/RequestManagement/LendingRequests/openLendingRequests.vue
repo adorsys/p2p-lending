@@ -69,8 +69,7 @@ export default {
   }),
   data() {
     return {
-      openRequests: [],
-      txHash: null
+      openRequests: []
     }
   },
   methods: {
@@ -98,23 +97,27 @@ export default {
       })
     },
     requestCreatedListener() {
+      let txHash = null
       // Request Created Listener
       this.contract()
         .events.RequestCreated()
         .on('data', event => {
-          if (this.txHash !== event.transactionHash) {
-            this.txHash = event.transactionHash
+          if (txHash !== event.transactionHash) {
+            txHash = event.transactionHash
             this.$store.dispatch(UPDATE_REQUESTS, this.contract)
           }
         })
     },
     depositListener() {
+      let txHash = null
       // Ether Deposited Listener
       this.contract()
-        .events.Deposit()
-        .once('data', async () => {
-          await this.getRequests()
-          this.depositListener()
+        .events.RequestGranted()
+        .on('data', event => {
+          if (txHash !== event.transactionHash) {
+            txHash = event.transactionHash
+            this.$store.dispatch(UPDATE_REQUESTS, this.contract)
+          }
         })
     }
   },
@@ -127,7 +130,7 @@ export default {
 
           // start event listeners for request management
           this.requestCreatedListener()
-          // this.depositListener()
+          this.depositListener()
 
           // reload requests on account change
           // eslint-disable-next-line no-undef
@@ -140,6 +143,7 @@ export default {
     allRequests: {
       handler: function() {
         console.log('allRequests changed')
+        this.getRequests()
       }
     }
   }

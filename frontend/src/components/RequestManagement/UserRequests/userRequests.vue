@@ -13,7 +13,7 @@
       </thead>
       <tbody>
         <tr class="table__row" v-for="p in askerProposals" :key="p.idx">
-          <td class="table__data">{{ p.author }}</td>
+          <td class="table__data">{{ p.asker }}</td>
           <td class="table__data">{{ p.askAmount + ' ETH' }}</td>
           <td class="table__data">{{ p.paybackAmount + ' ETH' }}</td>
           <td class="table__data">{{ p.status }}</td>
@@ -48,9 +48,11 @@
 
 <script>
 import { mapState } from 'vuex'
+import { UPDATE_REQUESTS } from '@/util/constants/types'
 export default {
   computed: mapState({
-    contract: state => state.requestManagementInstance
+    contract: state => state.requestManagementInstance,
+    allRequests: state => state.allRequests
   }),
   data() {
     return {
@@ -69,54 +71,17 @@ export default {
       // await this.contract().methods.deposit(address).send({ value: })
     },
     async getRequests() {
-      const user = this.$store.state.web3.coinbase
-      try {
-        this.askerProposals = []
-        this.lenderProposals = []
-        const userRequests = await this.contract()
-          .methods.getRequests(user)
-          .call()
-
-        if (userRequests.length !== 0) {
-          for (let i = 0; i < userRequests.length; i++) {
-            const proposalParameters = await this.contract()
-              .methods.getProposalParameters(userRequests[i])
-              .call()
-            const proposalState = await this.contract()
-              .methods.getProposalState(userRequests[i])
-              .call()
-            console.log(proposalParameters)
-            console.log(proposalState)
-            const prop = {
-              address: userRequests[i],
-              author: proposalParameters.asker,
-              askAmount: proposalParameters.askAmount / 10 ** 18,
-              paybackAmount: proposalParameters.paybackAmount / 10 ** 18,
-              purpose: proposalParameters.purpose,
-              contractFee: proposalParameters.contractFee / 10 ** 3, // change fee representation in contract to wei
-              status: 'Waiting'
-            }
-            if (proposalState.withdrawnByAsker) {
-              prop.status = 'Withdrawn'
-            }
-            if (proposalState.lent && !proposalState.withdrawnByAsker) {
-              prop.status = 'Withdrawable'
-            }
-            if (
-              String(user).toUpperCase() ===
-              proposalParameters.asker.toUpperCase()
-            ) {
-              if (!proposalState.debtSettled) {
-                this.askerProposals.push(prop)
-              }
-            } else {
-              this.lenderProposals.push(prop)
-            }
-          }
+      this.askerProposals = []
+      const account = await this.$store.state.web3
+        .web3Instance()
+        .eth.getCoinbase()
+      this.allRequests.forEach(element => {
+        if (
+          String(account).toUpperCase() === String(element.asker).toUpperCase()
+        ) {
+          this.askerProposals.push(element)
         }
-      } catch (error) {
-        console.log(error)
-      }
+      })
     }
   },
   watch: {
@@ -124,7 +89,7 @@ export default {
       handler: function(contractInstance) {
         if (contractInstance !== null && contractInstance !== undefined) {
           // requestManagement was initialized -> get all open lending requests
-          this.getRequests()
+          this.$store.dispatch(UPDATE_REQUESTS, contractInstance)
 
           // start event listeners for request management
           // this.requestCreatedListener()
@@ -137,11 +102,17 @@ export default {
           })
         }
       }
+    },
+    allRequests: {
+      handler: function() {
+        console.log('allRequests changed')
+        this.getRequests()
+      }
     }
   }
 }
 </script>
 
 <style lang="scss">
-@import './userLendingRequests';
+@import './userRequests';
 </style>
