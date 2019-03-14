@@ -1,17 +1,15 @@
-const LendingRequestFactory = artifacts.require("./LendingRequestFactory.sol");
-const LendingRequest = artifacts.require("./LendingRequest.sol");
-const LendingBoard = artifacts.require("./LendingBoard.sol");
+const LendingRequestFactory = artifacts.require("LendingRequestFactory");
+const LendingRequest = artifacts.require("LendingRequest");
+const LendingBoard = artifacts.require("LendingBoard");
+const TrustToken = artifacts.require("TrustToken");
 
 contract("LendingRequestFactory", accounts => {
-    before(async () => {
+    beforeEach(async () => {
         asker = accounts[0];
         lender = accounts[1];
-        lendingBoard = await LendingBoard.new(1, 50, { from: asker });
         lendingRequestFactory = await LendingRequestFactory.new(
-            lendingBoard.address,
-            {
-                from: asker
-            }
+            TrustToken.address,
+            { from: asker }
         );
     });
 

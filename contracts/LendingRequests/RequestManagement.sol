@@ -4,15 +4,20 @@ import "../Ownable.sol";
 import "./LendingRequestFactory.sol";
 
 // TODO: change RequestManagement to use deployed RequestFactory via call
-/// @author 
+/// @author Daniel Hohner
 contract RequestManagement is Ownable {
     LendingRequestFactory lendingRequestFactory;
+
+    event RequestCreated(address request);
+    event RequestGranted(address request, address lender);
+    event DebtPaid(address request, address asker);
+    event Withdraw(address request);
 
     mapping(address => address[]) private lendingRequests;
     mapping(address => bool) private validRequest;
 
-    constructor(LendingBoard _LendingBoardAddress) public {
-        lendingRequestFactory = new LendingRequestFactory(_LendingBoardAddress);
+    constructor(address payable _trustToken) public {
+        lendingRequestFactory = new LendingRequestFactory(_trustToken);
     }
 
     /**
@@ -36,6 +41,7 @@ contract RequestManagement is Ownable {
 
         // mark created lendingRequest as a valid request
         validRequest[request] = true;
+        emit RequestCreated(request);
     }
 
     /**
@@ -45,10 +51,14 @@ contract RequestManagement is Ownable {
     function deposit(address payable _lendingRequest) public payable {
         require(validRequest[_lendingRequest], "invalid request");
         require(msg.value > 0, "cannot call deposit without sending ether");
-        require(
-                LendingRequest(_lendingRequest).deposit.value(msg.value)(msg.sender),
-                "Deposit failed"
-        );
+        (bool lender, bool asker) = LendingRequest(_lendingRequest).deposit.value(msg.value)(msg.sender);
+        require(lender || asker, "Deposit failed");
+        
+        if (lender) {
+            emit RequestGranted(_lendingRequest, msg.sender);
+        } else if (asker) {
+            emit DebtPaid(_lendingRequest, msg.sender);
+        }
     }
 
     /**
@@ -59,6 +69,7 @@ contract RequestManagement is Ownable {
         require(validRequest[_lendingRequest], "invalid request");
 
         LendingRequest(_lendingRequest).withdraw(msg.sender);
+        emit Withdraw(_lendingRequest);
         
         // if paybackAmount was withdrawn by lender reduce number of openRequests for asker
         if(LendingRequest(_lendingRequest).withdrawnByLender()) {
@@ -70,24 +81,6 @@ contract RequestManagement is Ownable {
             // remove lendingRequest from managementContract
             removeRequest(_lendingRequest, asker);
         }
-    }
-
-    /**
-     * @notice gets the lendingRequests for the specified user
-     * @param _user user you want to see the lendingRequests of
-     * @return the lendingRequests for _user
-     */
-    function getRequests(address _user) public view returns(address[] memory) {
-        require(lendingRequests[_user].length > 0, "user has no requests");
-        return lendingRequests[_user];
-    }
-
-    /**
-     * @notice get the current ether balance of the management contract
-     * @return current balance of the contract
-     */
-    function contractBalance() public onlyOwner view returns(uint256) {
-        return address(this).balance;
     }
 
     /**
@@ -104,6 +97,58 @@ contract RequestManagement is Ownable {
      */
     function kill() public onlyOwner {
         selfdestruct(owner);
+    }
+
+    /**
+     * @notice gets the lendingRequests for the specified user
+     * @param _user user you want to see the lendingRequests of
+     * @return the lendingRequests for _user
+     */
+    function getRequests(address _user) public view returns(address[] memory) {
+        address[] memory empty = new address[](0);
+        return lendingRequests[_user].length != 0 ? lendingRequests[_user] : empty;
+    }
+
+    /**
+     * @notice get the current ether balance of the management contract
+     * @return current balance of the contract
+     */
+    function contractBalance() public onlyOwner view returns(uint256) {
+        return address(this).balance;
+    }
+
+    /**
+     * @notice gets askAmount, paybackAmount and purpose to given proposalAddress
+     * @param _lendingRequest the address to get the parameters from
+     * @return asker address of the asker
+     * @return lender address of the lender
+     * @return askAmount of the proposal
+     * @return paybackAmount of the proposal
+     * @return contractFee the contract fee for the lending request
+     * @return purpose of the proposal
+     * @return lent wheather the money was lent or not
+     * @return debtSettled wheather the debt was settled by the asker
+     */
+    function getProposalParameters(address payable _lendingRequest)
+        public
+        view
+        returns (
+            address asker,
+            address lender,
+            uint256 askAmount,
+            uint256 paybackAmount,
+            uint256 contractFee,
+            string memory purpose
+        ) {
+        (asker, lender, askAmount, paybackAmount, contractFee, purpose) =
+            LendingRequest(_lendingRequest).getProposalParameters();
+    }
+
+    function getProposalState(address payable _lendingRequest)
+        public
+        view
+        returns (bool verifiedAsker, bool lent, bool withdrawnByAsker, bool debtSettled) {
+        return LendingRequest(_lendingRequest).getProposalState();
     }
 
     /**

@@ -2,23 +2,20 @@ pragma solidity ^0.5.0;
 
 import "./LendingRequest.sol";
 
-interface LendingBoard {
-    function contractFee() external view returns( uint256 );
-}
-
 contract LendingRequestFactory {
     address private managementContract;
-    LendingBoard private board;
+    address payable private trustToken;
 
-    event RequestCreated(address request, address from, bool verified, string purpose);
+    uint256 private contractFee;
 
     function() external payable {
         revert("Factory Contract does NOT accept ether");
     }
 
-    constructor(LendingBoard _LendingBoardAddress) public {
+    constructor(address payable _trustToken) public {
         managementContract = msg.sender;
-        board = _LendingBoardAddress;
+        contractFee = 1000;
+        trustToken = _trustToken;
     }
 
     /**
@@ -36,17 +33,13 @@ contract LendingRequestFactory {
     ) external returns (address lendingRequest) {  
         // check if asker is verifyable 
         bool verified = isVerified(_origin);
-
-        // get contractFee from lendingBoard
-        uint256 contractFee = board.contractFee();
         
         // create new lendingRequest contract
         lendingRequest = address(
             new LendingRequest(
                 _origin, verified, _amount, _paybackAmount,
-                contractFee, _purpose, msg.sender)
+                contractFee, _purpose, msg.sender, trustToken)
         );
-        emit RequestCreated(lendingRequest, _origin, verified, _purpose);
     }
 
     /**

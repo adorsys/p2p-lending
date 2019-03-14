@@ -2,7 +2,8 @@ import { pollWeb3 } from '@/services/web3/pollWeb3'
 import { initializeContract } from '@/services/web3/initializeContract'
 import pollContractFee from '@/services/web3/pollContractFee'
 import * as types from '@/util/constants/types'
-import { pollProposals, proposalInit } from '../services/web3/pollProposals'
+import * as poll from '../services/web3/pollProposals'
+import { initializeRequestManagementContract } from '../services/web3/requestManagement/initializeRmContract'
 
 export default {
     [types.INIT_CONNECTION](state, payload) {
@@ -12,17 +13,38 @@ export default {
         state.web3.balance = payload.web3.balance
         state.web3.web3Instance = payload.web3.web3Instance
         initializeContract()
+        initializeRequestManagementContract()
         pollWeb3()
     },
     [types.INIT_CONTRACT](state, payload) {
         state.contractFee = payload.contractFee
         state.contractInstance = payload.contractInstance
         pollContractFee()
-        proposalInit()
+        poll.proposalInit()
+    },
+    [types.INIT_ICO_CONTRACT](state, payload) {
+        state.icoContractInstance = payload.icoInstance
+        state.icoState.icoGoal = payload.icoGoal
+        state.icoState.icoEtherBalance = payload.icoEtherBalance
+        state.icoState.isIcoActive = payload.isIcoActive
+        state.icoState.totalTokenSupply = payload.totalTokenSupply
+        state.icoState.icoParticipantCount = payload.icoParticipantCount
+        state.icoState.tokenSymbol = payload.tokenSymbol
+        state.icoState.tokenBalanceUser = payload.tokenBalanceUser
+        state.icoState.etherBalanceUser = payload.etherBalanceUser
+        state.icoState.name = payload.name
+        state.icoState.decimals = payload.decimals
+    },
+    [types.INIT_REQUESTMANAGEMENT](state, payload) {
+        state.requestManagementInstance = payload
     },
     [types.INIT_PROPOSALS](state, payload) {
         state.proposals = payload
-        pollProposals()
+        poll.pollOnExecute()
+        poll.pollOnAdded()
+    },
+    [types.UPDATE_PROPOSALS](state, payload) {
+        state.proposals = payload
     },
     [types.POLL_WEB3](state, payload) {
         state.web3.networkID = payload.networkID
@@ -32,5 +54,10 @@ export default {
     [types.UPDATE_FEE](state, payload) {
         state.contractFee = payload
         pollContractFee()
+    },
+    [types.UPDATE_REQUESTS](state, payload) {
+        payload.forEach(element => {
+            state.allRequests.push(element)
+        })
     }
 }

@@ -1,11 +1,8 @@
-const LendingBoard = artifacts.require("./LendingBoard.sol");
-const RequestManagement = artifacts.require(
-    "./LendingRequests/RequestManagement.sol"
-);
-const ProposalFactory = artifacts.require(
-    "./ProposalFactory/ProposalFactory.sol"
-);
-const ProposalManagement = artifacts.require("./ProposalManagement.sol");
+const LendingBoard = artifacts.require("LendingBoard");
+const RequestManagement = artifacts.require("RequestManagement");
+const ProposalFactory = artifacts.require("ProposalFactory");
+const TrustToken = artifacts.require("TrustToken");
+const ProposalManagement = artifacts.require("ProposalManagement");
 
 const fs = require("fs");
 const path = require("path");
@@ -16,22 +13,56 @@ const configPath = path.join(
     "deployed-config.json"
 );
 
+//constructor parameter LendingBoard
 const minimumQuorum = 1;
 const majorityMargin = 50;
+
+//constructor parameter TrustToken
+const tokenSupply = 1000;
+const tokenName = "TrustToken";
+const tokenDecimals = 18;
+const tokenSymbol = "TT";
 
 module.exports = async deployer => {
     await generateContractDeploymentConfig();
     await deployer.deploy(LendingBoard, minimumQuorum, majorityMargin);
+    await deployer.deploy(
+        TrustToken,
+        tokenSupply,
+        tokenName,
+        tokenDecimals,
+        tokenSymbol
+    );
 
+    await writeContractInfo("icocontract", TrustToken.abi, TrustToken.address);
+
+    await writeContractInfo(
+        "icocontract",
+        TrustToken.abi,
+        TrustToken.address
+    );
+    
     await writeContractInfo(
         "lendingboard",
         LendingBoard.abi,
         LendingBoard.address
     );
 
-    await deployer.deploy(RequestManagement, LendingBoard.address);
+    await deployer.deploy(RequestManagement, TrustToken.address);
+
+    // generate contract info for request management
+    await writeContractInfo(
+        "requestmanagement",
+        RequestManagement.abi,
+        RequestManagement.address
+    );
+
     await deployer.deploy(ProposalFactory);
-    await deployer.deploy(ProposalManagement, ProposalFactory.address);
+    await deployer.deploy(
+        ProposalManagement,
+        ProposalFactory.address,
+        TrustToken.address
+    );
 };
 
 function generateContractDeploymentConfig() {

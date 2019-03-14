@@ -17,13 +17,19 @@
             <router-link :to="{ name: 'lendingboard' }" class="sidebar__menu--router">Lending Board</router-link>
           </li>
           <li class="sidebar__menu--link" @click="isShowing = false">
+            <router-link :to="{ name: 'userrequests' }" class="sidebar__menu--router">User Requests</router-link>
+          </li>
+          <li class="sidebar__menu--link" @click="isShowing = false">
+            <router-link :to="{ name: 'ico' }" class="sidebar__menu--router">ICO</router-link>
+          </li>
+          <li class="sidebar__menu--link" @click="isShowing = false">
             <router-link :to="{ name: 'about' }" class="sidebar__menu--router">About</router-link>
           </li>
         </ul>
       </div>
     </transition>
     <transition>
-      <div class="sidebar__overlay" v-if="isShowing"></div>
+      <div class="sidebar__overlay" v-if="isShowing" @click="$parent.$emit('toggleSidebar')"></div>
     </transition>
   </div>
 </template>

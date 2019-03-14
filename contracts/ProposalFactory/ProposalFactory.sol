@@ -21,7 +21,6 @@ contract ProposalFactory {
     ) external returns(address proposal) {
         proposal = address(
             new ContractFeeProposal(
-                msg.sender,
                 _proposedFee,
                 _minimumNumberOfVotes,
                 _majorityMargin,
@@ -45,7 +44,6 @@ contract ProposalFactory {
     ) external returns (address proposal) {
         proposal = address(
             new MemberProposal(
-                msg.sender,
                 _memberAddress,
                 _adding,
                 _minimumNumberOfVotes,

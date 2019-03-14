@@ -126,5 +126,5 @@ export default {
 </script>
 
 <style lang="scss">
-@import '@/components/LendingBoard/Inputs/inputs.scss';
+@import '@/components/LendingBoard/Inputs/lendingBoardInputs.scss';
 </style>

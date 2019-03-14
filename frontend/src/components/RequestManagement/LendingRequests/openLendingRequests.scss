@@ -1,0 +1,26 @@
+@import '../../../util/scss/variables';
+
+.subtitle--lendingRequest {
+  margin-top: 20px;
+}
+
+.button--lendingRequest {
+  width: 200px;
+  margin-bottom: 25px;
+}
+
+.button--lend {
+  width: 100px;
+}
+
+.table__data--trusted {
+  color: green;
+}
+.table__data--untrusted {
+  color: red;
+}
+
+.table__data--lend {
+  margin: 0;
+  padding: 0;
+}

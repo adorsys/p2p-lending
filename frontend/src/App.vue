@@ -10,7 +10,7 @@
 <script>
 import Navbar from '@/components/Navbar/navbar'
 import Sidebar from '@/components/Sidebar/sidebar'
-import * as types from '@/util/constants/types'
+import { INIT_CONNECTION } from '@/util/constants/types'
 
 export default {
   components: {
@@ -18,7 +18,7 @@ export default {
     Sidebar
   },
   beforeCreate() {
-    this.$store.dispatch(types.INIT_CONNECTION)
+    this.$store.dispatch(INIT_CONNECTION)
   }
 }
 </script>

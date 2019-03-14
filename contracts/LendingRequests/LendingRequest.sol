@@ -1,12 +1,8 @@
 pragma solidity ^0.5.0;
 
 contract LendingRequest {
-    modifier onlyRecognized() {
-        require(msg.sender == asker || msg.sender == lender, "unauthorized function call");
-        _;
-    }
-
     address payable private managementContract;
+    address payable private trustToken;
 
     address payable public asker;
     address payable public lender;
@@ -22,12 +18,6 @@ contract LendingRequest {
     bool public moneyLent;
     bool public debtSettled;
 
-    event MoneyLent( address lendingRequest, uint256 amount );
-    event DebtSettled( address lendingRequest, uint256 amount );
-    event MoneyWithdrawn( address lendingRequest, uint256 amount );
-    event LendingRequestReset( address lendingRequest );
-    event CollectContractFee( address lendingRequest, address managementAddress );
-
     function() payable external {
         revert("use deposit to transfer ETH");
     }
@@ -39,7 +29,8 @@ contract LendingRequest {
         uint256 _paybackAmount,
         uint256 _contractFee,
         string memory _purpose,
-        address payable _managementContract
+        address payable _managementContract,
+        address payable _trustToken
     ) public {
         asker = _asker;
         lender = address(0);
@@ -51,6 +42,7 @@ contract LendingRequest {
         moneyLent = false;
         debtSettled = false;
         managementContract = _managementContract;
+        trustToken = _trustToken;
     }
 
     /**
@@ -58,7 +50,7 @@ contract LendingRequest {
      * @param _origin the address of the initial caller of the function
      * @return true on success - false otherwise
      */
-    function deposit(address payable _origin) external payable returns (bool) {
+    function deposit(address payable _origin) external payable returns (bool originIsLender, bool originIsAsker) {
         /*
          * Case 1:
          *          Lending Request is being covered by lender
@@ -81,27 +73,26 @@ contract LendingRequest {
 
             moneyLent = true;
             lender = _origin;
-            emit MoneyLent(address(this), msg.value);
-            return true;
+            originIsLender = true;
+            originIsAsker = false;
         } else if (moneyLent && !debtSettled) {
             require(_origin == asker, "Can only be paid back by the asker");
             require(msg.value == (paybackAmount + contractFee), "not paybackAmount + contractFee");
 
             debtSettled = true;
-            emit DebtSettled(address(this), msg.value);
-            return true;
+            originIsLender = false;
+            originIsAsker = true;
         }
         else {
             revert("Error");
         }
-        return false;
     }
 
     /**
      * @notice withdraw the current balance of the contract
      * @param _origin the address of the initial caller of the function
      */
-    function withdraw(address _origin) external onlyRecognized {
+    function withdraw(address _origin) external {
         /*
          * Case 1: ( asker withdraws amountAsked )
          *      checks:
@@ -124,18 +115,15 @@ contract LendingRequest {
         if (_origin == asker) {
             require(!debtSettled, "debt was settled");
             withdrawnByAsker = true;
-            emit MoneyWithdrawn(address(this), address(this).balance);
             asker.transfer(address(this).balance);
         } else if (_origin == lender) {
             if (!debtSettled) {
                 require(!withdrawnByAsker, "Asker has already withdrawn the funds");
                 moneyLent = false;
-                emit LendingRequestReset(address(this));
                 lender.transfer(address(this).balance);
             }
             else {
                 withdrawnByLender = true;
-                emit MoneyWithdrawn(address(this), address(this).balance);
                 lender.transfer(address(this).balance - (contractFee * 1 ether));
             }
         } else {
@@ -148,7 +136,22 @@ contract LendingRequest {
      */
     function cleanUp() external {
         require(msg.sender == managementContract, "cleanUp failed");
-        emit CollectContractFee(address(this), managementContract);
-        selfdestruct(managementContract);
+        selfdestruct(trustToken);
+    }
+
+    /**
+     * @notice getter for all relevant information of the lending request
+     */
+    function getProposalParameters() public view
+        returns (address, address, uint256, uint256, uint256, string memory) {
+        return (asker, lender, amountAsked, paybackAmount, contractFee, purpose);
+    }
+
+    /**
+     * @notice getter for proposal state
+     */
+    function getProposalState() public view
+        returns (bool, bool, bool, bool) {
+        return (verifiedAsker, moneyLent, withdrawnByAsker, debtSettled);
     }
 }

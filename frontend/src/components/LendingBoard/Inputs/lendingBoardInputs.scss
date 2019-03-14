@@ -1,0 +1,41 @@
+@import '../../../util/scss/variables';
+
+.button--lendingBoard {
+  text-align: center;
+  width: 75%;
+}
+
+.userInput__label--contractFee {
+  grid-column: 2;
+}
+
+.userInput__label--memberAddress {
+  grid-column: 3 / 5;
+}
+.userInput__label--memberName {
+  grid-column: 5 / 6;
+}
+
+.userInput__inputField--contractFee {
+  grid-column: 2;
+}
+
+.userInput__inputField--memberAddress {
+  grid-column: 3 / 5;
+}
+
+.userInput__inputField--memberName {
+  grid-column: 5 / 6;
+}
+
+.userInput__button--changeFee {
+  grid-column: 2;
+}
+
+.userInput__button--addMember {
+  grid-column: 3 / 5;
+}
+
+.userInput__button--removeMember {
+  grid-column: 5 / 6;
+}

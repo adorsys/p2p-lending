@@ -12,7 +12,6 @@ const initializeContractHelper = async () => {
     }
 
     payload.contractFee = await contract.methods.contractFee().call()
-
     payload.contractInstance = () => {
         return contract
     }

@@ -1,10 +1,7 @@
-const LendingBoard = artifacts.require("./LendingRequests/LendingBoard.sol");
-const RequestManagement = artifacts.require(
-    "./LendingRequests/RequestManagement.sol"
-);
-const LendingRequest = artifacts.require(
-    "./LendingRequests/LendingRequest.sol"
-);
+const LendingBoard = artifacts.require("LendingBoard");
+const RequestManagement = artifacts.require("RequestManagement");
+const LendingRequest = artifacts.require("LendingRequest");
+const TrustToken = artifacts.require("TrustToken");
 
 contract("RequestManagement", accounts => {
     // truffle accounts
@@ -34,8 +31,7 @@ contract("RequestManagement", accounts => {
     let contractFee;
 
     beforeEach(async () => {
-        lendingBoard = await LendingBoard.new(1, 50);
-        requestManagement = await RequestManagement.new(lendingBoard.address);
+        requestManagement = await RequestManagement.new(TrustToken.address);
 
         firstAccount = accounts[0];
         asker = accounts[1];
@@ -65,12 +61,6 @@ contract("RequestManagement", accounts => {
     });
 
     it("contracts deployed", async () => {
-        assert.notStrictEqual(
-            lendingBoard.address,
-            0x0,
-            "lending board does not have address"
-        );
-
         assert.notStrictEqual(
             requestManagement.address,
             0x0,

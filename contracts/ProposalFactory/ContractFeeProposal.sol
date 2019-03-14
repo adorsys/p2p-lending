@@ -1,7 +1,6 @@
 pragma solidity ^0.5.0;
 
 contract ContractFeeProposal {
-    address private author;
     address payable private management = address(0);
     uint256 private proposedFee;
     uint256 private majorityMargin;
@@ -18,13 +17,11 @@ contract ContractFeeProposal {
     }
 
     constructor(
-        address _author,
         uint256 _proposedFee,
         uint256 _minimumNumberOfVotes,
         uint256 _majorityMargin,
         address payable _managementContract
     ) public {
-        author = _author;
         proposedFee = _proposedFee;
         minimumNumberOfVotes = _minimumNumberOfVotes;
         majorityMargin = _majorityMargin;

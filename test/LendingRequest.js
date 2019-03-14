@@ -1,7 +1,8 @@
-const LendingRequest = artifacts.require("./LendingRequest.sol");
+const LendingRequest = artifacts.require("LendingRequest");
+const TrustToken = artifacts.require("TrustToken");
 
 contract("LendingRequest", accounts => {
-    before(async () => {
+    beforeEach(async () => {
         asker = accounts[0];
         lender = accounts[1];
         managementContract = accounts[2];
@@ -14,7 +15,8 @@ contract("LendingRequest", accounts => {
             web3.utils.toWei("2", "ether"),
             web3.utils.toWei("1", "ether"),
             "food",
-            managementContract
+            managementContract,
+            TrustToken.address
         );
     });
 
@@ -34,24 +36,6 @@ contract("LendingRequest", accounts => {
             from: lender,
             value: web3.utils.toWei("1", "ether")
         });
-
-        // triggers the MoneyLent Event with expected parameters
-        assert.strictEqual(deposit.logs.length, 1, "should trigger 1 event");
-        assert.strictEqual(
-            deposit.logs[0].event,
-            "MoneyLent",
-            "should be MoneyLent"
-        );
-        assert.strictEqual(
-            deposit.logs[0].args.lendingRequest,
-            lendingRequest.address,
-            "should be lendingRequest"
-        );
-        assert.strictEqual(
-            parseInt(deposit.logs[0].args.amount, 10),
-            parseInt(web3.utils.toWei("1", "ether"), 10),
-            "should be 1 ETH"
-        );
 
         // sets moneyLent flag, registers lender and rejects further deposits
         let moneyLent = await lendingRequest.moneyLent.call();

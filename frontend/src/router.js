@@ -27,6 +27,18 @@ export default new Router({
             name: 'lendingboard',
             component: () =>
                 import(/* webpackChunkName: "lendingBoard" */ './views/LendingBoard.vue')
+        },
+        {
+            path: '/ico',
+            name: 'ico',
+            component: () =>
+                import(/* webpackChunkName: "ICO" */ './views/ICO.vue')
+        },
+        {
+            path: '/userrequests',
+            name: 'userrequests',
+            component: () =>
+                import(/* webpackChunkName: "userRequests" */ './views/UserRequests.vue')
         }
     ]
 })
