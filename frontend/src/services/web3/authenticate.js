@@ -2,15 +2,28 @@ import store from '@/store/'
 
 export const authenticate = async () => {
     const account = await store.state.web3.web3Instance().eth.getCoinbase()
-    const memberId = parseInt(
+    const tokenBalance = parseInt(
         await store.state
-            .contractInstance()
-            .methods.memberID(account)
+            .icoContractInstance()
+            .methods.balanceOf(account)
             .call(),
         10
     )
 
-    // check if user is token holder and handle authentication
+    if (tokenBalance !== 0) {
+        return true
+    } else {
+        const memberId = parseInt(
+            await store.state
+                .proposalManagementInstance()
+                .methods.memberId(account)
+                .call(),
+            10
+        )
 
-    return memberId !== 0 ? true : false
+        if (memberId !== 0) {
+            return true
+        }
+    }
+    return false
 }

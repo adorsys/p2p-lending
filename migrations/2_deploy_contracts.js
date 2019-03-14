@@ -1,4 +1,3 @@
-const LendingBoard = artifacts.require("LendingBoard");
 const RequestManagement = artifacts.require("RequestManagement");
 const ProposalFactory = artifacts.require("ProposalFactory");
 const TrustToken = artifacts.require("TrustToken");
@@ -13,10 +12,6 @@ const configPath = path.join(
     "deployed-config.json"
 );
 
-//constructor parameter LendingBoard
-const minimumQuorum = 1;
-const majorityMargin = 50;
-
 //constructor parameter TrustToken
 const tokenSupply = 1000;
 const tokenName = "TrustToken";
@@ -25,7 +20,6 @@ const tokenSymbol = "TT";
 
 module.exports = async deployer => {
     await generateContractDeploymentConfig();
-    await deployer.deploy(LendingBoard, minimumQuorum, majorityMargin);
     await deployer.deploy(
         TrustToken,
         tokenSupply,
@@ -34,19 +28,7 @@ module.exports = async deployer => {
         tokenSymbol
     );
 
-    await writeContractInfo("icocontract", TrustToken.abi, TrustToken.address);
-
-    await writeContractInfo(
-        "icocontract",
-        TrustToken.abi,
-        TrustToken.address
-    );
-    
-    await writeContractInfo(
-        "lendingboard",
-        LendingBoard.abi,
-        LendingBoard.address
-    );
+    await writeContractInfo("icoContract", TrustToken.abi, TrustToken.address);
 
     await deployer.deploy(ProposalFactory);
     await deployer.deploy(
@@ -55,15 +37,20 @@ module.exports = async deployer => {
         TrustToken.address
     );
 
+    await writeContractInfo(
+        "proposalManagement",
+        ProposalManagement.abi,
+        ProposalManagement.address
+    );
+
     await deployer.deploy(
         RequestManagement,
         TrustToken.address,
         ProposalManagement.address
     );
 
-    // generate contract info for request management
     await writeContractInfo(
-        "requestmanagement",
+        "requestManagement",
         RequestManagement.abi,
         RequestManagement.address
     );

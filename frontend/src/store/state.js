@@ -18,11 +18,11 @@ export default {
         name: null,
         decimals: null
     },
+    proposalManagementInstance: null,
     requestManagementInstance: null,
     icoContractInstance: null,
     proposals: [],
     allRequests: [],
-    contractInstance: null,
     contractFee: null,
     authenticated: false
 }

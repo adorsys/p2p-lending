@@ -1,14 +1,24 @@
-import getWeb3 from '@/services/web3/getWeb3'
 import { icoAddress, icoAbi } from '@/util/constants/ICOContract'
-import { INIT_ICO_CONTRACT } from '@/util/constants/types'
+import { INIT_ICO } from '@/util/constants/types'
 import store from '@/store/'
+import { INIT_ICO_CONTRACT } from '../../util/constants/types'
+
+export const initializeTokenContract = async () => {
+    const web3 = store.state.web3.web3Instance()
+    const contract = await new web3.eth.Contract(icoAbi, icoAddress)
+
+    const payload = () => {
+        return contract
+    }
+
+    return payload
+}
 
 const initializeIcoContractHelper = async () => {
-    let web3 = await getWeb3()
-    let contract = await new web3.eth.Contract(icoAbi, icoAddress)
+    let web3 = store.state.web3.web3Instance()
+    let contract = store.state.icoContractInstance()
 
     let payload = {
-        icoInstance: null,
         icoGoal: null,
         icoEtherBalance: null,
         isIcoActive: null,
@@ -65,14 +75,14 @@ const initializeIcoContractHelper = async () => {
         10
     )
 
-    payload.icoInstance = () => {
-        return contract
-    }
-
     return payload
 }
 
 const initializeIcoContract = async () => {
+    store.dispatch(INIT_ICO)
+}
+
+export const getTokenContractData = async () => {
     store.dispatch(INIT_ICO_CONTRACT)
 }
 

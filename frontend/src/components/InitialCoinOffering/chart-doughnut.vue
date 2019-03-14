@@ -21,7 +21,8 @@
 import { mapState } from 'vuex'
 
 export default {
-  computed: mapState({ //get data from TrustToken contract
+  computed: mapState({
+    //get data from TrustToken contract
     icoGoal: state => state.icoState.icoGoal,
     icoEtherBalance: state => state.icoState.icoEtherBalance
   }),

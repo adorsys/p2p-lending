@@ -25,10 +25,10 @@ export default new Router({
                 import(/* webpackChunkName: "about" */ './views/About.vue')
         },
         {
-            path: '/lendingboard',
-            name: 'lendingboard',
+            path: '/p2pManagement',
+            name: 'p2pManagement',
             component: () =>
-                import(/* webpackChunkName: "lendingBoard" */ './views/LendingBoard.vue'),
+                import(/* webpackChunkName: "lendingBoard" */ './views/P2PManagement.vue'),
             beforeEnter: (to, from, next) => {
                 if (store.state.authenticated) {
                     next()
