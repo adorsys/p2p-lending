@@ -7,6 +7,8 @@ contract LendingRequestFactory {
     address payable private trustToken;
     address private proposalManagement;
 
+    event Test(uint256 memberid);
+
     function() external payable {
         revert("Factory Contract does NOT accept ether");
     }
@@ -47,14 +49,39 @@ contract LendingRequestFactory {
      * @notice checks if the user is known via uPort
      * @param _user address of the user to be verified
      */
-    function isVerified(address _user) internal pure returns (bool) {
-        // TODO: Uport verification
-        if(_user != address(0)) {
+    function isVerified(address _user) internal returns (bool) {
+        /// try to verifiy by checking if _user is trustToken holder
+        // prepare payload: bytes4 representation of the hashed function signature
+        bytes memory payload = abi.encodeWithSignature("balanceOf(address)", _user);
+        // execute and get encoded return value of function call
+        (bool success, bytes memory encodedReturn) = trustToken.call(payload);
+        // check if query was successfull
+        require(success, "could not communicate with trustToken contract");
+        // decode trustToken balance of user
+        uint256 balance = abi.decode(encodedReturn, (uint256));
+
+        if (balance > 0) {
             return true;
+        } else {
+            /// try to verify user by getting membership status from proposalManagement
+            // prepare payload: bytes4 representation of the hashed function signature
+            payload = abi.encodeWithSignature("memberId(address)", _user);
+            // execute and get encoded return value of function call
+            (success, encodedReturn) = proposalManagement.call(payload);
+            // check if query was successfull
+            require(success, "could not get membership status for user");
+            // decode memberId
+            uint256 memberId = abi.decode(encodedReturn, (uint256));
+
+            emit Test(memberId);
+            
+            if (memberId != 0) {
+                return true;
+            } else {
+                return false;
+            }
         }
-        else {
-            return false;
-        }
+        // TODO: Uport verification
     }
 
     /**

@@ -5,7 +5,6 @@
     <hr class="separator">
     <AskerRequests :contract="requestManagementContract"/>
     <hr class="separator">
-    <hr class="separator">
     <LenderRequests :contract="requestManagementContract"/>
   </div>
 </template>

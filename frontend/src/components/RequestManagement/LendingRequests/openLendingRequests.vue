@@ -6,7 +6,6 @@
         class="button button--lendingRequest"
         @click="$emit('openRequestOverlay')"
       >Create Lending Request</div>
-      <div class="button button--lendingRequest" @click="getRequests">Get Lending Request</div>
       <slot/>
     </div>
     <hr class="separator">
@@ -29,10 +28,10 @@
             <td class="table__data">{{ p.askAmount + ' ETH' }}</td>
             <td class="table__data">{{ p.paybackAmount + ' ETH' }}</td>
             <td class="table__data">{{ p.purpose }}</td>
-            <td class="table__data" v-if="p.trusted">
+            <td class="table__data" v-if="p.verifiedAsker">
               <div class="table__data--trusted">Yes</div>
             </td>
-            <td class="table__data" v-if="!p.trusted">
+            <td class="table__data" v-if="!p.verifiedAsker">
               <div class="table__data--untrusted">No</div>
             </td>
             <td class="table__data table__data--buttons">

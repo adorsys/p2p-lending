@@ -62,5 +62,11 @@ export default {
         payload.forEach(element => {
             state.allRequests.push(element)
         })
+    },
+    [types.AUTHENTICATE](state, payload) {
+        state.authenticated = payload
+    },
+    [types.LOGOUT](state) {
+        state.authenticated = false
     }
 }

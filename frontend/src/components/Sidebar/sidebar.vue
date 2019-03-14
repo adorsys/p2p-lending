@@ -13,7 +13,11 @@
               class="sidebar__menu--router sidebar__menu--firstItem"
             >Home</router-link>
           </li>
-          <li class="sidebar__menu--link" @click="isShowing = false">
+          <li
+            class="sidebar__menu--link"
+            v-if="this.$store.state.authenticated"
+            @click="isShowing = false"
+          >
             <router-link :to="{ name: 'lendingboard' }" class="sidebar__menu--router">Lending Board</router-link>
           </li>
           <li class="sidebar__menu--link" @click="isShowing = false">

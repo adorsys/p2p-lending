@@ -46,7 +46,7 @@
 
 .navbar__right {
   float: right;
-  margin-right: 1em;
+  margin-right: 10px;
   height: $navbar-height;
   line-height: $navbar-height;
   white-space: nowrap;
@@ -58,13 +58,18 @@
   cursor: pointer;
   color: $link-text-color-darkened;
   font-weight: 600;
-  margin-left: 1em;
+  margin-left: 10px;
   font-size: 1.4rem;
   padding: $padding-standard;
 }
 
 .navbar__right--auth:hover {
   background-color: $navbar-hover-color;
+}
+
+.navbar__right--link {
+  text-decoration: none;
+  color: $link-text-color-darkened;
 }
 
 .navbar__right--network {
