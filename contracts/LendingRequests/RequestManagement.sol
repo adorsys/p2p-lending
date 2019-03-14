@@ -16,8 +16,8 @@ contract RequestManagement is Ownable {
     mapping(address => address[]) private lendingRequests;
     mapping(address => bool) private validRequest;
 
-    constructor(address payable _trustToken) public {
-        lendingRequestFactory = new LendingRequestFactory(_trustToken);
+    constructor(address payable _trustToken, address _proposalManagement) public {
+        lendingRequestFactory = new LendingRequestFactory(_trustToken, _proposalManagement);
     }
 
     /**

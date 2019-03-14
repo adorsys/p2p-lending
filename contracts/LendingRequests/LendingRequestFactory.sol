@@ -5,17 +5,18 @@ import "./LendingRequest.sol";
 contract LendingRequestFactory {
     address private managementContract;
     address payable private trustToken;
+    address private proposalManagement;
 
-    uint256 private contractFee;
+    event Test(uint256 memberid);
 
     function() external payable {
         revert("Factory Contract does NOT accept ether");
     }
 
-    constructor(address payable _trustToken) public {
+    constructor(address payable _trustToken, address _proposalManagement) public {
         managementContract = msg.sender;
-        contractFee = 1000;
         trustToken = _trustToken;
+        proposalManagement = _proposalManagement;
     }
 
     /**
@@ -33,6 +34,8 @@ contract LendingRequestFactory {
     ) external returns (address lendingRequest) {  
         // check if asker is verifyable 
         bool verified = isVerified(_origin);
+
+        uint256 contractFee = getContractFee();
         
         // create new lendingRequest contract
         lendingRequest = address(
@@ -46,13 +49,49 @@ contract LendingRequestFactory {
      * @notice checks if the user is known via uPort
      * @param _user address of the user to be verified
      */
-    function isVerified(address _user) internal pure returns (bool) {
-        // TODO: Uport verification
-        if(_user != address(0)) {
+    function isVerified(address _user) internal returns (bool) {
+        /// try to verifiy by checking if _user is trustToken holder
+        // prepare payload: bytes4 representation of the hashed function signature
+        bytes memory payload = abi.encodeWithSignature("balanceOf(address)", _user);
+        // execute and get encoded return value of function call
+        (bool success, bytes memory encodedReturn) = trustToken.call(payload);
+        // check if query was successfull
+        require(success, "could not communicate with trustToken contract");
+        // decode trustToken balance of user
+        uint256 balance = abi.decode(encodedReturn, (uint256));
+
+        if (balance > 0) {
             return true;
+        } else {
+            /// try to verify user by getting membership status from proposalManagement
+            // prepare payload: bytes4 representation of the hashed function signature
+            payload = abi.encodeWithSignature("memberId(address)", _user);
+            // execute and get encoded return value of function call
+            (success, encodedReturn) = proposalManagement.call(payload);
+            // check if query was successfull
+            require(success, "could not get membership status for user");
+            // decode memberId
+            uint256 memberId = abi.decode(encodedReturn, (uint256));
+
+            emit Test(memberId);
+            
+            if (memberId != 0) {
+                return true;
+            } else {
+                return false;
+            }
         }
-        else {
-            return false;
-        }
+        // TODO: Uport verification
+    }
+
+    /**
+     * @notice gets the current contract fee from proposalManagement
+     * @return returns the contract fee
+     */
+    function getContractFee() private returns (uint256) {
+        bytes memory payload = abi.encodeWithSignature("contractFee()");
+        (bool success, bytes memory encodedReturn) = proposalManagement.call(payload);
+        require(success, "could not get contract fee");
+        return abi.decode(encodedReturn, (uint256));
     }
 }

@@ -8,7 +8,7 @@ contract ProposalManagement {
      * proposalType == 3 -> removeMember proposal
      */
     mapping(address => uint256) public proposalType;
-    mapping(address => uint256) private memberId;
+    mapping(address => uint256) public memberId;
     mapping(address => address[]) private lockedUsersPerProposal;
     mapping(address => uint256) private userProposalLocks;
     mapping(address => address[]) private unlockUsers;

@@ -1,6 +1,6 @@
 const LendingRequestFactory = artifacts.require("LendingRequestFactory");
 const LendingRequest = artifacts.require("LendingRequest");
-const LendingBoard = artifacts.require("LendingBoard");
+const ProposalManagement = artifacts.require("ProposalManagement");
 const TrustToken = artifacts.require("TrustToken");
 
 contract("LendingRequestFactory", accounts => {
@@ -9,6 +9,7 @@ contract("LendingRequestFactory", accounts => {
         lender = accounts[1];
         lendingRequestFactory = await LendingRequestFactory.new(
             TrustToken.address,
+            ProposalManagement.address,
             { from: asker }
         );
     });

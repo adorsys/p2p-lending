@@ -6,7 +6,6 @@
         class="button button--lendingRequest"
         @click="$emit('openRequestOverlay')"
       >Create Lending Request</div>
-      <div class="button button--lendingRequest" @click="getRequests">Get Lending Request</div>
       <slot/>
     </div>
     <hr class="separator">
@@ -29,10 +28,10 @@
             <td class="table__data">{{ p.askAmount + ' ETH' }}</td>
             <td class="table__data">{{ p.paybackAmount + ' ETH' }}</td>
             <td class="table__data">{{ p.purpose }}</td>
-            <td class="table__data" v-if="p.trusted">
+            <td class="table__data" v-if="p.verifiedAsker">
               <div class="table__data--trusted">Yes</div>
             </td>
-            <td class="table__data" v-if="!p.trusted">
+            <td class="table__data" v-if="!p.verifiedAsker">
               <div class="table__data--untrusted">No</div>
             </td>
             <td class="table__data table__data--buttons">
@@ -60,17 +59,17 @@
 
 <script>
 import { mapState } from 'vuex'
-import { UPDATE_REQUESTS } from '@/util/constants/types'
 
 export default {
   computed: mapState({
-    contract: state => state.requestManagementInstance,
     allRequests: state => state.allRequests
   }),
+  props: ['contract'],
   data() {
     return {
       openRequests: [],
-      txHash: null
+      requestGrantedListenerInstance: null,
+      requestCreatedListenerInstance: null
     }
   },
   methods: {
@@ -96,51 +95,18 @@ export default {
           }
         }
       })
-    },
-    requestCreatedListener() {
-      // Request Created Listener
-      this.contract()
-        .events.RequestCreated()
-        .on('data', event => {
-          if (this.txHash !== event.transactionHash) {
-            this.txHash = event.transactionHash
-            this.$store.dispatch(UPDATE_REQUESTS, this.contract)
-          }
-        })
-    },
-    depositListener() {
-      // Ether Deposited Listener
-      this.contract()
-        .events.Deposit()
-        .once('data', async () => {
-          await this.getRequests()
-          this.depositListener()
-        })
     }
   },
   watch: {
-    contract: {
-      handler: function(contractInstance) {
-        if (contractInstance !== null && contractInstance !== undefined) {
-          // requestManagement was initialized -> get all open lending requests
-          this.$store.dispatch(UPDATE_REQUESTS, contractInstance)
-
-          // start event listeners for request management
-          this.requestCreatedListener()
-          // this.depositListener()
-
-          // reload requests on account change
-          // eslint-disable-next-line no-undef
-          ethereum.on('accountsChanged', () => {
-            this.getRequests()
-          })
-        }
-      }
-    },
     allRequests: {
       handler: function() {
         this.getRequests()
       }
+    }
+  },
+  mounted() {
+    if (this.allRequests.length !== 0 && this.contract !== null) {
+      this.getRequests()
     }
   }
 }

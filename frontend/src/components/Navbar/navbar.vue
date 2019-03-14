@@ -10,7 +10,9 @@
       </li>
       <li class="navbar__right">
         <span class="navbar__right--auth" v-if="!authenticated" @click="logIn">LogIn</span>
-        <span class="navbar__right--auth" v-if="authenticated" @click="logOut">LogOut</span>
+        <span class="navbar__right--auth" v-if="authenticated" @click="logOut">
+          <router-link :to="{ name: 'home' }" class="navbar__right--link">LogOut</router-link>
+        </span>
       </li>
       <li class="navbar__right navbar__right--network" v-if="network !== null">
         <span>{{ network }}</span>
@@ -20,7 +22,7 @@
         <span class="navbar__right--metamaskInactive" v-if="!isInjected">Connected</span>
       </li>
     </ul>
-    <div class="router-view-slotted">
+    <div class="routerview__slotted">
       <slot name="sidebar">
         <slot name="sidebar-overlay"></slot>
       </slot>
@@ -30,30 +32,24 @@
 
 <script>
 import { mapState } from 'vuex'
-
 import { NETWORKS } from '@/util/constants/networks'
+import { AUTHENTICATE, LOGOUT } from '@/util/constants/types'
 
 export default {
   computed: mapState({
     isInjected: state => state.web3.isInjected,
-    network: state => NETWORKS[state.web3.networkID]
+    network: state => NETWORKS[state.web3.networkID],
+    authenticated: state => state.authenticated
   }),
-  data() {
-    return {
-      authenticated: false
-    }
-  },
   methods: {
     toggleSidebar() {
       this.$parent.$emit('toggleSidebar')
     },
     logIn() {
-      console.log('login')
-      this.authenticated = true
+      this.$store.dispatch(AUTHENTICATE)
     },
     logOut() {
-      console.log('logout')
-      this.authenticated = false
+      this.$store.dispatch(LOGOUT)
     }
   }
 }
