@@ -1,4 +1,4 @@
-const LendingBoard = artifacts.require("LendingBoard");
+const ProposalManagement = artifacts.require("ProposalManagement");
 const RequestManagement = artifacts.require("RequestManagement");
 const LendingRequest = artifacts.require("LendingRequest");
 const TrustToken = artifacts.require("TrustToken");
@@ -31,7 +31,10 @@ contract("RequestManagement", accounts => {
     let contractFee;
 
     beforeEach(async () => {
-        requestManagement = await RequestManagement.new(TrustToken.address);
+        requestManagement = await RequestManagement.new(
+            TrustToken.address,
+            ProposalManagement.address
+        );
 
         firstAccount = accounts[0];
         asker = accounts[1];

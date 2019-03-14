@@ -4,6 +4,7 @@ import pollContractFee from '@/services/web3/pollContractFee'
 import * as types from '@/util/constants/types'
 import * as poll from '../services/web3/pollProposals'
 import { initializeRequestManagementContract } from '../services/web3/requestManagement/initializeRmContract'
+import { pollRequestManagement } from '../services/web3/requestManagement/RequestManagementListeners'
 
 export default {
     [types.INIT_CONNECTION](state, payload) {
@@ -37,6 +38,7 @@ export default {
     },
     [types.INIT_REQUESTMANAGEMENT](state, payload) {
         state.requestManagementInstance = payload
+        pollRequestManagement(state.requestManagementInstance)
     },
     [types.INIT_PROPOSALS](state, payload) {
         state.proposals = payload
@@ -56,6 +58,7 @@ export default {
         pollContractFee()
     },
     [types.UPDATE_REQUESTS](state, payload) {
+        state.allRequests = []
         payload.forEach(element => {
             state.allRequests.push(element)
         })

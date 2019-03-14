@@ -60,16 +60,17 @@
 
 <script>
 import { mapState } from 'vuex'
-import { UPDATE_REQUESTS } from '@/util/constants/types'
 
 export default {
   computed: mapState({
-    contract: state => state.requestManagementInstance,
     allRequests: state => state.allRequests
   }),
+  props: ['contract'],
   data() {
     return {
-      openRequests: []
+      openRequests: [],
+      requestGrantedListenerInstance: null,
+      requestCreatedListenerInstance: null
     }
   },
   methods: {
@@ -95,56 +96,18 @@ export default {
           }
         }
       })
-    },
-    requestCreatedListener() {
-      let txHash = null
-      // Request Created Listener
-      this.contract()
-        .events.RequestCreated()
-        .on('data', event => {
-          if (txHash !== event.transactionHash) {
-            txHash = event.transactionHash
-            this.$store.dispatch(UPDATE_REQUESTS, this.contract)
-          }
-        })
-    },
-    depositListener() {
-      let txHash = null
-      // Ether Deposited Listener
-      this.contract()
-        .events.RequestGranted()
-        .on('data', event => {
-          if (txHash !== event.transactionHash) {
-            txHash = event.transactionHash
-            this.$store.dispatch(UPDATE_REQUESTS, this.contract)
-          }
-        })
     }
   },
   watch: {
-    contract: {
-      handler: function(contractInstance) {
-        if (contractInstance !== null && contractInstance !== undefined) {
-          // requestManagement was initialized -> get all open lending requests
-          this.$store.dispatch(UPDATE_REQUESTS, contractInstance)
-
-          // start event listeners for request management
-          this.requestCreatedListener()
-          this.depositListener()
-
-          // reload requests on account change
-          // eslint-disable-next-line no-undef
-          ethereum.on('accountsChanged', () => {
-            this.getRequests()
-          })
-        }
-      }
-    },
     allRequests: {
       handler: function() {
-        console.log('allRequests changed')
         this.getRequests()
       }
+    }
+  },
+  mounted() {
+    if (this.allRequests.length !== 0 && this.contract !== null) {
+      this.getRequests()
     }
   }
 }

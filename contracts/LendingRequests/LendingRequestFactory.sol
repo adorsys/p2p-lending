@@ -5,17 +5,16 @@ import "./LendingRequest.sol";
 contract LendingRequestFactory {
     address private managementContract;
     address payable private trustToken;
-
-    uint256 private contractFee;
+    address private proposalManagement;
 
     function() external payable {
         revert("Factory Contract does NOT accept ether");
     }
 
-    constructor(address payable _trustToken) public {
+    constructor(address payable _trustToken, address _proposalManagement) public {
         managementContract = msg.sender;
-        contractFee = 1000;
         trustToken = _trustToken;
+        proposalManagement = _proposalManagement;
     }
 
     /**
@@ -33,6 +32,8 @@ contract LendingRequestFactory {
     ) external returns (address lendingRequest) {  
         // check if asker is verifyable 
         bool verified = isVerified(_origin);
+
+        uint256 contractFee = getContractFee();
         
         // create new lendingRequest contract
         lendingRequest = address(
@@ -54,5 +55,16 @@ contract LendingRequestFactory {
         else {
             return false;
         }
+    }
+
+    /**
+     * @notice gets the current contract fee from proposalManagement
+     * @return returns the contract fee
+     */
+    function getContractFee() private returns (uint256) {
+        bytes memory payload = abi.encodeWithSignature("contractFee()");
+        (bool success, bytes memory encodedReturn) = proposalManagement.call(payload);
+        require(success, "could not get contract fee");
+        return abi.decode(encodedReturn, (uint256));
     }
 }

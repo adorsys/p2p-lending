@@ -1,7 +1,7 @@
 <template>
-  <div class="userRequest__management">
-    <div class="subtitle subtitle--userRequest">User Requests</div>
-    <table class="table" v-if="askerProposals.length !== 0">
+  <div class="askerRequest__management">
+    <div class="subtitle subtitle--askerRequest">Asker For</div>
+    <table class="table" v-if="askerRequests.length !== 0">
       <thead>
         <tr>
           <th class="table__head">Asker</th>
@@ -12,7 +12,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr class="table__row" v-for="p in askerProposals" :key="p.idx">
+        <tr class="table__row" v-for="p in askerRequests" :key="p.idx">
           <td class="table__data">{{ p.asker }}</td>
           <td class="table__data">{{ p.askAmount + ' ETH' }}</td>
           <td class="table__data">{{ p.paybackAmount + ' ETH' }}</td>
@@ -20,12 +20,12 @@
           <td class="table__data table__data--buttons">
             <div
               v-on:click="withdraw(p.address)"
-              class="button button--table button--userTable"
+              class="button button--table button--askerTable"
               v-if="p.status === 'Withdrawable'"
             >Withdraw</div>
             <div
               v-on:click="deposit(p.address, p.paybackAmount, p.contractFee)"
-              class="button button--table button--userTable"
+              class="button button--table button--askerTable"
               v-if="p.status === 'Withdrawn'"
             >Deposit</div>
             <span v-if="p.status !== 'Withdrawn' && p.status !== 'Withdrawable'">n/a</span>
@@ -33,14 +33,14 @@
         </tr>
       </tbody>
     </table>
-    <table class="table" v-if="askerProposals.length === 0">
+    <table class="table" v-if="askerRequests.length === 0">
       <thead>
         <tr class="table__row">
-          <th class="table__head">User Requests</th>
+          <th class="table__head">Asker</th>
         </tr>
       </thead>
       <tbody>
-        <td class="table__data">No Lending Requests Found</td>
+        <td class="table__data">No Requests Found</td>
       </tbody>
     </table>
   </div>
@@ -48,16 +48,18 @@
 
 <script>
 import { mapState } from 'vuex'
-import { UPDATE_REQUESTS } from '@/util/constants/types'
+
 export default {
   computed: mapState({
-    contract: state => state.requestManagementInstance,
     allRequests: state => state.allRequests
   }),
+  props: ['contract'],
   data() {
     return {
-      askerProposals: [],
-      lenderProposals: []
+      askerRequests: [],
+      requestGrantedListenerInstance: null,
+      withdrawListenerInstance: null,
+      debtPaidListenerInstance: null
     }
   },
   methods: {
@@ -67,11 +69,15 @@ export default {
         .send({ from: this.$store.state.web3.coinbase })
     },
     async deposit(address, payback, contractFee) {
-      console.log(address, payback, contractFee)
-      // await this.contract().methods.deposit(address).send({ value: })
+      const amountToSettle = this.$store.state.web3
+        .web3Instance()
+        .utils.toWei(String(payback + contractFee), 'Ether')
+      await this.contract()
+        .methods.deposit(address)
+        .send({ value: amountToSettle, from: this.$store.state.web3.coinbase })
     },
-    async getRequests() {
-      this.askerProposals = []
+    async getAskerRequests() {
+      this.askerRequests = []
       const account = await this.$store.state.web3
         .web3Instance()
         .eth.getCoinbase()
@@ -79,40 +85,26 @@ export default {
         if (
           String(account).toUpperCase() === String(element.asker).toUpperCase()
         ) {
-          this.askerProposals.push(element)
+          this.askerRequests.push(element)
         }
       })
     }
   },
   watch: {
-    contract: {
-      handler: function(contractInstance) {
-        if (contractInstance !== null && contractInstance !== undefined) {
-          // requestManagement was initialized -> get all open lending requests
-          this.$store.dispatch(UPDATE_REQUESTS, contractInstance)
-
-          // start event listeners for request management
-          // this.requestCreatedListener()
-          // this.depositListener()
-
-          // reload requests on account change
-          // eslint-disable-next-line no-undef
-          ethereum.on('accountsChanged', () => {
-            this.getRequests()
-          })
-        }
-      }
-    },
     allRequests: {
       handler: function() {
-        console.log('allRequests changed')
-        this.getRequests()
+        this.getAskerRequests()
       }
+    }
+  },
+  mounted() {
+    if (this.allRequests.length !== 0 && this.contract !== null) {
+      this.getAskerRequests()
     }
   }
 }
 </script>
 
 <style lang="scss">
-@import './userRequests';
+@import './askerRequests';
 </style>

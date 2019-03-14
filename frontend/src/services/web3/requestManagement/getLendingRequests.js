@@ -19,7 +19,7 @@ export const requestHelper = async contract => {
                 lender: proposalParameters.lender,
                 askAmount: proposalParameters.askAmount / 10 ** 18,
                 paybackAmount: proposalParameters.paybackAmount / 10 ** 18,
-                contractFee: proposalParameters.contractFee / 10 ** 3,
+                contractFee: proposalParameters.contractFee / 10 ** 18,
                 purpose: proposalParameters.purpose,
                 verifiedAsker: proposalState.verifiedAsker,
                 lent: proposalState.lent,

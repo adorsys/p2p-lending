@@ -18,17 +18,20 @@
 <script>
 import OpenRequests from '@/components/RequestManagement/LendingRequests/openLendingRequests'
 import CreateRequest from '../components/RequestManagement/CreateLendingRequest/createLendingRequest'
-// import { requestManagementHelper } from '@/services/web3/requestManagement/initializeRmContract'
+
+import { mapState } from 'vuex'
+import { UPDATE_REQUESTS } from '@/util/constants/types'
 
 export default {
+  computed: mapState({
+    requestManagementContract: state => state.requestManagementInstance
+  }),
   components: {
     OpenRequests,
     CreateRequest
   },
   data() {
     return {
-      requestManagementContract: null,
-      web3: null,
       createRequest: false
     }
   },
@@ -40,10 +43,14 @@ export default {
       this.createRequest = false
     }
   },
-  async mounted() {
-    // const initialize = await requestManagementHelper()
-    // this.requestManagementContract = initialize.contract
-    // this.web3 = initialize.web3
+  watch: {
+    requestManagementContract: {
+      handler: function(contractInstance) {
+        if (contractInstance !== null && contractInstance !== undefined) {
+          this.$store.dispatch(UPDATE_REQUESTS, contractInstance)
+        }
+      }
+    }
   }
 }
 </script>

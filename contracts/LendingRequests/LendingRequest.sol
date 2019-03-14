@@ -121,10 +121,11 @@ contract LendingRequest {
                 require(!withdrawnByAsker, "Asker has already withdrawn the funds");
                 moneyLent = false;
                 lender.transfer(address(this).balance);
+                lender = address(0);
             }
             else {
                 withdrawnByLender = true;
-                lender.transfer(address(this).balance - (contractFee * 1 ether));
+                lender.transfer(address(this).balance - contractFee);
             }
         } else {
             revert("Error");

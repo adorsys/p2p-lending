@@ -40,20 +40,24 @@ module.exports = async deployer => {
         LendingBoard.address
     );
 
-    await deployer.deploy(RequestManagement, TrustToken.address);
+    await deployer.deploy(ProposalFactory);
+    await deployer.deploy(
+        ProposalManagement,
+        ProposalFactory.address,
+        TrustToken.address
+    );
+
+    await deployer.deploy(
+        RequestManagement,
+        TrustToken.address,
+        ProposalManagement.address
+    );
 
     // generate contract info for request management
     await writeContractInfo(
         "requestmanagement",
         RequestManagement.abi,
         RequestManagement.address
-    );
-
-    await deployer.deploy(ProposalFactory);
-    await deployer.deploy(
-        ProposalManagement,
-        ProposalFactory.address,
-        TrustToken.address
     );
 };
 
