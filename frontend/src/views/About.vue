@@ -8,10 +8,11 @@
 </template>
 
 <script>
+import { updateProposalHelper } from '@/services/web3/proposalManagement/updateProposals'
 export default {
   methods: {
     test() {
-      console.log(this.$store.state.proposalManagementInstance().methods)
+      updateProposalHelper(this.$store.state.proposalManagementInstance)
     }
   }
 }

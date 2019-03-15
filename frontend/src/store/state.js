@@ -3,7 +3,6 @@ export default {
         isInjected: null,
         networkID: null,
         coinbase: null,
-        balance: null,
         web3Instance: null
     },
     icoState: {

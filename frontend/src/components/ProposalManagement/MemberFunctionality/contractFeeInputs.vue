@@ -1,29 +1,47 @@
 <template>
   <div>
     <div class="subtitle">Change Contract Fee</div>
-    <div class="contractFee">
+    <div class="userInput">
       <label
-        for="contractFee__input--contractFee"
-        class="contractFee__label contractFee__label--contractFee"
+        for="userInput__input--contractFee"
+        class="userInput__label userInput__label--contractFee"
       >Proposed Fee:</label>
       <input
         type="text"
-        id="contractFee__input--contractFee"
-        class="contractFee__inputField contractFee__inputField--contractFee"
-        placeholder="0.0 ETH"
+        id="userInput__input--contractFee"
+        class="userInput__inputField userInput__inputField--contractFee"
+        placeholder="Fee in ETH"
         v-model="proposedFee"
       >
-      <div class="button button--contractFee">Change Fee</div>
+      <div class="button button--contractFee" @click="createContractFeeProposal">Change Fee</div>
     </div>
   </div>
 </template>
 
 <script>
 export default {
+  props: ['contract'],
   data() {
     return {
       proposedFee: null
     }
+  },
+  methods: {
+    async createContractFeeProposal() {
+      if (this.contract) {
+        if (this.proposedFee !== null) {
+          await this.contract()
+            .methods.createContractFeeProposal(this.proposedFee)
+            .send({ from: this.$store.state.web3.coinbase })
+        } else {
+          alert('provide a fee')
+        }
+      }
+    }
   }
 }
 </script>
+
+<style lang="scss">
+@import './contractFeeInputs';
+</style>

@@ -8,7 +8,6 @@ let initializeConnection = async () => {
             isInjected: null,
             networkID: null,
             coinbase: null,
-            balance: null,
             web3Instance: null
         }
     }
@@ -16,10 +15,6 @@ let initializeConnection = async () => {
     payload.web3.isInjected = await web3.eth.net.isListening()
     payload.web3.networkID = await web3.eth.net.getId()
     payload.web3.coinbase = await web3.eth.getCoinbase()
-    payload.web3.balance = await web3.utils.fromWei(
-        await web3.eth.getBalance(payload.web3.coinbase),
-        'ether'
-    )
     payload.web3.web3Instance = () => {
         return web3
     }

@@ -24,6 +24,8 @@ export default {
         state.contractFee = payload.contractFee / 10 ** 18
         state.proposalManagementInstance = payload.contractInstance
 
+        // poll proposal Management
+
         // for test purposes
         state.authenticated = true
     },
@@ -52,11 +54,11 @@ export default {
         state.web3.coinbase = payload.coinbase
         state.web3.balance = payload.balance
     },
+    [types.UPDATE_PROPOSALS](state, payload) {
+        state.proposals = payload
+    },
     [types.UPDATE_REQUESTS](state, payload) {
-        state.allRequests = []
-        payload.forEach(element => {
-            state.allRequests.push(element)
-        })
+        state.allRequests = payload
     },
     [types.AUTHENTICATE](state, payload) {
         state.authenticated = payload
