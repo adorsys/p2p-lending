@@ -30,7 +30,7 @@ export default new Router({
             component: () =>
                 import(/* webpackChunkName: "lendingBoard" */ './views/P2PManagement.vue'),
             beforeEnter: (to, from, next) => {
-                if (store.state.authenticated) {
+                if (store.state.tokenHolder || store.state.boardMember) {
                     next()
                 } else {
                     next({ name: 'home' })

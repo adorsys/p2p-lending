@@ -23,5 +23,6 @@ export default {
     proposals: [],
     allRequests: [],
     contractFee: null,
-    authenticated: false
+    tokenHolder: false,
+    boardMember: false
 }

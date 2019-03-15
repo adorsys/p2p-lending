@@ -29,11 +29,9 @@ contract ProposalManagement {
     }
 
     event ProposalCreated(address proposalAddress, string proposalType);
-    event Voted(address proposalAddress, bool stance, address from);
     event ProposalExecuted(address executedProposal);
     event NewContractFee(uint256 oldFee, uint256 newFee);
     event MembershipChanged(address memberAddress, bool memberStatus);
-    event CurrentLockedUsers(address[] unlockUsers);
 
     constructor(address _proposalFactoryAddress, address _trustTokenContract) public {
         members.push(address(0));
@@ -148,7 +146,6 @@ contract ProposalManagement {
             // update number of locks for voting user
             userProposalLocks[_origin]++;
         }
-        emit Voted(_proposalAddress, _stance, _origin);
 
         // decode return values to check if proposal passed
         (bool proposalPassed, bool proposalExecuted) = abi.decode(encodedReturnValue, (bool, bool));

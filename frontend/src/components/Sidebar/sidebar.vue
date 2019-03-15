@@ -18,7 +18,7 @@
           </li>
           <li
             class="sidebar__menu--link"
-            v-if="this.$store.state.authenticated"
+            v-if="this.$store.state.tokenHolder || this.$store.state.boardMember"
             @click="isShowing = false"
           >
             <router-link

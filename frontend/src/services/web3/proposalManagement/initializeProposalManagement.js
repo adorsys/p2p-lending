@@ -12,13 +12,7 @@ export const initializeProposalManagementHelper = async () => {
         proposalManagementAddress
     )
 
-    let payload = {
-        contractInstance: null,
-        contractFee: null
-    }
-
-    payload.contractFee = await contract.methods.contractFee().call()
-    payload.contractInstance = () => {
+    const payload = () => {
         return contract
     }
 

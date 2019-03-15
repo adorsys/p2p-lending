@@ -1,8 +1,8 @@
 <template>
   <div>
-    <div class="subtitle">Contract Fee Proposals</div>
+    <div class="subtitle">Member Proposals</div>
     <div class="proposals">
-      <table class="table table--feeProposals" v-if="feeProposals.length !== 0">
+      <table class="table table--memberProposals" v-if="memberProposals.length !== 0">
         <thead>
           <tr>
             <th class="table__head">Description</th>
@@ -10,9 +10,9 @@
           </tr>
         </thead>
         <tbody>
-          <tr class="table__row" v-for="p in feeProposals" :key="p.idx">
-            <td class="table__data table__data--feeProposals">{{p.description}}</td>
-            <td class="table__data table__data--feeProposals table__data--buttons">
+          <tr class="table__row" v-for="p in memberProposals" :key="p.idx">
+            <td class="table__data table__data--memberProposals">{{p.description}}</td>
+            <td class="table__data table__data--memberProposals table__data--buttons">
               <div
                 v-on:click="vote(true, p.address)"
                 class="button button--table button--vote"
@@ -25,14 +25,14 @@
           </tr>
         </tbody>
       </table>
-      <table class="table table--feeProposals" v-if="feeProposals.length === 0">
+      <table class="table table--memberProposals" v-if="memberProposals.length === 0">
         <thead>
           <tr>
-            <th class="table__head">Contract Fee Proposals</th>
+            <th class="table__head">Member Proposals</th>
           </tr>
         </thead>
         <tbody>
-          <td class="table__data">No Contract Fee Proposals found</td>
+          <td class="table__data">No Member Proposals found</td>
         </tbody>
       </table>
     </div>
@@ -43,43 +43,46 @@
 import { mapState } from 'vuex'
 export default {
   computed: mapState({
-    proposals: state => state.proposals
+    allProposals: state => state.proposals
   }),
   props: ['contract'],
   data() {
     return {
-      feeProposals: []
+      memberProposals: []
     }
   },
   methods: {
-    filterFeeProposals(proposals) {
+    filterProposals(proposals) {
       if (proposals) {
-        this.feeProposals = []
+        this.memberProposals = []
         proposals.forEach(element => {
-          if (parseInt(element.propType, 10) === 1) {
-            const fee = element.proposalFee / 10 ** 18
-            const description = 'Change Contract Fee to ' + fee + ' ETH'
+          const proposalType = parseInt(element.propType, 10)
+          if (proposalType === 2 || proposalType === 3) {
+            let description = 'Add Member: ' + element.memberAddress
+            if (proposalType === 3) {
+              description = 'Remove Member: ' + element.memberAddress
+            }
 
             const proposal = {
               address: element.proposalAddress,
               description: description
             }
 
-            this.feeProposals.push(proposal)
+            this.memberProposals.push(proposal)
           }
         })
       }
     },
     async vote(stance, proposalAddress) {
       await this.contract()
-        .methods.vote(stance, proposalAddress, this.$store.state.web3.coinbase)
+        .methods.vote(stance, proposalAddress)
         .send({ from: this.$store.state.web3.coinbase })
     }
   },
   watch: {
-    proposals: {
-      handler: function(contractFeeProposals) {
-        this.filterFeeProposals(contractFeeProposals)
+    allProposals: {
+      handler: function(proposals) {
+        this.filterProposals(proposals)
       }
     }
   }
@@ -87,5 +90,5 @@ export default {
 </script>
 
 <style lang="scss">
-@import './contractFeeProposals';
+@import './memberProposals';
 </style>

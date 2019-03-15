@@ -9,6 +9,7 @@ import { requestHelper } from '../services/web3/requestManagement/getLendingRequ
 import { authenticate } from '../services/web3/authenticate'
 import { initializeTokenContract } from '../services/web3/initializeICO'
 import { updateProposalHelper } from '../services/web3/proposalManagement/updateProposals'
+import { updateContractFeeHelper } from '../services/web3/proposalManagement/updateContractFee'
 
 export default {
     async [types.INIT_CONNECTION]({ commit }) {
@@ -38,6 +39,10 @@ export default {
     async [types.UPDATE_PROPOSALS]({ commit }, contract) {
         const payload = await updateProposalHelper(contract)
         commit(types.UPDATE_PROPOSALS, payload)
+    },
+    async [types.UPDATE_FEE]({ commit }, contract) {
+        const payload = await updateContractFeeHelper(contract)
+        commit(types.UPDATE_FEE, payload)
     },
     async [types.UPDATE_REQUESTS]({ commit }, contract) {
         const payload = await requestHelper(contract)

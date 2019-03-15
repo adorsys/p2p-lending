@@ -3,31 +3,31 @@ import * as types from '@/util/constants/types'
 import { initializeRequestManagementContract } from '../services/web3/requestManagement/initializeRmContract'
 import { pollRequestManagement } from '../services/web3/requestManagement/RequestManagementListeners'
 import { initializeProposalManagement } from '../services/web3/proposalManagement/initializeProposalManagement'
+import { pollProposalManagement } from '../services/web3/proposalManagement/proposalManagementListeners'
 import {
     initializeIcoContract,
     getTokenContractData
 } from '../services/web3/initializeICO'
+import { updateContractFee } from '../services/web3/proposalManagement/updateContractFee'
 
 export default {
     [types.INIT_CONNECTION](state, payload) {
         state.web3.isInjected = payload.web3.isInjected
         state.web3.networkID = payload.web3.networkID
         state.web3.coinbase = payload.web3.coinbase
-        state.web3.balance = payload.web3.balance
         state.web3.web3Instance = payload.web3.web3Instance
         initializeIcoContract()
         initializeProposalManagement()
         initializeRequestManagementContract()
-        pollWeb3()
     },
     [types.INIT_PROPOSALMANAGEMENT](state, payload) {
-        state.contractFee = payload.contractFee / 10 ** 18
-        state.proposalManagementInstance = payload.contractInstance
-
+        state.proposalManagementInstance = payload
+        // update contract fee
+        updateContractFee(state.proposalManagementInstance)
         // poll proposal Management
-
+        pollProposalManagement(state.proposalManagementInstance)
         // for test purposes
-        state.authenticated = true
+        state.boardMember = true
     },
     [types.INIT_ICO](state, payload) {
         state.icoContractInstance = payload
@@ -47,23 +47,31 @@ export default {
     },
     [types.INIT_REQUESTMANAGEMENT](state, payload) {
         state.requestManagementInstance = payload
+        pollWeb3(
+            state.proposalManagementInstance,
+            state.requestManagementInstance
+        )
         pollRequestManagement(state.requestManagementInstance)
     },
     [types.POLL_WEB3](state, payload) {
         state.web3.networkID = payload.networkID
         state.web3.coinbase = payload.coinbase
-        state.web3.balance = payload.balance
     },
     [types.UPDATE_PROPOSALS](state, payload) {
         state.proposals = payload
+    },
+    [types.UPDATE_FEE](state, payload) {
+        state.contractFee = payload
     },
     [types.UPDATE_REQUESTS](state, payload) {
         state.allRequests = payload
     },
     [types.AUTHENTICATE](state, payload) {
-        state.authenticated = payload
+        state.tokenHolder = payload.tokenHolder
+        state.boardMember = payload.boardMember
     },
     [types.LOGOUT](state) {
-        state.authenticated = false
+        state.tokenHolder = false
+        state.boardMember = false
     }
 }
