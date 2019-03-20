@@ -1,5 +1,3 @@
-let jsonABI =
-"""
 [
     {
         "constant": false,
@@ -87,4 +85,3 @@ let jsonABI =
         "type": "function"
     }
 ]
-"""
