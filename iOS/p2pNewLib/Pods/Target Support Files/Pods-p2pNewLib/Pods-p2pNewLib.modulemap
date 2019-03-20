@@ -1,0 +1,6 @@
+framework module Pods_p2pNewLib {
+  umbrella header "Pods-p2pNewLib-umbrella.h"
+
+  export *
+  module * { export * }
+}
