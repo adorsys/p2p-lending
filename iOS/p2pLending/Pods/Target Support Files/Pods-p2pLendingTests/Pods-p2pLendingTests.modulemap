@@ -1,6 +1,0 @@
-framework module Pods_p2pLendingTests {
-  umbrella header "Pods-p2pLendingTests-umbrella.h"
-
-  export *
-  module * { export * }
-}
