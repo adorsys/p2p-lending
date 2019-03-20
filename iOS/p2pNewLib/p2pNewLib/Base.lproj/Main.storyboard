@@ -32,22 +32,40 @@
                                     </tableViewCell>
                                 </prototypes>
                             </tableView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Winning Proposal" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Uue-Zm-6wB">
+                                <rect key="frame" x="113" y="395" width="134" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Winning Proposal" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zBP-Rh-UXA">
+                                <rect key="frame" x="109" y="445" width="134" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
+                            <constraint firstItem="zBP-Rh-UXA" firstAttribute="top" secondItem="Uue-Zm-6wB" secondAttribute="bottom" constant="29" id="7qT-14-Dtz"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="CJA-TD-AcS" secondAttribute="bottom" constant="300" id="QKi-vo-KeI"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="CJA-TD-AcS" secondAttribute="trailing" id="V01-L0-ene"/>
+                            <constraint firstItem="Uue-Zm-6wB" firstAttribute="top" secondItem="CJA-TD-AcS" secondAttribute="bottom" constant="28" id="WkP-H2-Kfc"/>
                             <constraint firstItem="CJA-TD-AcS" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="d7x-Ch-WqP"/>
                             <constraint firstItem="CJA-TD-AcS" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="50" id="obe-A3-nkA"/>
+                            <constraint firstItem="zBP-Rh-UXA" firstAttribute="centerX" secondItem="Uue-Zm-6wB" secondAttribute="centerX" id="pEE-qO-aaW"/>
+                            <constraint firstItem="Uue-Zm-6wB" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="ySb-CV-in8"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <connections>
                         <outlet property="tableview" destination="CJA-TD-AcS" id="xDo-kF-CR1"/>
+                        <outlet property="winning" destination="zBP-Rh-UXA" id="bG0-TE-JAj"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
+            <point key="canvasLocation" x="56.799999999999997" y="27.436281859070466"/>
         </scene>
     </scenes>
 </document>

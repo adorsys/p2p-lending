@@ -13,17 +13,17 @@ import Web3
 class ViewController: UIViewController {
 
     @IBOutlet weak var tableview: UITableView!
+    @IBOutlet weak var winning: UILabel!
 
     var numberOfProposals = 0
 
     let privateKey = try! EthereumPrivateKey(hexPrivateKey: "0xb7553adc227436ddd9a41fa114f2248cc6247f80276726c3450b93861866d8b0")
     let etherNode = Web3( rpcURL: "http://172.16.121.109:8545")
-    let contractAddress = EthereumAddress(hexString: "0x24aA30159759eE23421AA808c5d50998736D346e")
+    let contractAddress = EthereumAddress(hexString: "0x012b98879e24aa7f3ddf5f81ecbc8c82911b2163")
     var contract: DynamicContract?
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
 
         etherNode.clientVersion { (Web3Response) in
             print(Web3Response)
@@ -47,54 +47,12 @@ class ViewController: UIViewController {
                 self.numberOfProposals = Int(item)
                 DispatchQueue.main.async {
                     self.tableview.reloadData()
+                    self.showWinning()
                 }
 
             }
 
         }
-
-        //
-        //        let winningProposal = contract["winningProposal"]!().createCall()
-        //        contract.call(winningProposal!, outputs: [.init(name: "_winningProposal", type: .uint8),
-        //                                                  .init(name: "_winningVoteCount", type: .uint8)]) { (response, error) in
-        //                                                    print(response!)
-        //        }
-        //
-        //
-        //        let c = contract["vote"]?(BigUInt(2))
-        //
-        //
-        //
-        //        etherNode.eth.getTransactionCount(address: privateKey.address, block: .latest){ response in
-        //            print (response.result!.quantity)
-        //
-        //            let trans = c!.createTransaction(nonce: response.result!,
-        //                                             from: privateKey.address,
-        //                                             value: 0,
-        //                                             gas: 38182,
-        //                                             gasPrice: EthereumQuantity(quantity: 1.gwei))
-        //
-        //
-        //            let signedTx = try! trans?.sign(with: privateKey,chainId: 5777)
-        //
-        //            etherNode.eth.sendRawTransaction(transaction: signedTx!) { response in
-        //                print(response)
-        //            }
-        //
-        //
-        //            contract.call(winningProposal!, outputs: [.init(name: "_winningProposal", type: .uint8),
-        //                                                      .init(name: "_winningVoteCount", type: .uint8)]) { (response, error) in
-        //                                                        print(response!)
-        //            }
-        //
-        //        }
-        //
-
-
-
-        //        contract.call(c, outputs: [.init(name: "toProposal", type: .uint8)]) { (response, error) in
-        //                                                    print(response!)
-        //        }
     }
 }
 
@@ -108,6 +66,19 @@ extension ViewController{
         return nil
     }
 
+    func showWinning(){
+        guard let contract = contract else {return}
+
+        let winningProposal = contract["winningProposal"]!().createCall()
+        contract.call(winningProposal!, outputs: [.init(name: "_winningProposal", type: .uint8),
+                                                  .init(name: "_winningVoteCount", type: .uint8)]) { (response, error) in
+                                                    if let response = response{
+                                                    DispatchQueue.main.async {
+                                                        self.winning.text = "Proposal #\(String(describing: response["_winningProposal"]!)) with \(response["_winningVoteCount"]!) votes"
+                                                        }
+                                                    }
+        }
+    }
 }
 
 
@@ -121,8 +92,6 @@ extension ViewController:UITableViewDataSource{
         cell.textLabel?.text = "Proposal #\(indexPath.row)"
         return cell
     }
-
-
 }
 
 extension ViewController:UITableViewDelegate{
@@ -135,10 +104,11 @@ extension ViewController:UITableViewDelegate{
         etherNode.eth.getTransactionCount(address: privateKey.address, block: .latest){ response in
             print (response.result!.quantity)
 
+            self.etherNode.eth.estimateGas(call: , response: <#T##(Web3Response<EthereumQuantity>) -> ()#>)
             let trans = c!.createTransaction(nonce: response.result!,
                                              from: self.privateKey.address,
                                              value: 0,
-                                             gas: 38182,
+                                             gas: 643074,
                                              gasPrice: EthereumQuantity(quantity: 1.gwei))
 
 
@@ -146,6 +116,7 @@ extension ViewController:UITableViewDelegate{
 
             self.etherNode.eth.sendRawTransaction(transaction: signedTx!) { response in
                 print(response)
+                self.showWinning()
             }
         }
     }
