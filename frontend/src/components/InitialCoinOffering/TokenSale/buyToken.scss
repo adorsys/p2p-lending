@@ -1,0 +1,21 @@
+@import '../../../util/scss/variables';
+
+.userInput__label--buyToken {
+  color: $link-text-color-darkened;
+  font-size: 1.4rem;
+  grid-column: 2 / 3;
+}
+
+.userInput__inputField--buyToken {
+  grid-column: 3 / 5;
+  padding: 0;
+  margin: 0;
+  height: 30px;
+}
+
+.button--buyToken {
+  margin: 0;
+  text-align: center;
+  width: 50%;
+  grid-column: 5 / 6;
+}

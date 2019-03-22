@@ -7,8 +7,9 @@ import { pollProposalManagement } from '../services/web3/proposalManagement/prop
 import {
     initializeIcoContract,
     getTokenContractData
-} from '../services/web3/initializeICO'
+} from '../services/web3/icoContract/initializeICO'
 import { updateContractFee } from '../services/web3/proposalManagement/updateContractFee'
+import { pollICO } from '../services/web3/icoContract/icoListeners'
 
 export default {
     [types.INIT_CONNECTION](state, payload) {
@@ -26,12 +27,11 @@ export default {
         updateContractFee(state.proposalManagementInstance)
         // poll proposal Management
         pollProposalManagement(state.proposalManagementInstance)
-        // for test purposes
-        state.boardMember = true
     },
     [types.INIT_ICO](state, payload) {
         state.icoContractInstance = payload
         getTokenContractData()
+        pollICO(state.icoContractInstance)
     },
     [types.INIT_ICO_CONTRACT](state, payload) {
         state.icoState.icoGoal = payload.icoGoal
@@ -65,6 +65,12 @@ export default {
     },
     [types.UPDATE_REQUESTS](state, payload) {
         state.allRequests = payload
+    },
+    [types.UPDATE_ICO_SALE](state, payload) {
+        state.icoState.icoEtherBalance = payload
+    },
+    [types.UPDATE_ICO_USER](state, payload) {
+        state.icoState.etherBalanceUser = payload
     },
     [types.AUTHENTICATE](state, payload) {
         state.tokenHolder = payload.tokenHolder

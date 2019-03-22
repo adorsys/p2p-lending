@@ -2,14 +2,20 @@ import * as types from '@/util/constants/types'
 
 import initializeConnection from '@/services/web3/initializeConnection'
 import { initializeProposalManagementHelper } from '../services/web3/proposalManagement/initializeProposalManagement'
-import { initializeIcoContractHelper } from '@/services/web3/initializeICO'
+import {
+    initializeIcoContractHelper,
+    initializeTokenContract
+} from '@/services/web3/icoContract/initializeICO'
 import { pollHelper } from '@/services/web3/pollWeb3'
 import { requestManagementHelper } from '../services/web3/requestManagement/initializeRmContract'
 import { requestHelper } from '../services/web3/requestManagement/getLendingRequests'
 import { authenticate } from '../services/web3/authenticate'
-import { initializeTokenContract } from '../services/web3/initializeICO'
 import { updateProposalHelper } from '../services/web3/proposalManagement/updateProposals'
 import { updateContractFeeHelper } from '../services/web3/proposalManagement/updateContractFee'
+import {
+    updateIcoEtherBalance,
+    updateInvestedBalance
+} from '../services/web3/icoContract/updateICO'
 
 export default {
     async [types.INIT_CONNECTION]({ commit }) {
@@ -47,6 +53,14 @@ export default {
     async [types.UPDATE_REQUESTS]({ commit }, contract) {
         const payload = await requestHelper(contract)
         commit(types.UPDATE_REQUESTS, payload)
+    },
+    async [types.UPDATE_ICO_SALE]({ commit }, contract) {
+        const payload = await updateIcoEtherBalance(contract)
+        commit(types.UPDATE_ICO_SALE, payload)
+    },
+    async [types.UPDATE_ICO_USER]({ commit }, contract) {
+        const payload = await updateInvestedBalance(contract)
+        commit(types.UPDATE_ICO_USER, payload)
     },
     async [types.AUTHENTICATE]({ commit }) {
         const payload = await authenticate()

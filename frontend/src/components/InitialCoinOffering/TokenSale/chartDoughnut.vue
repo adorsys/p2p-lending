@@ -1,18 +1,18 @@
 <!--Directory: P2P-Lending/frontend/src/components/InitialCoinOffering/chart-doughnut.vue-->
 <template>
-  <div>
-    <h2>Collected Ether</h2>
+  <div class="icoSaleStatus">
+    <div class="subtitle">Collected Ether</div>
     <!--if data from TrustToken-Contract had been loaded-->
-    <div class="card" v-if="loaded">
-      <chartjs-doughnut
-        v-bind:bind="true"
-        v-bind:datasets="datasets"
-        v-bind:labels="labels"
-        v-bind:option="option"
-        :width="mywidth"
-        :height="myheight"
-      />
-    </div>
+    <chartjs-doughnut
+      v-bind:bind="true"
+      v-bind:datasets="datasets"
+      v-bind:labels="labels"
+      v-bind:option="option"
+      :width="mywidth"
+      :height="myheight"
+      v-if="loaded"
+    />
+    {{ chart }}
   </div>
 </template>
 
@@ -29,28 +29,32 @@ export default {
 
   data() {
     return {
-      mywidth: 500,
+      mywidth: 400,
       myheight: 100,
       loaded: false,
-      datasets: null,
-      labels: null,
-      option: {}
-    }
-  },
-  methods: {
-    getData() {
-      this.datasets = [
+      datasets: [
         {
-          data: [this.icoEtherBalance, this.icoGoal - this.icoEtherBalance],
+          data: [],
           backgroundColor: ['#4edf4a', '#c9c9c9'],
           hoverBackgroundColor: ['#673ab7', '#673ab7']
         }
-      ]
+      ],
+      labels: null,
+      option: {},
+      chart: null
+    }
+  },
+  methods: {
+    getData(etherBalance) {
+      this.datasets[0].data = []
+      this.datasets[0].data.push(etherBalance, this.icoGoal - etherBalance)
+
       this.labels = [
-        'Total ICO Balance of ' + this.icoEtherBalance + ' Ether',
-        'Needed to reach goal of ' +
-          (this.icoGoal - this.icoEtherBalance) +
-          ' Ether'
+        'Total ICO Balance: ' + etherBalance + ' ETH',
+        (this.icoGoal - etherBalance).toFixed(2) +
+          ' ETH needed to reach goal of ' +
+          this.icoGoal +
+          ' ETH'
       ]
       this.loaded = true //data from TrustToken had been loaded
     }
@@ -59,14 +63,14 @@ export default {
     icoEtherBalance: {
       handler: function(etherBalance) {
         if (etherBalance !== null) {
-          this.getData()
+          this.getData(etherBalance)
         }
       }
     }
   },
   mounted() {
     if (this.icoEtherBalance !== null) {
-      this.getData()
+      this.getData(this.icoEtherBalance)
     }
   }
 }

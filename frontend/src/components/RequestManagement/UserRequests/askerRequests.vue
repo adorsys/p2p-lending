@@ -4,7 +4,6 @@
     <table class="table" v-if="askerRequests.length !== 0">
       <thead>
         <tr>
-          <th class="table__head">Asker</th>
           <th class="table__head">Amount Asked</th>
           <th class="table__head">Payback Amount</th>
           <th class="table__head">Status</th>
@@ -13,7 +12,6 @@
       </thead>
       <tbody>
         <tr class="table__row" v-for="p in askerRequests" :key="p.idx">
-          <td class="table__data">{{ p.asker }}</td>
           <td class="table__data">{{ p.askAmount + ' ETH' }}</td>
           <td class="table__data">{{ p.paybackAmount + ' ETH' }}</td>
           <td class="table__data">{{ p.status }}</td>

@@ -1,16 +1,6 @@
 <template>
   <div class="lendingRequestManagement">
-    <div class="createLendingRequest">
-      <div class="subtitle subtitle--lendingRequest">Create Lending Request</div>
-      <div
-        class="button button--lendingRequest"
-        @click="$emit('openRequestOverlay')"
-      >Create Lending Request</div>
-      <slot/>
-    </div>
-    <hr class="separator">
     <div class="request__management">
-      <div class="subtitle subtitle--lendingRequest">Open Lending Requests</div>
       <table class="table" v-if="openRequests.length !== 0">
         <thead>
           <tr>
@@ -19,7 +9,7 @@
             <th class="table__head">Payback Amount</th>
             <th class="table__head">Purpose</th>
             <th class="table__head">Trusted</th>
-            <th class="table__head">Lend Money</th>
+            <th class="table__head">Action</th>
           </tr>
         </thead>
         <tbody>

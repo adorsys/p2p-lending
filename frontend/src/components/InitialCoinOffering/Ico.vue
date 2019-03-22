@@ -22,24 +22,8 @@
       <div class="ico__details__text">{{ "Participants count: " + icoParticipantCount}}</div>
     </div>
     <hr>
-    <!--if 'isIcoActive' let user participate in ICO-->
-    <div v-if="isIcoActive">
-      <div class="ico__subtitle">{{ "Buy TrustToken"}}</div>
-      <input
-        type="text"
-        name="ico__input-1"
-        id="ico__input-1"
-        class="ico__input"
-        v-model="etherAmount"
-        placeholder="Ether"
-      >
-      <!--if button is triggert, call 'participate()' method-->
-      <div class="button button--ico" @click="participate">Buy</div>
-      <!--display chart doughnut, to showcase collected Ether-->
-      <ChartDoughnut/>
-    </div>
     <!--else if 'isIcoActive' is false let user trade TT-->
-    <div v-else>
+    <div v-if="!isIcoActive">
       <div class="ico__subtitle">{{"Send "+ tokenSymbol +" to "}}</div>
       <input
         type="text"
@@ -133,13 +117,9 @@
 </template>
 
 <script>
-import { mapState } from 'vuex' //
-import ChartDoughnut from './chart-doughnut' // to be able to use ChartDoughnut
+import { mapState } from 'vuex'
 
 export default {
-  components: {
-    ChartDoughnut // ChartDoughnut is a component of the Ico.vue
-  },
   computed: mapState({
     //get all those variables out of the smart contract
     icoGoal: state => state.icoState.icoGoal,

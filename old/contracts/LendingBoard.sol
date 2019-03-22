@@ -1,8 +1,6 @@
 pragma solidity ^0.5.0;
 
-import "./Ownable.sol";
-
-contract LendingBoard is Ownable {
+contract LendingBoard {
 
     /// modifiers
 
@@ -79,7 +77,7 @@ contract LendingBoard is Ownable {
         memberID[msg.sender] = 1;
 
         changeVotingRules(_minQuorum, _majorityMargin);
-        contractFee = 1000; // contractFee is 1 ETH represented in Finney ( Milliether )
+        contractFee = 1 ether; // contractFee is 1 ETH represented in Finney ( Milliether )
     }
 
     /// fallback function
@@ -150,7 +148,6 @@ contract LendingBoard is Ownable {
         onlyMembers
         returns (uint256 proposalID) {
 
-        require(_memberAddress != owner, "cannot change ownership this way");
         require(openProposals.length < 25, "too many open proposals");
 
         if (_fnNumber == 2) {
@@ -180,13 +177,6 @@ contract LendingBoard is Ownable {
         openProposals.push(proposalID);
 
         return proposalID;
-    }
-
-    function kill()
-        public
-        onlyOwner {
-
-        selfdestruct(owner);
     }
 
     function getMembersLength()
@@ -270,7 +260,6 @@ contract LendingBoard is Ownable {
         internal
         onlyMembers {
 
-        require(_memberAddress != owner, "Ownership has to be relinquished!");
         require(memberID[_memberAddress] != 0, "Member has to exist");
 
         /// move member to delete to the end of the array

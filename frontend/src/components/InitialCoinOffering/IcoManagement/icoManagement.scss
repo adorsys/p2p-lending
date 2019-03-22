@@ -1,0 +1,56 @@
+@import '../../../util/scss/variables';
+
+.userInput__label--transferToken {
+  color: $link-text-color-darkened;
+  font-size: 1.4rem;
+  grid-column: 2 / 4;
+  grid-row: 1;
+}
+
+.userInput__label--approve {
+  color: $link-text-color-darkened;
+  font-size: 1.4rem;
+  grid-column: 2 / 3;
+  grid-row: 3;
+}
+
+.userInput__inputField--transferToken {
+  grid-column: 3 / 6;
+  grid-row: 1;
+  padding: 0;
+  margin: 0;
+  height: 30px;
+}
+
+.userInput__inputField--approveAddress {
+  grid-column: 3 / 4;
+  grid-row: 3;
+  padding: 0;
+  margin: 0;
+  height: 30px;
+}
+
+.userInput__inputField--approveAmount {
+  grid-column: 4 / 5;
+  grid-row: 3;
+  padding: 0;
+  margin: 0;
+  height: 30px;
+}
+
+.button--transferToken {
+  margin: 0;
+  margin-top: 0.5em;
+  text-align: center;
+  width: 20%;
+  grid-column: 3 / 6;
+  grid-row: 2;
+}
+
+.button--approveUser {
+  margin: 0;
+  text-align: center;
+  width: 50%;
+  grid-column: 5 / 6;
+  grid-row: 4;
+}

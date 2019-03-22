@@ -8,11 +8,13 @@
 </template>
 
 <script>
-import { updateProposalHelper } from '@/services/web3/proposalManagement/updateProposals'
+import { updateInvestedBalance } from '@/services/web3/icoContract/updateICO'
 export default {
   methods: {
-    test() {
-      updateProposalHelper(this.$store.state.proposalManagementInstance)
+    async test() {
+      console.log(
+        await updateInvestedBalance(this.$store.state.icoContractInstance)
+      )
     }
   }
 }

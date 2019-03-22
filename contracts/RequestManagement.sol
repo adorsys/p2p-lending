@@ -1,7 +1,7 @@
 pragma solidity ^0.5.0;
 
-import "../Ownable.sol";
-import "./LendingRequestFactory.sol";
+import "./Ownable.sol";
+import "./LendingRequests/LendingRequestFactory.sol";
 
 // TODO: change RequestManagement to use deployed RequestFactory via call
 /// @author Daniel Hohner

@@ -33,9 +33,9 @@ contract TrustToken is EIP20Interface {
 
     uint public goal = 10 ether;                                        // goal of ehter to reach
     uint public contractEtherBalance = 0 ether;                         // total ether balance of this contract
-    bool public isIcoActive= true;                                      // checks if ICO is active or not
+    bool public isIcoActive = true;                                      // checks if ICO is active or not
 
-    uint storeDate; //test Var. Löschen für BA
+    event Participated(address buyer);
 
     constructor(
         uint256 _initialAmount,
@@ -48,17 +48,6 @@ contract TrustToken is EIP20Interface {
         symbol = _tokenSymbol;                                          // Set the symbol for display purposes
         totalSupply = _initialAmount * (10 ** uint(decimals));          // Set total supply of tokens
     }
-
-     //-------------------------------------------------
-    function set(uint x) public {
-        storeDate = x;
-        
-    }
-    function get() public view returns (uint) {
-        return storeDate;
-    }
-    
-    //-------------------------------------------------
     
     /* nicht gebraucht
     /// @notice Checks if token of '_user' are not locked
@@ -93,6 +82,25 @@ contract TrustToken is EIP20Interface {
         proposalManagement = _management;
     }
 
+    /// @notice get all initialization parameters for ico contract
+    function getICOParameters()
+        public
+        view
+        returns
+            (uint256 icoGoal, uint256 icoEtherBalance, bool isActive, uint256 totalTokenSupply,
+             uint256 icoParticipantCount, string memory tokenSymbol, uint256 tokenBalanceUser,
+             uint256 etherBalanceUser, string memory icoName, uint256 numDecimals) {
+            icoGoal = goal;
+            icoEtherBalance = contractEtherBalance;
+            isActive = isIcoActive;
+            totalTokenSupply = totalSupply;
+            icoParticipantCount = getParticipantsCount();
+            tokenSymbol = symbol;
+            tokenBalanceUser = balanceOf(msg.sender);
+            etherBalanceUser = getEtherBalances();
+            icoName = name;
+            numDecimals = decimals;
+        }
     
     /// @notice Creates a proposal contract to change membership status for the member
     /// @param _memberAddress The address of the member
@@ -222,6 +230,8 @@ contract TrustToken is EIP20Interface {
                 participants.push(msg.sender); //msg.sender to be Trustee
                 isTrustee[msg.sender] = true; //msg.sender is Trustee
             }
+
+            emit Participated(msg.sender);
             
             /* bad code
             for(uint i = 0; i < participants.length; i++) // go trough all participants

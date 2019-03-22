@@ -11,7 +11,7 @@
             <router-link
               :to="{ name: 'home' }"
               class="sidebar__menu--router sidebar__menu--firstItem"
-            >Home</router-link>
+            >Lending Requests</router-link>
           </li>
           <li class="sidebar__menu--link" @click="isShowing = false">
             <router-link :to="{ name: 'userrequests' }" class="sidebar__menu--router">User Requests</router-link>
