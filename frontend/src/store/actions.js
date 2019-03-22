@@ -12,10 +12,7 @@ import { requestHelper } from '../services/web3/requestManagement/getLendingRequ
 import { authenticate } from '../services/web3/authenticate'
 import { updateProposalHelper } from '../services/web3/proposalManagement/updateProposals'
 import { updateContractFeeHelper } from '../services/web3/proposalManagement/updateContractFee'
-import {
-    updateIcoEtherBalance,
-    updateInvestedBalance
-} from '../services/web3/icoContract/updateICO'
+import { updateIcoParameters } from '../services/web3/icoContract/updateICO'
 
 export default {
     async [types.INIT_CONNECTION]({ commit }) {
@@ -55,12 +52,8 @@ export default {
         commit(types.UPDATE_REQUESTS, payload)
     },
     async [types.UPDATE_ICO_SALE]({ commit }, contract) {
-        const payload = await updateIcoEtherBalance(contract)
+        const payload = await updateIcoParameters(contract)
         commit(types.UPDATE_ICO_SALE, payload)
-    },
-    async [types.UPDATE_ICO_USER]({ commit }, contract) {
-        const payload = await updateInvestedBalance(contract)
-        commit(types.UPDATE_ICO_USER, payload)
     },
     async [types.AUTHENTICATE]({ commit }) {
         const payload = await authenticate()

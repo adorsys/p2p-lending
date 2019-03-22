@@ -1,56 +1,107 @@
 @import '../../../util/scss/variables';
 
-.userInput__label--transferToken {
-  color: $link-text-color-darkened;
-  font-size: 1.4rem;
-  grid-column: 2 / 4;
-  grid-row: 1;
+.subtitle--icoManagement {
+  text-decoration: none;
 }
 
-.userInput__label--approve {
-  color: $link-text-color-darkened;
+.userInput__label--transferToken {
+  color: $link-text-color;
+  font-size: 1.4rem;
+  grid-column: 2 / 3;
+  grid-row: 1;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+  justify-self: left;
+}
+
+.userInput__label--approveAddress {
+  color: $link-text-color;
   font-size: 1.4rem;
   grid-column: 2 / 3;
   grid-row: 3;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+  justify-self: left;
+}
+
+.userInput__label--approveAmount {
+  color: $link-text-color;
+  font-size: 1.4rem;
+  grid-column: 3 / 5;
+  grid-row: 3;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+  justify-self: left;
+}
+
+.userInput__label--transferFrom {
+  color: $link-text-color;
+  font-size: 1.4rem;
+  grid-column: 2 / 3;
+  grid-row: 3;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+  justify-self: left;
+}
+.userInput__label--transferTo {
+  color: $link-text-color;
+  font-size: 1.4rem;
+  grid-column: 3 / 5;
+  grid-row: 3;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+  justify-self: left;
 }
 
 .userInput__inputField--transferToken {
-  grid-column: 3 / 6;
+  grid-column: 3 / 5;
   grid-row: 1;
   padding: 0;
   margin: 0;
   height: 30px;
-}
-
-.userInput__inputField--approveAddress {
-  grid-column: 3 / 4;
-  grid-row: 3;
-  padding: 0;
-  margin: 0;
-  height: 30px;
-}
-
-.userInput__inputField--approveAmount {
-  grid-column: 4 / 5;
-  grid-row: 3;
-  padding: 0;
-  margin: 0;
-  height: 30px;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+  justify-self: left;
 }
 
 .button--transferToken {
   margin: 0;
-  margin-top: 0.5em;
   text-align: center;
-  width: 20%;
-  grid-column: 3 / 6;
-  grid-row: 2;
+  width: 25%;
+  grid-column: 5 / 7;
+  grid-row: 1;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+.userInput__inputField--approveAddress {
+  grid-column: 2 / 3;
+  grid-row: 4;
+  padding: 0;
+  margin: 0;
+  height: 30px;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+  justify-self: left;
+}
+
+.userInput__inputField--approveAmount {
+  grid-column: 3 / 5;
+  grid-row: 4;
+  padding: 0;
+  margin: 0;
+  height: 30px;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+  justify-self: left;
 }
 
 .button--approveUser {
   margin: 0;
   text-align: center;
-  width: 50%;
-  grid-column: 5 / 6;
+  width: 25%;
+  grid-column: 5 / 7;
   grid-row: 4;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
 }

@@ -49,7 +49,8 @@ export default {
         state.requestManagementInstance = payload
         pollWeb3(
             state.proposalManagementInstance,
-            state.requestManagementInstance
+            state.requestManagementInstance,
+            state.icoContractInstance
         )
         pollRequestManagement(state.requestManagementInstance)
     },
@@ -67,10 +68,10 @@ export default {
         state.allRequests = payload
     },
     [types.UPDATE_ICO_SALE](state, payload) {
-        state.icoState.icoEtherBalance = payload
-    },
-    [types.UPDATE_ICO_USER](state, payload) {
-        state.icoState.etherBalanceUser = payload
+        state.icoState.icoEtherBalance = payload.balance
+        state.icoState.icoParticipantCount = payload.participants
+        state.icoState.etherBalanceUser = payload.etherBalanceUser
+        state.icoState.isIcoActive = payload.icoActive
     },
     [types.AUTHENTICATE](state, payload) {
         state.tokenHolder = payload.tokenHolder

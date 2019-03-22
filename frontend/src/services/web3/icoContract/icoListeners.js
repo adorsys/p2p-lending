@@ -1,8 +1,9 @@
 import store from '@/store/'
-import { UPDATE_ICO_SALE, UPDATE_ICO_USER } from '@/util/constants/types'
+import { UPDATE_ICO_SALE } from '@/util/constants/types'
 
 export const pollICO = contract => {
     participatedListener(contract)
+    icoFinishedListener(contract)
 }
 
 const participatedListener = contract => {
@@ -13,13 +14,18 @@ const participatedListener = contract => {
             if (txHash !== event.transactionHash) {
                 txHash = event.transactionHash
                 store.dispatch(UPDATE_ICO_SALE, contract)
+            }
+        })
+}
 
-                if (
-                    String(event.returnValues.buyer).toUpperCase() ===
-                    String(store.state.web3.coinbase).toUpperCase()
-                ) {
-                    store.dispatch(UPDATE_ICO_USER, contract)
-                }
+const icoFinishedListener = contract => {
+    let txHash = null
+    contract()
+        .events.ICOFinished()
+        .on('data', event => {
+            if (txHash !== event.transactionHash) {
+                txHash = event.transactionHash
+                store.dispatch(UPDATE_ICO_SALE, contract)
             }
         })
 }

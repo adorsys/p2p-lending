@@ -36,6 +36,7 @@ contract TrustToken is EIP20Interface {
     bool public isIcoActive = true;                                      // checks if ICO is active or not
 
     event Participated(address buyer);
+    event ICOFinished(address icoAddress);
 
     constructor(
         uint256 _initialAmount,
@@ -260,6 +261,7 @@ contract TrustToken is EIP20Interface {
         {    
             distributeToken(); //distribute all tokens to all Trustees
             isIcoActive = false; //ICO is not active anymore
+            emit ICOFinished(address(this));
         }
         
 

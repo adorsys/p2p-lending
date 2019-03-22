@@ -17,7 +17,7 @@ let pollHelper = async () => {
     return payload
 }
 
-let pollWeb3 = (proposalManagement, requestManagement) => {
+let pollWeb3 = (proposalManagement, requestManagement, icoContract) => {
     // eslint-disable-next-line no-undef
     ethereum.on('accountsChanged', () => {
         // force authentification if currently on p2pManagement
@@ -28,6 +28,7 @@ let pollWeb3 = (proposalManagement, requestManagement) => {
         store.dispatch(types.POLL_WEB3)
         store.dispatch(types.UPDATE_PROPOSALS, proposalManagement)
         store.dispatch(types.UPDATE_REQUESTS, requestManagement)
+        store.dispatch(types.UPDATE_ICO_SALE, icoContract)
     })
     // eslint-disable-next-line no-undef
     ethereum.on('networkChanged', () => {
@@ -42,6 +43,7 @@ let pollWeb3 = (proposalManagement, requestManagement) => {
             types.UPDATE_REQUESTS,
             store.state.web3.requestManagement
         )
+        store.dispatch(types.UPDATE_ICO_SALE, icoContract)
     })
 }
 

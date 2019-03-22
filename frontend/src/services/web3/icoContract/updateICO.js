@@ -1,17 +1,34 @@
 import store from '@/store/'
 
-export const updateIcoEtherBalance = async contract => {
-    const balance = await contract()
-        .methods.contractEtherBalance()
-        .call()
+export const updateIcoParameters = async contract => {
+    const payload = {
+        balance: null,
+        participants: null,
+        etherBalanceUser: null,
+        icoActive: null
+    }
 
-    return store.state.web3.web3Instance().utils.fromWei(balance, 'ether')
-}
+    const user = await store.state.web3.web3Instance().eth.getCoinbase()
 
-export const updateInvestedBalance = async contract => {
-    const balance = await contract()
-        .methods.etherBalances(store.state.web3.coinbase)
-        .call()
+    const parameters = await contract()
+        .methods.getICOParameters()
+        .call({ from: user })
 
-    return store.state.web3.web3Instance().utils.fromWei(balance, 'ether')
+    payload.balance = parseFloat(
+        await store.state.web3
+            .web3Instance()
+            .utils.fromWei(parameters.icoEtherBalance, 'ether'),
+        10
+    )
+    payload.participants = parseFloat(parameters.icoParticipantCount, 10)
+    payload.etherBalanceUser = parseFloat(
+        await store.state.web3
+            .web3Instance()
+            .utils.fromWei(parameters.etherBalanceUser),
+        10
+    )
+
+    payload.icoActive = parameters.isActive
+
+    return payload
 }

@@ -32,7 +32,6 @@ export default {
         const buyAmount = this.$store.state.web3
           .web3Instance()
           .utils.toWei(this.amountToSpend, 'ether')
-        console.log(this.$store.state.web3.coinbase)
         await this.contract()
           .methods.participate()
           .send({ value: buyAmount, from: this.$store.state.web3.coinbase })

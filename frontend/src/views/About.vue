@@ -8,13 +8,10 @@
 </template>
 
 <script>
-import { updateInvestedBalance } from '@/services/web3/icoContract/updateICO'
 export default {
   methods: {
     async test() {
-      console.log(
-        await updateInvestedBalance(this.$store.state.icoContractInstance)
-      )
+      console.log('test')
     }
   }
 }

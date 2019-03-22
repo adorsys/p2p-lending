@@ -4,8 +4,9 @@
   margin-top: 0.5em;
   margin-bottom: 0.5em;
   display: grid;
-  grid-template-columns: 10% 30% 20% 30% 10%;
-  grid-template-rows: 1fr 10px 1fr;
+  grid-template-columns: 10% 30% 10% 10% 30% 10%;
+  grid-template-rows: 1fr 1px 1fr;
+  align-items: center;
 }
 
 .tokenSaleInfo__text {
@@ -18,26 +19,26 @@
 .tokenSaleInfo__text--active {
   font-size: 1.4rem;
   color: #3d9970;
-  grid-column: 2 / 5;
-}
-
-.tokenSaleInfo__text--inactive {
-  font-size: 1.4rem;
-  color: #bb0000;
-  grid-column: 2 / 5;
+  grid-column: 2 / 6;
+  grid-row: 2;
 }
 
 .tokenSaleInfo__text--goal {
-  grid-column: 2;
-  grid-row: 3;
+  grid-column: 2 / 4;
+  grid-row: 1;
+}
+
+.tokenSaleInfo__text--balance {
+  grid-column: 4 / 6;
+  grid-row: 1;
 }
 
 .tokenSaleInfo__text--invested {
-  grid-column: 4;
+  grid-column: 4 / 6;
   grid-row: 3;
 }
 
 .tokenSaleInfo__text--participants {
-  grid-column: 3;
+  grid-column: 2 / 4;
   grid-row: 3;
 }
