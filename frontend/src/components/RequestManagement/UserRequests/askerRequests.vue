@@ -29,7 +29,7 @@
               v-if="p.status === 'Ether Lent'"
             >Withdraw</div>
             <div
-              v-on:click="deposit(p.address, p.paybackAmount, p.contractFee)"
+              v-on:click="deposit(p.address, p.paybackAmount)"
               class="button button--table button--askerTable"
               v-if="p.status === 'Withdrawn'"
             >Deposit</div>
@@ -75,10 +75,10 @@ export default {
         .methods.withdraw(address)
         .send({ from: this.$store.state.web3.coinbase })
     },
-    async deposit(address, payback, contractFee) {
+    async deposit(address, payback) {
       const amountToSettle = this.$store.state.web3
         .web3Instance()
-        .utils.toWei(String(payback + contractFee), 'Ether')
+        .utils.toWei(String(payback), 'Ether')
       await this.contract()
         .methods.deposit(address)
         .send({ value: amountToSettle, from: this.$store.state.web3.coinbase })
