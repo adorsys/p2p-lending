@@ -85,7 +85,7 @@ contract ProposalManagement {
      * @param _adding true if member is to be added false otherwise
      * @dev only callable by registered members
      */
-    function createMemberProposal(address _memberAddress, bool _adding) public {
+    function createMemberProposal(address _memberAddress, bool _adding, uint256 _trusteeCount) public {
         // validate input
         require(msg.sender == trustTokenContract, "can only be called by ico contract");
         require(_memberAddress != address(0), "invalid memberAddress");
@@ -94,11 +94,10 @@ contract ProposalManagement {
         } else {
             require(memberId[_memberAddress] != 0, "member does not exist");
         }
-
         // prepare payload for function call - no spaces between parameters
         bytes memory payload = abi.encodeWithSignature(
             "newProposal(address,bool,uint256,uint256)",
-            _memberAddress, _adding, minimumNumberOfVotes, majorityMargin
+            _memberAddress, _adding, _trusteeCount, majorityMargin
         );
 
         // execute function call

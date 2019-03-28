@@ -71,11 +71,9 @@ export default {
         .methods.deposit(address)
         .send({ value: lendAmount, from: this.$store.state.web3.coinbase })
     },
-    async getRequests() {
+    getRequests() {
       this.openRequests = []
-      const account = await this.$store.state.web3
-        .web3Instance()
-        .eth.getCoinbase()
+      const account = this.$store.state.web3.coinbase
       this.allRequests.forEach(element => {
         if (
           String(account).toUpperCase() !== String(element.asker).toUpperCase()

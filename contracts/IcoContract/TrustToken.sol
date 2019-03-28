@@ -25,7 +25,8 @@ contract TrustToken is EIP20Interface {
     mapping (address => uint256) public etherBalances;                  // ether balances of all Trustees
     mapping (address => mapping (address => uint256)) public allowed;   // register of all permissions form one user to another
     address[] public participants;                                      // list of all Trustees
-    mapping (address => bool) public isTrustee;                         // proof an adress is a Trustee
+    mapping (address => bool) public isTrustee;
+    uint256 public trusteeCount = 0;                        // proof an adress is a Trustee
 
     string public name;                                                 // name: eg TrustToken
     uint8 public decimals;                                              // How many decimals to show
@@ -90,7 +91,7 @@ contract TrustToken is EIP20Interface {
         returns
             (uint256 icoGoal, uint256 icoEtherBalance, bool isActive, uint256 totalTokenSupply,
              uint256 icoParticipantCount, string memory tokenSymbol, uint256 tokenBalanceUser,
-             uint256 etherBalanceUser, string memory icoName, uint256 numDecimals) {
+             uint256 etherBalanceUser, string memory icoName, uint256 numDecimals, uint256 numTrustees) {
             icoGoal = goal;
             icoEtherBalance = contractEtherBalance;
             isActive = isIcoActive;
@@ -101,6 +102,7 @@ contract TrustToken is EIP20Interface {
             etherBalanceUser = getEtherBalances();
             icoName = name;
             numDecimals = decimals;
+            numTrustees = trusteeCount;
         }
     
     /// @notice Creates a proposal contract to change membership status for the member
@@ -108,9 +110,9 @@ contract TrustToken is EIP20Interface {
     /// @param _adding True if member is to be added false otherwise
     /// @dev Only callable by Trustees
     function createMemberProposal(address _memberAddress, bool _adding) public isTrusteeMod(msg.sender) {
-        bytes memory payload = abi.encodeWithSignature("createMemberProposal(address,bool)", _memberAddress, _adding);
+        bytes memory payload = abi.encodeWithSignature("createMemberProposal(address,bool,uint256)", _memberAddress, _adding, trusteeCount);
         (bool success, ) = proposalManagement.call(payload);
-        require(success, "create Member failed");
+        require(success, "create MemberProposal failed");
     }
 
     /// @notice Vote for a proposal at '_proposalAddress' with '_stance'
@@ -160,6 +162,17 @@ contract TrustToken is EIP20Interface {
         tokenBalances[msg.sender] -= _value; // subtract '_value' from token balance of 'msg.sender'
         tokenBalances[_to] += _value; // add '_value' to token balance of '_to'
         emit Transfer(msg.sender, _to, _value); //display transaction between 'msg.sender' and '_to'
+        
+        if (!isTrustee[_to]) {
+            trusteeCount++;
+            isTrustee[_to] = true;
+        }
+
+        if (tokenBalances[msg.sender] == 0) {
+            isTrustee[msg.sender] = false;
+            trusteeCount--;
+        }
+
         return true;
     }
 
@@ -180,6 +193,16 @@ contract TrustToken is EIP20Interface {
             allowed[_from][msg.sender] -= _value;
         }
         emit Transfer(_from, _to, _value); //display transaction between '_from' and '_to'
+        
+        if (!isTrustee[_to]) {
+            trusteeCount++;
+            isTrustee[_to] = true;
+        }
+
+        if (tokenBalances[_from] == 0) {
+            isTrustee[_from] = false;
+            trusteeCount--;
+        }
         return true;
     }
 
@@ -261,6 +284,7 @@ contract TrustToken is EIP20Interface {
         {    
             distributeToken(); //distribute all tokens to all Trustees
             isIcoActive = false; //ICO is not active anymore
+            trusteeCount = getParticipantsCount();
             emit ICOFinished(address(this));
         }
         
@@ -274,7 +298,7 @@ contract TrustToken is EIP20Interface {
         for(uint i = 0; i < participants.length; i++)  // go trough all Trustees
         {
             tokenBalances[ participants[i] ] =(  (etherBalances[ participants[i] ]) * totalSupply ) / contractEtherBalance;//Token = (Ether/contractEtherBalance) * totalSupply
-            emit Transfer( 0x0000000000000000000000000000000000000000, participants[i], tokenBalances[ participants[i] ]);
+            emit Transfer( address(0), participants[i], tokenBalances[ participants[i] ]);
         }
         
 

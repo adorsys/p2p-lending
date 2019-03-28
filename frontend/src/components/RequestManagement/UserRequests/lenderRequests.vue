@@ -23,9 +23,9 @@
             <div
               v-on:click="withdraw(p.address)"
               class="button button--table button--lenderTable"
-              v-if="p.status === 'PaidBack' || p.status === 'Withdrawable'"
+              v-if="p.status === 'PaidBack' || p.status === 'Ether Lent'"
             >Withdraw</div>
-            <span v-if="p.status !== 'PaidBack' && p.status !== 'Withdrawable'">n/a</span>
+            <span v-if="p.status !== 'PaidBack' && p.status !== 'Ether Lent'">n/a</span>
           </td>
         </tr>
       </tbody>
@@ -57,11 +57,9 @@ export default {
     }
   },
   methods: {
-    async getLenderRequests() {
+    getLenderRequests() {
       this.lenderRequests = []
-      const account = await this.$store.state.web3
-        .web3Instance()
-        .eth.getCoinbase()
+      const account = this.$store.state.web3.coinbase
       this.allRequests.forEach(element => {
         if (
           String(account).toUpperCase() === String(element.lender).toUpperCase()

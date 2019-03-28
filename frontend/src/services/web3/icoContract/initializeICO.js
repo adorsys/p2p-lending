@@ -1,7 +1,6 @@
 import { icoAddress, icoAbi } from '@/util/constants/ICOContract'
-import { INIT_ICO } from '@/util/constants/types'
+import { INIT_ICO, INIT_ICO_CONTRACT } from '@/util/constants/types'
 import store from '@/store/'
-import { INIT_ICO_CONTRACT } from '../../../util/constants/types'
 
 export const initializeTokenContract = async () => {
     const web3 = store.state.web3.web3Instance()
@@ -32,34 +31,37 @@ const initializeIcoContractHelper = async () => {
         tokenBalanceUser: null,
         etherBalanceUser: null,
         name: null,
-        decimals: null
+        decimals: null,
+        tokenHolders: null
     }
 
     payload.icoGoal = parseFloat(
-        await web3.utils.fromWei(parameters.icoGoal, 'ether'),
+        web3.utils.fromWei(parameters.icoGoal, 'ether'),
         10
     )
     payload.decimals = parseFloat(parameters.numDecimals)
     payload.name = parameters.icoName
     payload.icoEtherBalance = parseFloat(
-        await web3.utils.fromWei(parameters.icoEtherBalance, 'ether'),
+        web3.utils.fromWei(parameters.icoEtherBalance, 'ether'),
         10
     )
     payload.isIcoActive = parameters.isActive
     payload.totalTokenSupply = parseFloat(
-        await web3.utils.fromWei(parameters.totalTokenSupply, 'ether'),
+        web3.utils.fromWei(parameters.totalTokenSupply, 'ether'),
         10
     )
     payload.icoParticipantCount = parseFloat(parameters.icoParticipantCount, 10)
     payload.tokenSymbol = parameters.tokenSymbol
     payload.tokenBalanceUser = parseFloat(
-        await web3.utils.fromWei(parameters.tokenBalanceUser, 'ether'),
+        web3.utils.fromWei(parameters.tokenBalanceUser, 'ether'),
         10
     )
     payload.etherBalanceUser = parseFloat(
-        await web3.utils.fromWei(parameters.etherBalanceUser),
+        web3.utils.fromWei(parameters.etherBalanceUser),
         10
     )
+
+    payload.tokenHolders = parameters.numTrustees
 
     return payload
 }

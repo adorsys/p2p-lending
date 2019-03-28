@@ -44,6 +44,7 @@ export default {
         state.icoState.etherBalanceUser = payload.etherBalanceUser
         state.icoState.name = payload.name
         state.icoState.decimals = payload.decimals
+        state.icoState.tokenHolders = payload.tokenHolders
     },
     [types.INIT_REQUESTMANAGEMENT](state, payload) {
         state.requestManagementInstance = payload
@@ -73,6 +74,7 @@ export default {
         state.icoState.etherBalanceUser = payload.etherBalanceUser
         state.icoState.tokenBalanceUser = payload.tokenBalanceUser
         state.icoState.isIcoActive = payload.icoActive
+        state.icoState.tokenHolders = payload.tokenHolders
     },
     [types.AUTHENTICATE](state, payload) {
         state.tokenHolder = payload.tokenHolder

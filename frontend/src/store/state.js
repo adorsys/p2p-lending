@@ -15,7 +15,8 @@ export default {
         tokenBalanceUser: null,
         etherBalanceUser: null,
         name: null,
-        decimals: null
+        decimals: null,
+        tokenHolders: null
     },
     proposalManagementInstance: null,
     requestManagementInstance: null,

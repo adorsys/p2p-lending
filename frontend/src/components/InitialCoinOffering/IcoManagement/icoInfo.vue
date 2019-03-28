@@ -1,7 +1,7 @@
 <template>
   <div class="icoInfo">
     <div class="icoInfo__text icoInfo__text--inactive">ICO is inactive</div>
-    <div class="icoInfo__text icoInfo__text--participants">Participants: {{ icoParticipants }}</div>
+    <div class="icoInfo__text icoInfo__text--participants">TokenHolders: {{ tokenHolders }}</div>
     <div class="icoInfo__text icoInfo__text--invested">You invested: {{ etherBalanceUser }} ETH</div>
     <div
       class="icoInfo__text icoInfo__text--tokenAmount"
@@ -16,7 +16,7 @@
 import { mapState } from 'vuex'
 export default {
   computed: mapState({
-    icoParticipants: state => state.icoState.icoParticipantCount,
+    tokenHolders: state => state.icoState.tokenHolders,
     etherBalanceUser: state => state.icoState.etherBalanceUser,
     tokenBalanceUser: state => state.icoState.tokenBalanceUser,
     tokenSymbol: state => state.icoState.tokenSymbol,
