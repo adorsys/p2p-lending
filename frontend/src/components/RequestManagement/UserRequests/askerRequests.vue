@@ -19,6 +19,11 @@
           <td class="table__data">{{ p.status }}</td>
           <td class="table__data table__data--buttons">
             <div
+              v-on:click="cancel(p.address)"
+              class="button button--table button--askerTable"
+              v-if="p.status === 'Waiting'"
+            >Cancel</div>
+            <div
               v-on:click="withdraw(p.address)"
               class="button button--table button--askerTable"
               v-if="p.status === 'Ether Lent'"
@@ -28,7 +33,9 @@
               class="button button--table button--askerTable"
               v-if="p.status === 'Withdrawn'"
             >Deposit</div>
-            <span v-if="p.status !== 'Withdrawn' && p.status !== 'Ether Lent'">n/a</span>
+            <span
+              v-if="p.status !== 'Withdrawn' && p.status !== 'Ether Lent' && p.status !== 'Waiting'"
+            >n/a</span>
           </td>
         </tr>
       </tbody>
@@ -75,6 +82,11 @@ export default {
       await this.contract()
         .methods.deposit(address)
         .send({ value: amountToSettle, from: this.$store.state.web3.coinbase })
+    },
+    async cancel(address) {
+      await this.contract()
+        .methods.cancelRequest(address)
+        .send({ from: this.$store.state.web3.coinbase })
     },
     getAskerRequests() {
       this.askerRequests = []

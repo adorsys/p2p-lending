@@ -23,7 +23,7 @@ export default {
   watch: {
     requestManagementContract: {
       handler: function(contractInstance) {
-        if (contractInstance !== null && contractInstance !== undefined) {
+        if (contractInstance) {
           this.$store.dispatch(UPDATE_REQUESTS, contractInstance)
         }
       }

@@ -84,6 +84,18 @@ contract RequestManagement is Ownable {
     }
 
     /**
+     * @notice cancels the request
+     * @param _lendingRequest the address of the request to cancel
+     */
+    function cancelRequest(address payable _lendingRequest) public {
+        require(validRequest[_lendingRequest], "invalid Request");
+
+        LendingRequest(_lendingRequest).cancelRequest();
+        removeRequest(_lendingRequest, msg.sender);
+        emit Withdraw(_lendingRequest);
+    }
+
+    /**
      * @notice transfers current contract balance to the owner of the contract
      * @dev should be called before relinquishing the contract
      */

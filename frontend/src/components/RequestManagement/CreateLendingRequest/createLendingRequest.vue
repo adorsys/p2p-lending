@@ -66,10 +66,12 @@ export default {
   },
   methods: {
     async createRequest() {
+      const payback = parseFloat(this.paybackAmount, 10)
+      const asking = parseFloat(this.askAmount, 10)
       if (
         this.askAmount !== null &&
         this.paybackAmount !== null &&
-        this.paybackAmount > this.askAmount &&
+        payback > asking &&
         this.requestPurpose !== null
       ) {
         const askWei = this.$store.state.web3
