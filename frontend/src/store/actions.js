@@ -51,9 +51,9 @@ export default {
         const payload = await requestHelper(contract)
         commit(types.UPDATE_REQUESTS, payload)
     },
-    async [types.UPDATE_ICO_SALE]({ commit }, contract) {
+    async [types.UPDATE_ICO]({ commit }, contract) {
         const payload = await updateIcoParameters(contract)
-        commit(types.UPDATE_ICO_SALE, payload)
+        commit(types.UPDATE_ICO, payload)
     },
     async [types.AUTHENTICATE]({ commit }) {
         const payload = await authenticate()

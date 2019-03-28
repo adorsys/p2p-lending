@@ -38,6 +38,7 @@ export default {
       } else {
         alert('Please enter the amount you want to spend')
       }
+      this.amountToSpend = null
     }
   }
 }

@@ -67,10 +67,11 @@ export default {
     [types.UPDATE_REQUESTS](state, payload) {
         state.allRequests = payload
     },
-    [types.UPDATE_ICO_SALE](state, payload) {
+    [types.UPDATE_ICO](state, payload) {
         state.icoState.icoEtherBalance = payload.balance
         state.icoState.icoParticipantCount = payload.participants
         state.icoState.etherBalanceUser = payload.etherBalanceUser
+        state.icoState.tokenBalanceUser = payload.tokenBalanceUser
         state.icoState.isIcoActive = payload.icoActive
     },
     [types.AUTHENTICATE](state, payload) {

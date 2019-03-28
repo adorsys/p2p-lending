@@ -3,10 +3,6 @@
     <div class="title">Lending Requests</div>
     <hr class="separator">
     <hr class="separator">
-    <div
-      class="subtitle subtitle--description"
-    >Lorem ipsum dolor sit amet, consectetur adipisicing elit. Autem fuga nesciunt tenetur incidunt sed dolore optio, aliquid saepe vitae asperiores numquam ducimus iste a at nemo beatae animi aspernatur porro.</div>
-    <hr class="separator">
     <OpenRequests :contract="requestManagementContract"/>
   </div>
 </template>

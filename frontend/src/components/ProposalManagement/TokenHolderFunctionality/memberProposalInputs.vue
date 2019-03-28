@@ -37,6 +37,7 @@ export default {
       } else {
         alert('no address provided')
       }
+      this.memberAddress = null
     }
   }
 }

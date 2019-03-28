@@ -5,6 +5,7 @@ export const updateIcoParameters = async contract => {
         balance: null,
         participants: null,
         etherBalanceUser: null,
+        tokenBalanceUser: null,
         icoActive: null
     }
 
@@ -21,12 +22,8 @@ export const updateIcoParameters = async contract => {
         10
     )
     payload.participants = parseFloat(parameters.icoParticipantCount, 10)
-    payload.etherBalanceUser = parseFloat(
-        await store.state.web3
-            .web3Instance()
-            .utils.fromWei(parameters.etherBalanceUser),
-        10
-    )
+    payload.etherBalanceUser = parameters.etherBalanceUser / 10 ** 18
+    payload.tokenBalanceUser = parameters.tokenBalanceUser / 10 ** 18
 
     payload.icoActive = parameters.isActive
 

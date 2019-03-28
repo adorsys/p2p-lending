@@ -14,7 +14,7 @@
     <div class="ICO__management" v-if="!icoActive">
       <IcoInfo/>
       <hr class="separator">
-      <IcoManagement/>
+      <IcoManagement :contract="icoContract"/>
     </div>
   </div>
 </template>

@@ -37,6 +37,7 @@ export default {
           alert('provide a fee')
         }
       }
+      this.proposedFee = null
     }
   }
 }

@@ -85,6 +85,9 @@ export default {
       } else {
         console.log('invalid input')
       }
+      this.askAmount = null
+      this.paybackAmount = null
+      this.requestPurpose = null
     }
   }
 }

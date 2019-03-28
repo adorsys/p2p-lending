@@ -4,104 +4,104 @@
   text-decoration: none;
 }
 
-.userInput__label--transferToken {
+.subtitle--allowance {
+  font-size: 1.3rem;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.userInput--oneRow {
+  grid-template-columns: 10% 1fr 1fr 1fr 10%;
+  grid-template-rows: 1fr;
+}
+
+.userInput--twoRows {
+  grid-template-columns: 10% 1fr 1fr 1fr 10%;
+  grid-template-rows: 1fr 1fr;
+}
+
+.userInput--threeRows {
+  grid-template-columns: 10% 1fr 1fr 1fr 10%;
+  grid-template-rows: 1fr 1fr 1fr;
+}
+
+.userInput__label--firstLabel {
   color: $link-text-color;
   font-size: 1.4rem;
-  grid-column: 2 / 3;
+  grid-column: 2;
   grid-row: 1;
   margin-top: 0.5em;
   margin-bottom: 0.5em;
-  justify-self: left;
+  justify-self: center;
 }
 
-.userInput__label--approveAddress {
+.userInput__label--secondLabel {
   color: $link-text-color;
   font-size: 1.4rem;
-  grid-column: 2 / 3;
+  grid-column: 2;
+  grid-row: 2;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+  justify-self: center;
+}
+
+.userInput__label--thirdLabel {
+  color: $link-text-color;
+  font-size: 1.4rem;
+  grid-column: 2;
   grid-row: 3;
   margin-top: 0.5em;
   margin-bottom: 0.5em;
-  justify-self: left;
+  justify-self: center;
 }
 
-.userInput__label--approveAmount {
-  color: $link-text-color;
-  font-size: 1.4rem;
-  grid-column: 3 / 5;
-  grid-row: 3;
-  margin-top: 0.5em;
-  margin-bottom: 0.5em;
-  justify-self: left;
-}
-
-.userInput__label--transferFrom {
-  color: $link-text-color;
-  font-size: 1.4rem;
-  grid-column: 2 / 3;
-  grid-row: 3;
-  margin-top: 0.5em;
-  margin-bottom: 0.5em;
-  justify-self: left;
-}
-.userInput__label--transferTo {
-  color: $link-text-color;
-  font-size: 1.4rem;
-  grid-column: 3 / 5;
-  grid-row: 3;
-  margin-top: 0.5em;
-  margin-bottom: 0.5em;
-  justify-self: left;
-}
-
-.userInput__inputField--transferToken {
-  grid-column: 3 / 5;
+.userInput__inputField--firstInput {
+  grid-column: 3;
   grid-row: 1;
   padding: 0;
   margin: 0;
   height: 30px;
   margin-top: 0.5em;
   margin-bottom: 0.5em;
-  justify-self: left;
+  justify-self: center;
 }
 
-.button--transferToken {
+.userInput__inputField--secondInput {
+  grid-column: 3;
+  grid-row: 2;
+  padding: 0;
+  margin: 0;
+  height: 30px;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+  justify-self: center;
+}
+
+.userInput__inputField--thirdInput {
+  grid-column: 3;
+  grid-row: 3;
+  padding: 0;
+  margin: 0;
+  height: 30px;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+  justify-self: center;
+}
+
+.button--icoManagement {
   margin: 0;
   text-align: center;
   width: 25%;
-  grid-column: 5 / 7;
+  grid-column: 4;
   grid-row: 1;
   margin-top: 0.5em;
   margin-bottom: 0.5em;
 }
 
-.userInput__inputField--approveAddress {
-  grid-column: 2 / 3;
-  grid-row: 4;
-  padding: 0;
-  margin: 0;
-  height: 30px;
-  margin-top: 0.5em;
-  margin-bottom: 0.5em;
-  justify-self: left;
+.button--secondRow {
+  grid-row: 2;
 }
 
-.userInput__inputField--approveAmount {
-  grid-column: 3 / 5;
-  grid-row: 4;
-  padding: 0;
-  margin: 0;
-  height: 30px;
-  margin-top: 0.5em;
-  margin-bottom: 0.5em;
-  justify-self: left;
-}
-
-.button--approveUser {
-  margin: 0;
-  text-align: center;
-  width: 25%;
-  grid-column: 5 / 7;
-  grid-row: 4;
-  margin-top: 0.5em;
-  margin-bottom: 0.5em;
+.button--thirdRow {
+  grid-row: 3;
 }

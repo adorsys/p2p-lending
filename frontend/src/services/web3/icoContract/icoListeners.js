@@ -1,9 +1,10 @@
 import store from '@/store/'
-import { UPDATE_ICO_SALE } from '@/util/constants/types'
+import { UPDATE_ICO } from '@/util/constants/types'
 
 export const pollICO = contract => {
     participatedListener(contract)
     icoFinishedListener(contract)
+    transferListener(contract)
 }
 
 const participatedListener = contract => {
@@ -13,7 +14,7 @@ const participatedListener = contract => {
         .on('data', event => {
             if (txHash !== event.transactionHash) {
                 txHash = event.transactionHash
-                store.dispatch(UPDATE_ICO_SALE, contract)
+                store.dispatch(UPDATE_ICO, contract)
             }
         })
 }
@@ -25,7 +26,19 @@ const icoFinishedListener = contract => {
         .on('data', event => {
             if (txHash !== event.transactionHash) {
                 txHash = event.transactionHash
-                store.dispatch(UPDATE_ICO_SALE, contract)
+                store.dispatch(UPDATE_ICO, contract)
+            }
+        })
+}
+
+const transferListener = contract => {
+    let txHash = null
+    contract()
+        .events.Transfer()
+        .on('data', event => {
+            if (txHash !== event.transactionHash) {
+                txHash = event.transactionHash
+                store.dispatch(UPDATE_ICO, contract)
             }
         })
 }
