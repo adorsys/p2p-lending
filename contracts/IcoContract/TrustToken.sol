@@ -93,7 +93,7 @@ contract TrustToken is EIP20Interface {
              uint256 icoParticipantCount, string memory tokenSymbol, uint256 tokenBalanceUser,
              uint256 etherBalanceUser, string memory icoName, uint256 numDecimals, uint256 numTrustees) {
             icoGoal = goal;
-            icoEtherBalance = contractEtherBalance;
+            icoEtherBalance = address(this).balance;
             isActive = isIcoActive;
             totalTokenSupply = totalSupply;
             icoParticipantCount = getParticipantsCount();

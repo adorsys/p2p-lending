@@ -49,6 +49,15 @@
 }
 
 .icoInfo__text--contractValue {
-  grid-column: 3 / 5;
+  grid-column: 2 / 4;
   grid-row: 3;
+  justify-self: right;
+  padding-right: 25px;
+}
+
+.icoInfo__text--totalAmount {
+  grid-column: 4 /6;
+  grid-row: 3;
+  justify-self: left;
+  padding-left: 25px;
 }

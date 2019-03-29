@@ -8,7 +8,10 @@
     >You own: {{ tokenBalanceUser }} {{ tokenSymbol }}</div>
     <div
       class="icoInfo__text icoInfo__text--contractValue"
-    >ICO collected: {{ contractEtherBalance }} ETH</div>
+    >ICO Balance: {{ contractEtherBalance }} ETH</div>
+    <div
+      class="icoInfo__text icoInfo__text--totalAmount"
+    >Token Minted: {{ tokenBalance }} {{ tokenSymbol }}</div>
   </div>
 </template>
 
@@ -17,6 +20,7 @@ import { mapState } from 'vuex'
 export default {
   computed: mapState({
     tokenHolders: state => state.icoState.tokenHolders,
+    tokenBalance: state => state.icoState.totalTokenSupply,
     etherBalanceUser: state => state.icoState.etherBalanceUser,
     tokenBalanceUser: state => state.icoState.tokenBalanceUser,
     tokenSymbol: state => state.icoState.tokenSymbol,
