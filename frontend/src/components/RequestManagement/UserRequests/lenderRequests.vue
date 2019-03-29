@@ -6,7 +6,7 @@
         <tr>
           <th class="table__head">Asker</th>
           <th class="table__head">Amount Asked</th>
-          <th class="table__head">Payback Amount</th>
+          <th class="table__head">Payback Amount (includes Fees)</th>
           <th class="table__head">Description</th>
           <th class="table__head">Status</th>
           <th class="table__head">Action</th>
@@ -14,11 +14,11 @@
       </thead>
       <tbody>
         <tr class="table__row" v-for="p in lenderRequests" :key="p.idx">
-          <td class="table__data">{{ p.asker }}</td>
-          <td class="table__data">{{ p.askAmount + ' ETH' }}</td>
-          <td class="table__data">{{ p.paybackAmount + ' ETH' }}</td>
+          <td class="table__data table__data--asker">{{ p.asker }}</td>
+          <td class="table__data">{{ p.askAmount }} ETH</td>
+          <td class="table__data table__data--payback">{{ p.paybackAmount }} ETH</td>
           <td class="table__data">{{ p.purpose }}</td>
-          <td class="table__data">{{ p.status }}</td>
+          <td class="table__data table__data--status">{{ p.status }}</td>
           <td class="table__data table__data--buttons">
             <div
               v-on:click="withdraw(p.address)"
@@ -37,7 +37,7 @@
         </tr>
       </thead>
       <tbody>
-        <td class="table__data">No Requests Found</td>
+        <td class="table__data table__data--empty">No Requests Found</td>
       </tbody>
     </table>
   </div>

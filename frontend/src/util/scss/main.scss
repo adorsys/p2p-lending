@@ -88,13 +88,27 @@ body {
 
 .table__data {
   text-align: center;
-  padding: 12px;
+  margin: 5;
+  padding: 5;
   border: 1px solid $border-color;
+}
+
+.table__data--empty {
+  padding: 12px;
+}
+
+.table__data--asker {
+  width: 400px;
 }
 
 .table__data--buttons {
   margin: 0;
   padding: 0;
+  width: 125px;
+}
+
+.table__data--status {
+  width: 100px;
 }
 
 .table__data:first-of-type {

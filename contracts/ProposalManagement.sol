@@ -56,7 +56,7 @@ contract ProposalManagement {
         // validate input
         require(_proposedFee > 0, "fee has to be greater than 0");
 
-        uint256 feeInFinney = _proposedFee * 1 ether;
+        uint256 feeInFinney = _proposedFee;
 
         // prepare payload for function call - no spaces between parameters
         bytes memory payload = abi.encodeWithSignature(

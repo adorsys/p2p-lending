@@ -18,7 +18,8 @@ contract("ProposalManagement", accounts => {
             trustToken.address,
             { from: firstVoter }
         );
-        await proposalManagement.createContractFeeProposal(2, {
+        const newFee = web3.utils.toWei("0.2", "ether");
+        await proposalManagement.createContractFeeProposal(newFee, {
             from: firstVoter
         });
     });
@@ -103,40 +104,18 @@ contract("ProposalManagement", accounts => {
         // negative vote triggers expected events
         assert.strictEqual(
             vote.logs.length,
-            2,
-            "negative vote should trigger 2 events"
-        );
-
-        // Voted event gets triggered with expected parameters
-        assert.strictEqual(
-            vote.logs[0].event,
-            "Voted",
-            "first event should be Voted"
-        );
-        assert.strictEqual(
-            vote.logs[0].args.proposalAddress,
-            proposal,
-            "should be a vote for the expected proposal"
-        );
-        assert.strictEqual(
-            vote.logs[0].args.stance,
-            false,
-            "should be a negative vote"
-        );
-        assert.strictEqual(
-            vote.logs[0].args.from,
-            firstVoter,
-            "should be a vote from firstVoter"
+            1,
+            "negative vote should trigger 1 event"
         );
 
         // ProposalExecuted event gets triggered with expected parameters
         assert.strictEqual(
-            vote.logs[1].event,
+            vote.logs[0].event,
             "ProposalExecuted",
             "second event should be ProposalExecuted"
         );
         assert.strictEqual(
-            vote.logs[1].args.executedProposal,
+            vote.logs[0].args.executedProposal,
             proposal,
             "execute should log the correct proposal"
         );
@@ -160,58 +139,36 @@ contract("ProposalManagement", accounts => {
         // positive vote triggers expected events
         assert.strictEqual(
             vote.logs.length,
-            3,
-            "positive vote should trigger 3 events"
-        );
-
-        // Voted event gets triggered with expected parameters
-        assert.strictEqual(
-            vote.logs[0].event,
-            "Voted",
-            "first event should be voted"
-        );
-        assert.strictEqual(
-            vote.logs[0].args.proposalAddress,
-            proposal,
-            "should be a vote for the expected proposal"
-        );
-        assert.strictEqual(
-            vote.logs[0].args.stance,
-            true,
-            "should be a positive vote"
-        );
-        assert.strictEqual(
-            vote.logs[0].args.from,
-            firstVoter,
-            "should be a vote from firstVoter"
+            2,
+            "positive vote should trigger 2 events"
         );
 
         // ProposalExecuted event gets triggered with expected parameters
         assert.strictEqual(
-            vote.logs[1].event,
+            vote.logs[0].event,
             "ProposalExecuted",
             "second event should be ProposalExecuted"
         );
         assert.strictEqual(
-            vote.logs[1].args.executedProposal,
+            vote.logs[0].args.executedProposal,
             proposal,
             "execute should log the correct proposal"
         );
 
         // NewContractFee event gets triggered with expected parameters
         assert.strictEqual(
-            vote.logs[2].event,
+            vote.logs[1].event,
             "NewContractFee",
             "third event should be NewContractFee"
         );
         assert.strictEqual(
-            parseInt(vote.logs[2].args.oldFee, 10),
+            parseInt(vote.logs[1].args.oldFee, 10),
             parseInt(web3.utils.toWei("1", "ether"), 10),
             "old Fee should be 1 ETH"
         );
 
         assert.strictEqual(
-            parseInt(vote.logs[2].args.newFee, 10),
+            parseInt(vote.logs[1].args.newFee, 10),
             parseInt(web3.utils.toWei("0.2", "ether"), 10),
             "new Fee should be 0.2 ETH"
         );

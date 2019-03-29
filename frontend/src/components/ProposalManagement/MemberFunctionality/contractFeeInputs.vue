@@ -30,8 +30,11 @@ export default {
     async createContractFeeProposal() {
       if (this.contract) {
         if (this.proposedFee !== null) {
+          const newFee = this.$store.state.web3
+            .web3Instance()
+            .utils.toWei(this.proposedFee, 'ether')
           await this.contract()
-            .methods.createContractFeeProposal(this.proposedFee)
+            .methods.createContractFeeProposal(newFee)
             .send({ from: this.$store.state.web3.coinbase })
         } else {
           alert('provide a fee')
