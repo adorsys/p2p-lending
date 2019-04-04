@@ -4,7 +4,15 @@
     <div
       class="button button--lendingRequest"
       @click="$emit('openRequestOverlay')"
-    >Create Lending Request</div>
-    <slot/>
+    >
+      Create Lending Request
+    </div>
+    <slot />
   </div>
 </template>
+
+<style lang="scss">
+.button--lendingRequest {
+  width: 200px;
+}
+</style>

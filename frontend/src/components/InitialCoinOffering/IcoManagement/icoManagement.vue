@@ -5,112 +5,142 @@
       <label
         for="userInput__inputField--transferAddress"
         class="userInput__label userInput__label--firstLabel"
-      >Address to send to:</label>
+        >Address to send to:</label
+      >
       <label
         for="userInput__inputField--transferToken"
         class="userInput__label userInput__label--secondLabel"
-      >Amount to send:</label>
+        >Amount to send:</label
+      >
       <input
         type="text"
         id="userInput__inputField--transferAddress"
         class="userInput__inputField userInput__inputField--firstInput"
         placeholder="Address"
         v-model="transferTokenTo"
-      >
+      />
       <input
         type="text"
         id="userInput__inputField--transferToken"
         class="userInput__inputField userInput__inputField--secondInput"
         placeholder="Amount in [0...x]"
         v-model="tokenAmount"
+      />
+      <div
+        class="button button--icoManagement button--secondRow"
+        @click="transfer"
       >
-      <div class="button button--icoManagement button--secondRow" @click="transfer">Transfer</div>
+        Transfer
+      </div>
     </div>
-    <hr class="separator">
-    <div class="subtitle subtitle--icoManagement">Approve User to use your TrustToken</div>
+    <hr class="separator" />
+    <div class="subtitle subtitle--icoManagement">
+      Approve User to use your TrustToken
+    </div>
     <div class="userInput userInput--twoRows">
       <label
         for="userInput__inputField--approveAddress"
         class="userInput__label userInput__label--firstLabel"
-      >Address to approve:</label>
+        >Address to approve:</label
+      >
       <label
         for="userInput__inputField--approveAmount"
         class="userInput__label userInput__label--secondLabel"
-      >Amount to provide:</label>
+        >Amount to provide:</label
+      >
       <input
         type="text"
         id="userInput__inputField--approveAddress"
         class="userInput__inputField userInput__inputField--firstInput"
         placeholder="Address of User"
         v-model="approveAddress"
-      >
+      />
       <input
         type="text"
         id="userInput__inputField--approveAmount"
         class="userInput__inputField userInput__inputField--secondInput"
         placeholder="Amount in [0...x]"
         v-model="approveAmount"
+      />
+      <div
+        class="button button--icoManagement button--secondRow"
+        @click="approve"
       >
-      <div class="button button--icoManagement button--secondRow" @click="approve">Approve</div>
+        Approve
+      </div>
     </div>
-    <hr class="separator">
-    <div class="subtitle subtitle--icoManagement">Spend TrustToken for another Account</div>
+    <hr class="separator" />
+    <div class="subtitle subtitle--icoManagement">
+      Spend TrustToken for another Account
+    </div>
     <div class="userInput userInput--threeRows">
       <label
         for="userInput__inputField--transferFrom"
         class="userInput__label userInput__label--firstLabel"
-      >Transfer From:</label>
+        >Transfer From:</label
+      >
       <label
         for="userInput__inputField--transferTo"
         class="userInput__label userInput__label--secondLabel"
-      >Transfer To:</label>
+        >Transfer To:</label
+      >
       <label
         for="userInput__inputField--transferAmount"
         class="userInput__label userInput__label--thirdLabel"
-      >Amount to transfer:</label>
+        >Amount to transfer:</label
+      >
       <input
         type="text"
         id="userInput__inputField--transferFrom"
         class="userInput__inputField userInput__inputField--firstInput"
         placeholder="Transfer from address"
         v-model="transferFrom"
-      >
+      />
       <input
         type="text"
         id="userInput__inputField--transferTo"
         class="userInput__inputField userInput__inputField--secondInput"
         placeholder="Transfer to address"
         v-model="transferTo"
-      >
+      />
       <input
         type="text"
         id="userInput__inputField--transferAmount"
         class="userInput__inputField userInput__inputField--thirdInput"
         placeholder="Transfer Amount"
         v-model="transferAmount"
+      />
+      <div
+        class="button button--icoManagement button--thirdRow"
+        @click="transferFor"
       >
-      <div class="button button--icoManagement button--thirdRow" @click="transferFor">Transfer</div>
+        Transfer
+      </div>
     </div>
-    <hr class="separator">
-    <div class="subtitle subtitle--icoManagement">Check Allowance for Account</div>
+    <hr class="separator" />
+    <div class="subtitle subtitle--icoManagement">
+      Check Allowance for Account
+    </div>
     <div class="userInput userInput--oneRow">
       <label
         for="userInput__inputField--checkAllowance"
         class="userInput__label userInput__label--firstLabel"
-      >Check Address:</label>
+        >Check Address:</label
+      >
       <input
         type="text"
         id="userInput__inputField--checkAllowance"
         class="userInput__inputField userInput__inputField--firstInput"
         placeholder="address"
         v-model="tokenAllowanceAddress"
-      >
-      <div class="button button--icoManagement" @click="checkAllowance">Check</div>
+      />
+      <div class="button button--icoManagement" @click="checkAllowance">
+        Check
+      </div>
     </div>
-    <div
-      class="subtitle subtitle--allowance"
-      v-if="tokenAllowance !== null"
-    >You are allowed to spend: {{ tokenAllowance }} {{ tokenSymbol }}</div>
+    <div class="subtitle subtitle--allowance" v-if="tokenAllowance !== null">
+      You are allowed to spend: {{ tokenAllowance }} {{ tokenSymbol }}
+    </div>
   </div>
 </template>
 

@@ -1,8 +1,8 @@
 <template>
   <div class="about">
     <div class="title">About</div>
-    <hr class="separator">
-    <hr class="separator">
+    <hr class="separator" />
+    <hr class="separator" />
     <div class="button" @click="test">Test</div>
   </div>
 </template>
@@ -16,7 +16,6 @@ export default {
   }
 }
 </script>
-
 
 <style lang="scss">
 .about {

@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import LendingRequests from './views/LendingRequests.vue'
+import Home from './views/Home.vue'
 
 import store from './store/'
 
@@ -13,7 +13,7 @@ export default new Router({
         {
             path: '/',
             name: 'home',
-            component: LendingRequests
+            component: Home
         },
         {
             path: '/about',
@@ -42,6 +42,12 @@ export default new Router({
             name: 'ico',
             component: () =>
                 import(/* webpackChunkName: "ICO" */ './views/ICO.vue')
+        },
+        {
+            path: '/lendingrequests',
+            name: 'lendingrequests',
+            component: () =>
+                import(/* webpackChunkName: "lendingRequests" */ './views/LendingRequests.vue')
         },
         {
             path: '/userrequests',

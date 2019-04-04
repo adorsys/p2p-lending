@@ -11,16 +11,24 @@
         </thead>
         <tbody>
           <tr class="table__row" v-for="p in feeProposals" :key="p.idx">
-            <td class="table__data table__data--feeProposals">{{p.description}}</td>
-            <td class="table__data table__data--feeProposals table__data--buttons">
+            <td class="table__data table__data--feeProposals">
+              {{ p.description }}
+            </td>
+            <td
+              class="table__data table__data--feeProposals table__data--buttons"
+            >
               <div
                 v-on:click="vote(true, p.address)"
                 class="button button--table button--vote"
-              >Agree</div>
+              >
+                Agree
+              </div>
               <div
                 v-on:click="vote(false, p.address)"
                 class="button button--table button--vote"
-              >Disagree</div>
+              >
+                Disagree
+              </div>
             </td>
           </tr>
         </tbody>

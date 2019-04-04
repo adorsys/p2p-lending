@@ -5,14 +5,15 @@
       <label
         for="userInput__inputField--buyToken"
         class="userInput__label userInput__label--buyToken"
-      >Buy TrustToken</label>
+        >Buy TrustToken</label
+      >
       <input
         type="text"
         id="userInput__inputField--buyToken"
         class="userInput__inputField userInput__inputField--buyToken"
         v-model="amountToSpend"
         placeholder="ETH to spend"
-      >
+      />
       <div class="button button--buyToken" @click="buy">Buy</div>
     </div>
   </div>

@@ -2,7 +2,10 @@
   <div>
     <div class="subtitle">Member Proposals</div>
     <div class="proposals">
-      <table class="table table--memberProposals" v-if="memberProposals.length !== 0">
+      <table
+        class="table table--memberProposals"
+        v-if="memberProposals.length !== 0"
+      >
         <thead>
           <tr>
             <th class="table__head">Description</th>
@@ -11,21 +14,32 @@
         </thead>
         <tbody>
           <tr class="table__row" v-for="p in memberProposals" :key="p.idx">
-            <td class="table__data table__data--memberProposals">{{p.description}}</td>
-            <td class="table__data table__data--memberProposals table__data--buttons">
+            <td class="table__data table__data--memberProposals">
+              {{ p.description }}
+            </td>
+            <td
+              class="table__data table__data--memberProposals table__data--buttons"
+            >
               <div
                 v-on:click="vote(true, p.address)"
                 class="button button--table button--vote"
-              >Agree</div>
+              >
+                Agree
+              </div>
               <div
                 v-on:click="vote(false, p.address)"
                 class="button button--table button--vote"
-              >Disagree</div>
+              >
+                Disagree
+              </div>
             </td>
           </tr>
         </tbody>
       </table>
-      <table class="table table--memberProposals" v-if="memberProposals.length === 0">
+      <table
+        class="table table--memberProposals"
+        v-if="memberProposals.length === 0"
+      >
         <thead>
           <tr>
             <th class="table__head">Member Proposals</th>

@@ -1,9 +1,9 @@
 <template>
   <div class="home">
     <div class="title">Lending Requests</div>
-    <hr class="separator">
-    <hr class="separator">
-    <OpenRequests :contract="requestManagementContract"/>
+    <hr class="separator" />
+    <hr class="separator" />
+    <OpenRequests :contract="requestManagementContract" />
   </div>
 </template>
 
@@ -31,7 +31,6 @@ export default {
   }
 }
 </script>
-
 
 <style lang="scss">
 .home {

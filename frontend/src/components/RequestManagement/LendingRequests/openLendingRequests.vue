@@ -16,7 +16,9 @@
           <tr class="table__row" v-for="p in openRequests" :key="p.idx">
             <td class="table__data table__data--asker">{{ p.asker }}</td>
             <td class="table__data">{{ p.askAmount }} ETH</td>
-            <td class="table__data table__data--payback">{{ p.paybackAmount }} ETH</td>
+            <td class="table__data table__data--payback">
+              {{ p.paybackAmount }} ETH
+            </td>
             <td class="table__data table__data--purpose">{{ p.purpose }}</td>
             <td class="table__data" v-if="p.verifiedAsker">
               <div class="table__data--trusted">Yes</div>
@@ -28,7 +30,9 @@
               <div
                 v-on:click="lend(p.address, p.askAmount)"
                 class="button button--table button--lend"
-              >Lend</div>
+              >
+                Lend
+              </div>
             </td>
           </tr>
         </tbody>
@@ -40,7 +44,9 @@
           </tr>
         </thead>
         <tbody>
-          <td class="table__data table__data--empty">No Lending Requests Found</td>
+          <td class="table__data table__data--empty">
+            No Lending Requests Found
+          </td>
         </tbody>
       </table>
     </div>

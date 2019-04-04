@@ -16,7 +16,9 @@
         <tr class="table__row" v-for="p in lenderRequests" :key="p.idx">
           <td class="table__data table__data--asker">{{ p.asker }}</td>
           <td class="table__data">{{ p.askAmount }} ETH</td>
-          <td class="table__data table__data--payback">{{ p.paybackAmount }} ETH</td>
+          <td class="table__data table__data--payback">
+            {{ p.paybackAmount }} ETH
+          </td>
           <td class="table__data">{{ p.purpose }}</td>
           <td class="table__data table__data--status">{{ p.status }}</td>
           <td class="table__data table__data--buttons">
@@ -24,8 +26,12 @@
               v-on:click="withdraw(p.address)"
               class="button button--table button--lenderTable"
               v-if="p.status === 'PaidBack' || p.status === 'Ether Lent'"
-            >Withdraw</div>
-            <span v-if="p.status !== 'PaidBack' && p.status !== 'Ether Lent'">n/a</span>
+            >
+              Withdraw
+            </div>
+            <span v-if="p.status !== 'PaidBack' && p.status !== 'Ether Lent'"
+              >n/a</span
+            >
           </td>
         </tr>
       </tbody>

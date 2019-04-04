@@ -14,7 +14,9 @@
       <tbody>
         <tr class="table__row" v-for="p in askerRequests" :key="p.idx">
           <td class="table__data">{{ p.askAmount }} ETH</td>
-          <td class="table__data table__data--payback">{{ p.paybackAmount }} ETH</td>
+          <td class="table__data table__data--payback">
+            {{ p.paybackAmount }} ETH
+          </td>
           <td class="table__data">{{ p.purpose }}</td>
           <td class="table__data table__data--status">{{ p.status }}</td>
           <td class="table__data table__data--buttons">
@@ -22,20 +24,31 @@
               v-on:click="cancel(p.address)"
               class="button button--table button--askerTable"
               v-if="p.status === 'Waiting'"
-            >Cancel</div>
+            >
+              Cancel
+            </div>
             <div
               v-on:click="withdraw(p.address)"
               class="button button--table button--askerTable"
               v-if="p.status === 'Ether Lent'"
-            >Withdraw</div>
+            >
+              Withdraw
+            </div>
             <div
               v-on:click="deposit(p.address, p.paybackAmount)"
               class="button button--table button--askerTable"
               v-if="p.status === 'Withdrawn'"
-            >Deposit</div>
+            >
+              Deposit
+            </div>
             <span
-              v-if="p.status !== 'Withdrawn' && p.status !== 'Ether Lent' && p.status !== 'Waiting'"
-            >n/a</span>
+              v-if="
+                p.status !== 'Withdrawn' &&
+                  p.status !== 'Ether Lent' &&
+                  p.status !== 'Waiting'
+              "
+              >n/a</span
+            >
           </td>
         </tr>
       </tbody>

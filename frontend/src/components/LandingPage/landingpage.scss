@@ -1,0 +1,51 @@
+@import '../../util/scss/variables';
+
+.landingpage {
+  height: 50vh;
+}
+
+.landingpage__container {
+  height: 100%;
+  margin-top: 2em;
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.landingpage__item {
+  margin: 0;
+  background-position: center;
+  background-size: cover;
+  background: rgba($color: darkred, $alpha: 0.1);
+  border: 5px solid black;
+  width: 25%;
+  height: 100%;
+}
+
+.content__container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  height: 100%;
+}
+
+.subtitle--landingpageItem {
+  text-decoration: none;
+  font-size: 1.8rem;
+}
+
+.subtitle--description {
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.button--landingpage {
+  margin: 0;
+  padding: 15px;
+  width: 70%;
+}
+
+.landingpage--route {
+  text-decoration: none;
+  color: $link-text-color-darkened;
+}
