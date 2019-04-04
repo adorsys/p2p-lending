@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Home from './views/Home.vue'
+import LendingRequests from './views/LendingRequests.vue'
 
 import store from './store/'
 
@@ -13,7 +13,7 @@ export default new Router({
         {
             path: '/',
             name: 'home',
-            component: Home
+            component: LendingRequests
         },
         {
             path: '/about',
@@ -25,12 +25,12 @@ export default new Router({
                 import(/* webpackChunkName: "about" */ './views/About.vue')
         },
         {
-            path: '/lendingboard',
-            name: 'lendingboard',
+            path: '/p2pManagement',
+            name: 'p2pManagement',
             component: () =>
-                import(/* webpackChunkName: "lendingBoard" */ './views/LendingBoard.vue'),
+                import(/* webpackChunkName: "lendingBoard" */ './views/P2PManagement.vue'),
             beforeEnter: (to, from, next) => {
-                if (store.state.authenticated) {
+                if (store.state.tokenHolder || store.state.boardMember) {
                     next()
                 } else {
                     next({ name: 'home' })

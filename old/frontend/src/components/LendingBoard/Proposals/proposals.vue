@@ -15,8 +15,14 @@
             <td class="table__data">{{p.author}}</td>
             <td class="table__data">{{p.description}}</td>
             <td class="table__data table__data--buttons">
-              <div v-on:click="vote(p.id, true)" class="button button--table button--vote">Agree</div>
-              <div v-on:click="vote(p.id, false)" class="button button--table button--vote">Disagree</div>
+              <div
+                v-on:click="vote(true, p.address)"
+                class="button button--table button--vote"
+              >Agree</div>
+              <div
+                v-on:click="vote(false, p.address)"
+                class="button button--table button--vote"
+              >Disagree</div>
             </td>
           </tr>
         </tbody>
@@ -40,17 +46,22 @@ import { mapState } from 'vuex'
 
 export default {
   computed: mapState({
+    contract: state => state.proposalManagementInstance,
     proposals: state => state.proposals
   }),
-  data() {
-    return {}
-  },
   methods: {
-    async vote(idx, stance) {
-      await this.$store.state
-        .contractInstance()
-        .methods.vote(idx, stance)
+    async vote(stance, address) {
+      const account = this.$store.state.web3.coinbase
+      await this.contract()
+        .methods.vote(stance, address, account)
         .send({ from: this.$store.state.web3.coinbase })
+    }
+  },
+  watch: {
+    contract: {
+      handler: function() {
+        console.log('refresh proposals')
+      }
     }
   }
 }

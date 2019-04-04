@@ -1,4 +1,5 @@
 import store from '@/store/'
+import router from '@/router'
 
 import * as types from '@/util/constants/types'
 
@@ -7,28 +8,42 @@ let pollHelper = async () => {
 
     let payload = {
         networkID: null,
-        coinbase: null,
-        balance: null
+        coinbase: null
     }
 
     payload.networkID = await web3.eth.net.getId()
     payload.coinbase = await web3.eth.getCoinbase()
-    payload.balance = await web3.utils.fromWei(
-        await web3.eth.getBalance(payload.coinbase),
-        'ether'
-    )
 
     return payload
 }
 
-let pollWeb3 = async () => {
+let pollWeb3 = (proposalManagement, requestManagement, icoContract) => {
     // eslint-disable-next-line no-undef
-    ethereum.on('accountsChanged', async () => {
+    ethereum.on('accountsChanged', () => {
+        // force authentification if currently on p2pManagement
+        if (router.currentRoute.name === 'p2pManagement') {
+            store.dispatch(types.LOGOUT)
+            router.push({ name: 'home' })
+        }
         store.dispatch(types.POLL_WEB3)
+        store.dispatch(types.UPDATE_PROPOSALS, proposalManagement)
+        store.dispatch(types.UPDATE_REQUESTS, requestManagement)
+        store.dispatch(types.UPDATE_ICO, icoContract)
     })
     // eslint-disable-next-line no-undef
-    ethereum.on('networkChanged', async () => {
+    ethereum.on('networkChanged', () => {
+        // force authentification if currently on p2pManagement
+        if (router.currentRoute.name === 'p2pManagement') {
+            store.dispatch(types.LOGOUT)
+            router.push({ name: 'home' })
+        }
         store.dispatch(types.POLL_WEB3)
+        store.dispatch(types.UPDATE_PROPOSALS, proposalManagement)
+        store.dispatch(
+            types.UPDATE_REQUESTS,
+            store.state.web3.requestManagement
+        )
+        store.dispatch(types.UPDATE_ICO, icoContract)
     })
 }
 

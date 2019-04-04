@@ -11,17 +11,20 @@
             <router-link
               :to="{ name: 'home' }"
               class="sidebar__menu--router sidebar__menu--firstItem"
-            >Home</router-link>
-          </li>
-          <li
-            class="sidebar__menu--link"
-            v-if="this.$store.state.authenticated"
-            @click="isShowing = false"
-          >
-            <router-link :to="{ name: 'lendingboard' }" class="sidebar__menu--router">Lending Board</router-link>
+            >Lending Requests</router-link>
           </li>
           <li class="sidebar__menu--link" @click="isShowing = false">
             <router-link :to="{ name: 'userrequests' }" class="sidebar__menu--router">User Requests</router-link>
+          </li>
+          <li
+            class="sidebar__menu--link"
+            v-if="this.$store.state.tokenHolder || this.$store.state.boardMember"
+            @click="isShowing = false"
+          >
+            <router-link
+              :to="{ name: 'p2pManagement' }"
+              class="sidebar__menu--router"
+            >p2p-Management</router-link>
           </li>
           <li class="sidebar__menu--link" @click="isShowing = false">
             <router-link :to="{ name: 'ico' }" class="sidebar__menu--router">ICO</router-link>

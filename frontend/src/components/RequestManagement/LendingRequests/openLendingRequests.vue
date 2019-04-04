@@ -1,33 +1,23 @@
 <template>
   <div class="lendingRequestManagement">
-    <div class="createLendingRequest">
-      <div class="subtitle subtitle--lendingRequest">Create Lending Request</div>
-      <div
-        class="button button--lendingRequest"
-        @click="$emit('openRequestOverlay')"
-      >Create Lending Request</div>
-      <slot/>
-    </div>
-    <hr class="separator">
     <div class="request__management">
-      <div class="subtitle subtitle--lendingRequest">Open Lending Requests</div>
       <table class="table" v-if="openRequests.length !== 0">
         <thead>
           <tr>
             <th class="table__head">Asker</th>
             <th class="table__head">Amount Asked</th>
-            <th class="table__head">Payback Amount</th>
+            <th class="table__head">Payback Amount (includes Fees)</th>
             <th class="table__head">Purpose</th>
             <th class="table__head">Trusted</th>
-            <th class="table__head">Lend Money</th>
+            <th class="table__head">Action</th>
           </tr>
         </thead>
         <tbody>
           <tr class="table__row" v-for="p in openRequests" :key="p.idx">
-            <td class="table__data">{{ p.asker }}</td>
-            <td class="table__data">{{ p.askAmount + ' ETH' }}</td>
-            <td class="table__data">{{ p.paybackAmount + ' ETH' }}</td>
-            <td class="table__data">{{ p.purpose }}</td>
+            <td class="table__data table__data--asker">{{ p.asker }}</td>
+            <td class="table__data">{{ p.askAmount }} ETH</td>
+            <td class="table__data table__data--payback">{{ p.paybackAmount }} ETH</td>
+            <td class="table__data table__data--purpose">{{ p.purpose }}</td>
             <td class="table__data" v-if="p.verifiedAsker">
               <div class="table__data--trusted">Yes</div>
             </td>
@@ -50,7 +40,7 @@
           </tr>
         </thead>
         <tbody>
-          <td class="table__data">No Lending Requests Found</td>
+          <td class="table__data table__data--empty">No Lending Requests Found</td>
         </tbody>
       </table>
     </div>
@@ -81,11 +71,9 @@ export default {
         .methods.deposit(address)
         .send({ value: lendAmount, from: this.$store.state.web3.coinbase })
     },
-    async getRequests() {
+    getRequests() {
       this.openRequests = []
-      const account = await this.$store.state.web3
-        .web3Instance()
-        .eth.getCoinbase()
+      const account = this.$store.state.web3.coinbase
       this.allRequests.forEach(element => {
         if (
           String(account).toUpperCase() !== String(element.asker).toUpperCase()

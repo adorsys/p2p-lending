@@ -9,8 +9,8 @@
         <span class="navbar__title--second">Lending</span>
       </li>
       <li class="navbar__right">
-        <span class="navbar__right--auth" v-if="!authenticated" @click="logIn">LogIn</span>
-        <span class="navbar__right--auth" v-if="authenticated" @click="logOut">
+        <span class="navbar__right--auth" v-if="!tokenHolder && !boardMember" @click="logIn">LogIn</span>
+        <span class="navbar__right--auth" v-if="tokenHolder || boardMember" @click="logOut">
           <router-link :to="{ name: 'home' }" class="navbar__right--link">LogOut</router-link>
         </span>
       </li>
@@ -39,7 +39,8 @@ export default {
   computed: mapState({
     isInjected: state => state.web3.isInjected,
     network: state => NETWORKS[state.web3.networkID],
-    authenticated: state => state.authenticated
+    tokenHolder: state => state.tokenHolder,
+    boardMember: state => state.boardMember
   }),
   methods: {
     toggleSidebar() {

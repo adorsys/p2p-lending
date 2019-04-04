@@ -22,24 +22,8 @@
       <div class="ico__details__text">{{ "Participants count: " + icoParticipantCount}}</div>
     </div>
     <hr>
-    <!--if 'isIcoActive' let user participate in ICO-->
-    <div v-if="isIcoActive">
-      <div class="ico__subtitle">{{ "Buy TrustToken"}}</div>
-      <input
-        type="text"
-        name="ico__input-1"
-        id="ico__input-1"
-        class="ico__input"
-        v-model="etherAmount"
-        placeholder="Ether"
-      >
-      <!--if button is triggert, call 'participate()' method--> 
-      <div class="button button--ico" @click="participate">Buy</div>
-      <!--display chart doughnut, to showcase collected Ether--> 
-      <ChartDoughnut/>
-    </div>
     <!--else if 'isIcoActive' is false let user trade TT-->
-    <div v-else>
+    <div v-if="!isIcoActive">
       <div class="ico__subtitle">{{"Send "+ tokenSymbol +" to "}}</div>
       <input
         type="text"
@@ -133,15 +117,11 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'//
-import ChartDoughnut from './chart-doughnut'// to be able to use ChartDoughnut
-import { INIT_ICO_CONTRACT } from '@/util/constants/types'//
+import { mapState } from 'vuex'
 
 export default {
-  components: {
-    ChartDoughnut// ChartDoughnut is a component of the Ico.vue
-  },
-  computed: mapState({ //get all those variables out of the smart contract
+  computed: mapState({
+    //get all those variables out of the smart contract
     icoGoal: state => state.icoState.icoGoal,
     contractEtherBalance: state => state.icoState.icoEtherBalance,
     isIcoActive: state => state.icoState.isIcoActive,
@@ -154,7 +134,8 @@ export default {
     decimals: state => state.icoState.decimals
   }),
   data() {
-    return {//virables in the frontend will be used as parameters for functions of smart contract
+    return {
+      //virables in the frontend will be used as parameters for functions of smart contract
       input_1: null,
       etherAmount: null,
       transferTo: null,
@@ -168,25 +149,26 @@ export default {
       checkAddress: null
     }
   },
-  methods: {// methods of frontend, which call functions of TrustToken contract
+  methods: {
+    // methods of frontend, which call functions of TrustToken contract
     async participate() {
       await this.$store.state
-        .icoContractInstance()// get an instance of the TrustToken contract from the state of Vue
-        .methods.participate()// call the TrustToken function 'participate()'
+        .icoContractInstance() // get an instance of the TrustToken contract from the state of Vue
+        .methods.participate() // call the TrustToken function 'participate()'
         .send({
-          from: this.$store.state.web3.coinbase,// get the address who ever visits the webside and make this person the sender of this function
+          from: this.$store.state.web3.coinbase, // get the address who ever visits the webside and make this person the sender of this function
           value: this.$store.state.web3
-            .web3Instance()// get the instanz of WEb3 to use its function 'toWei'
-            .utils.toWei(this.etherAmount, 'ether')// convert 'this.etherAmount' to Wei and send it to 'participate()'
+            .web3Instance() // get the instanz of WEb3 to use its function 'toWei'
+            .utils.toWei(this.etherAmount, 'ether') // convert 'this.etherAmount' to Wei and send it to 'participate()'
         })
     },
     async transfer() {
       let transferAmount = await this.$store.state.web3
         .web3Instance()
-        .utils.toWei(this.transferTokenAmount, 'ether')// convert 'this.transferTokenAmount' to Wei and save it in 'transferAmount'
+        .utils.toWei(this.transferTokenAmount, 'ether') // convert 'this.transferTokenAmount' to Wei and save it in 'transferAmount'
       await this.$store.state
         .icoContractInstance()
-        .methods.transfer(this.transferTo, transferAmount)// call TrustTokens 'transfer()' with 'transferAmount' and the frontend variable 'this.transferTo', which had been enterd by a user, as parameters
+        .methods.transfer(this.transferTo, transferAmount) // call TrustTokens 'transfer()' with 'transferAmount' and the frontend variable 'this.transferTo', which had been enterd by a user, as parameters
         .send({
           from: this.$store.state.web3.coinbase
         })
@@ -231,9 +213,6 @@ export default {
           'ether'
         )
     }
-  },
-  mounted() {
-    this.$store.dispatch(INIT_ICO_CONTRACT)
   }
 }
 </script>

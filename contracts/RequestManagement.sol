@@ -1,7 +1,7 @@
 pragma solidity ^0.5.0;
 
-import "../Ownable.sol";
-import "./LendingRequestFactory.sol";
+import "./Ownable.sol";
+import "./LendingRequests/LendingRequestFactory.sol";
 
 // TODO: change RequestManagement to use deployed RequestFactory via call
 /// @author Daniel Hohner
@@ -81,6 +81,18 @@ contract RequestManagement is Ownable {
             // remove lendingRequest from managementContract
             removeRequest(_lendingRequest, asker);
         }
+    }
+
+    /**
+     * @notice cancels the request
+     * @param _lendingRequest the address of the request to cancel
+     */
+    function cancelRequest(address payable _lendingRequest) public {
+        require(validRequest[_lendingRequest], "invalid Request");
+
+        LendingRequest(_lendingRequest).cancelRequest();
+        removeRequest(_lendingRequest, msg.sender);
+        emit Withdraw(_lendingRequest);
     }
 
     /**

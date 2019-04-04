@@ -3,7 +3,6 @@ export default {
         isInjected: null,
         networkID: null,
         coinbase: null,
-        balance: null,
         web3Instance: null
     },
     icoState: {
@@ -16,13 +15,15 @@ export default {
         tokenBalanceUser: null,
         etherBalanceUser: null,
         name: null,
-        decimals: null
+        decimals: null,
+        tokenHolders: null
     },
+    proposalManagementInstance: null,
     requestManagementInstance: null,
     icoContractInstance: null,
     proposals: [],
     allRequests: [],
-    contractInstance: null,
     contractFee: null,
-    authenticated: false
+    tokenHolder: false,
+    boardMember: false
 }

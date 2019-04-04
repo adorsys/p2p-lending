@@ -141,6 +141,15 @@ contract LendingRequest {
     }
 
     /**
+     * @notice cancels the request if possible
+     */
+    function cancelRequest() external {
+        require(msg.sender == managementContract, "cancellation failed");
+        require(moneyLent == false && debtSettled == false, "cancellation requirements not met");
+        selfdestruct(asker);
+    }
+
+    /**
      * @notice getter for all relevant information of the lending request
      */
     function getProposalParameters() public view

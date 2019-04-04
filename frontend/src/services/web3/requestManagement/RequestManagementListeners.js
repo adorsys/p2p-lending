@@ -2,9 +2,7 @@ import store from '@/store/'
 
 import { UPDATE_REQUESTS } from '@/util/constants/types'
 
-export const pollRequestManagement = async contract => {
-    accountChanged(contract)
-    networkChanged(contract)
+export const pollRequestManagement = contract => {
     requestCreatedListener(contract)
     requestGrantedListener(contract)
     withdrawListener(contract)
@@ -18,7 +16,6 @@ const requestCreatedListener = contract => {
         .on('data', event => {
             if (txHash !== event.transactionHash) {
                 txHash = event.transactionHash
-                console.log(txHash)
                 store.dispatch(UPDATE_REQUESTS, contract)
             }
         })
@@ -31,7 +28,6 @@ const requestGrantedListener = contract => {
         .on('data', event => {
             if (txHash !== event.transactionHash) {
                 txHash = event.transactionHash
-                console.log(txHash)
                 store.dispatch(UPDATE_REQUESTS, contract)
             }
         })
@@ -44,7 +40,6 @@ const withdrawListener = contract => {
         .on('data', event => {
             if (txHash !== event.transactionHash) {
                 txHash = event.transactionHash
-                console.log(txHash)
                 store.dispatch(UPDATE_REQUESTS, contract)
             }
         })
@@ -57,22 +52,7 @@ const debtPaidListener = contract => {
         .on('data', event => {
             if (txHash !== event.transactionHash) {
                 txHash = event.transactionHash
-                console.log(txHash)
                 store.dispatch(UPDATE_REQUESTS, contract)
             }
         })
-}
-
-const accountChanged = contract => {
-    // eslint-disable-next-line no-undef
-    ethereum.on('accountsChanged', () => {
-        store.dispatch(UPDATE_REQUESTS, contract)
-    })
-}
-
-const networkChanged = contract => {
-    // eslint-disable-next-line no-undef
-    ethereum.on('networkChanged', () => {
-        store.dispatch(UPDATE_REQUESTS, contract)
-    })
 }

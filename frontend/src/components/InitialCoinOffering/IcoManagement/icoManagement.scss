@@ -1,0 +1,107 @@
+@import '../../../util/scss/variables';
+
+.subtitle--icoManagement {
+  text-decoration: none;
+}
+
+.subtitle--allowance {
+  font-size: 1.3rem;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.userInput--oneRow {
+  grid-template-columns: 10% 1fr 1fr 1fr 10%;
+  grid-template-rows: 1fr;
+}
+
+.userInput--twoRows {
+  grid-template-columns: 10% 1fr 1fr 1fr 10%;
+  grid-template-rows: 1fr 1fr;
+}
+
+.userInput--threeRows {
+  grid-template-columns: 10% 1fr 1fr 1fr 10%;
+  grid-template-rows: 1fr 1fr 1fr;
+}
+
+.userInput__label--firstLabel {
+  color: $link-text-color;
+  font-size: 1.4rem;
+  grid-column: 2;
+  grid-row: 1;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+  justify-self: center;
+}
+
+.userInput__label--secondLabel {
+  color: $link-text-color;
+  font-size: 1.4rem;
+  grid-column: 2;
+  grid-row: 2;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+  justify-self: center;
+}
+
+.userInput__label--thirdLabel {
+  color: $link-text-color;
+  font-size: 1.4rem;
+  grid-column: 2;
+  grid-row: 3;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+  justify-self: center;
+}
+
+.userInput__inputField--firstInput {
+  grid-column: 3;
+  grid-row: 1;
+  padding: 0;
+  margin: 0;
+  height: 30px;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+  justify-self: center;
+}
+
+.userInput__inputField--secondInput {
+  grid-column: 3;
+  grid-row: 2;
+  padding: 0;
+  margin: 0;
+  height: 30px;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+  justify-self: center;
+}
+
+.userInput__inputField--thirdInput {
+  grid-column: 3;
+  grid-row: 3;
+  padding: 0;
+  margin: 0;
+  height: 30px;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+  justify-self: center;
+}
+
+.button--icoManagement {
+  margin: 0;
+  text-align: center;
+  width: 25%;
+  grid-column: 4;
+  grid-row: 1;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+.button--secondRow {
+  grid-row: 2;
+}
+
+.button--thirdRow {
+  grid-row: 3;
+}
