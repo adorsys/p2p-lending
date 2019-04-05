@@ -12,10 +12,6 @@ contract ContractFeeProposal {
     bool public proposalPassed = false;
     bool public proposalExecuted = false;
 
-    function() external payable {
-        revert("Proposals do not accept payments");
-    }
-
     constructor(
         uint256 _proposedFee,
         uint256 _minimumNumberOfVotes,

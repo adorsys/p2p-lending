@@ -1,3 +1,4 @@
+const LendingRequestFactory = artifacts.require("LendingRequestFactory");
 const RequestManagement = artifacts.require("RequestManagement");
 const ProposalFactory = artifacts.require("ProposalFactory");
 const TrustToken = artifacts.require("TrustToken");
@@ -44,10 +45,12 @@ module.exports = async deployer => {
     );
 
     await deployer.deploy(
-        RequestManagement,
+        LendingRequestFactory,
         TrustToken.address,
         ProposalManagement.address
     );
+
+    await deployer.deploy(RequestManagement, LendingRequestFactory.address);
 
     await writeContractInfo(
         "requestManagement",

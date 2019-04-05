@@ -1,9 +1,22 @@
 pragma solidity ^0.5.0;
 
 import "./Ownable.sol";
-import "./LendingRequests/LendingRequestFactory.sol";
 
-// TODO: change RequestManagement to use deployed RequestFactory via call
+interface LendingRequest {
+    function deposit(address payable) external payable returns (bool, bool);
+    function withdraw(address) external;
+    function cleanUp() external;
+    function cancelRequest() external;
+    function getProposalParameters() external view returns (address, address, uint256, uint256, uint256, string memory);
+    function getProposalState() external view returns (bool, bool, bool, bool);
+    function withdrawnByLender() external view returns (bool);
+    function asker() external view returns (address payable);
+}
+
+interface LendingRequestFactory {
+    function newLendingRequest(uint256, uint256, string calldata, address payable) external returns (address);
+}
+
 /// @author Daniel Hohner
 contract RequestManagement is Ownable {
     LendingRequestFactory lendingRequestFactory;
@@ -16,8 +29,8 @@ contract RequestManagement is Ownable {
     mapping(address => address[]) private lendingRequests;
     mapping(address => bool) private validRequest;
 
-    constructor(address payable _trustToken, address _proposalManagement) public {
-        lendingRequestFactory = new LendingRequestFactory(_trustToken, _proposalManagement);
+    constructor(address _factory) Ownable() public {
+        lendingRequestFactory = LendingRequestFactory(_factory);
     }
 
     /**
@@ -122,14 +135,6 @@ contract RequestManagement is Ownable {
     }
 
     /**
-     * @notice get the current ether balance of the management contract
-     * @return current balance of the contract
-     */
-    function contractBalance() public onlyOwner view returns(uint256) {
-        return address(this).balance;
-    }
-
-    /**
      * @notice gets askAmount, paybackAmount and purpose to given proposalAddress
      * @param _lendingRequest the address to get the parameters from
      * @return asker address of the asker
@@ -174,9 +179,7 @@ contract RequestManagement is Ownable {
         for(uint256 i = 0; i < lendingRequests[_asker].length; i++) {
             address currentRequest = lendingRequests[_asker][i];
             if(currentRequest == _request) {
-                for(uint256 j = i; j < lendingRequests[_asker].length - 1; j++) {
-                    lendingRequests[_asker][j] = lendingRequests[_asker][j + 1];
-                }
+                lendingRequests[_asker][i] = lendingRequests[_asker][lendingRequests[_asker].length - 1];
                 // removes last element of storage array
                 lendingRequests[_asker].pop();
                 break;
@@ -186,9 +189,7 @@ contract RequestManagement is Ownable {
         for(uint256 i = 0; i < lendingRequests[address(this)].length; i++) {
             address currentRequest = lendingRequests[address(this)][i];
             if(currentRequest == _request) {
-                for(uint256 j = i; j < lendingRequests[address(this)].length - 1; j++) {
-                    lendingRequests[address(this)][j] = lendingRequests[address(this)][j + 1];
-                }
+                lendingRequests[address(this)][i] = lendingRequests[address(this)][lendingRequests[address(this)].length - 1];
                 // removes last element of storage array
                 lendingRequests[address(this)].pop();
                 break;

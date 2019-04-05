@@ -4,10 +4,6 @@ import "./ContractFeeProposal.sol";
 import "./MemberProposal.sol";
 
 contract ProposalFactory {
-    function() external payable {
-        revert("ProposalFactory does not accept payments");
-    }
-
     /**
      * @notice creates a new contractFee proposal
      * @param _proposedFee the suggested new fee

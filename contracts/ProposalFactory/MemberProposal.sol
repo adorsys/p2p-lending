@@ -13,10 +13,6 @@ contract MemberProposal {
     bool public proposalPassed = false;
     bool public proposalExecuted = false;
 
-    function() external payable {
-        revert("Proposals do not accept payments");
-    }
-
     constructor(
         address _memberAddress,
         bool _adding,

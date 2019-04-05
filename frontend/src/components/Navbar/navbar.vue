@@ -25,9 +25,9 @@
           >
         </span>
       </li>
-      <li class="navbar__right navbar__right--network" v-if="network !== null">
+      <!-- <li class="navbar__right navbar__right--network" v-if="network !== null">
         <span>{{ network }}</span>
-      </li>
+      </li>-->
       <li class="navbar__right">
         <span class="navbar__right--metamaskActive" v-if="isInjected"
           >Connected</span

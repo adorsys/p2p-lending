@@ -7,12 +7,6 @@ contract LendingRequestFactory {
     address payable private trustToken;
     address private proposalManagement;
 
-    event Test(uint256 memberid);
-
-    function() external payable {
-        revert("Factory Contract does NOT accept ether");
-    }
-
     constructor(address payable _trustToken, address _proposalManagement) public {
         managementContract = msg.sender;
         trustToken = _trustToken;
@@ -72,8 +66,6 @@ contract LendingRequestFactory {
             require(success, "could not get membership status for user");
             // decode memberId
             uint256 memberId = abi.decode(encodedReturn, (uint256));
-
-            emit Test(memberId);
             
             if (memberId != 0) {
                 return true;

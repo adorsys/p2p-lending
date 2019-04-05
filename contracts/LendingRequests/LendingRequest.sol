@@ -18,10 +18,6 @@ contract LendingRequest {
     bool public moneyLent;
     bool public debtSettled;
 
-    function() payable external {
-        revert("use deposit to transfer ETH");
-    }
-
     constructor(
         address payable _asker,
         bool _verifiedAsker,

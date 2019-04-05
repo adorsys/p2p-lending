@@ -15,28 +15,35 @@
   margin: 0;
   background-position: center;
   background-size: cover;
-  background: rgba($color: darkred, $alpha: 0.1);
-  border: 5px solid black;
-  width: 25%;
+  background-color: rgba($color: darkblue, $alpha: 0.05);
+  border: 1px solid rgba($color: #000000, $alpha: 0.4);
+  border-radius: 2px;
+  box-shadow: 0 0px 12px -6px rgba($color: #000000, $alpha: 0.3);
+  width: 20%;
   height: 100%;
 }
 
+.landingpage__item:hover {
+  cursor: pointer;
+}
+
 .content__container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-evenly;
+  display: grid;
+  grid-template-columns: 5% auto 5%;
+  grid-template-rows: 1fr auto 1fr;
   height: 100%;
 }
 
 .subtitle--landingpageItem {
   text-decoration: none;
   font-size: 1.8rem;
+  grid-column: 2;
 }
 
 .subtitle--description {
   text-decoration: none;
   font-weight: 500;
+  grid-column: 2;
 }
 
 .button--landingpage {

@@ -1,7 +1,6 @@
-const ProposalManagement = artifacts.require("ProposalManagement");
 const RequestManagement = artifacts.require("RequestManagement");
+const LendingRequestFactory = artifacts.require("LendingRequestFactory");
 const LendingRequest = artifacts.require("LendingRequest");
-const TrustToken = artifacts.require("TrustToken");
 
 contract("RequestManagement", accounts => {
     // truffle accounts
@@ -10,7 +9,6 @@ contract("RequestManagement", accounts => {
     let lender;
 
     // smart contracts
-    let lendingBoard;
     let requestManagement;
     let lendingRequest;
 
@@ -32,8 +30,7 @@ contract("RequestManagement", accounts => {
 
     beforeEach(async () => {
         requestManagement = await RequestManagement.new(
-            TrustToken.address,
-            ProposalManagement.address
+            LendingRequestFactory.address
         );
 
         firstAccount = accounts[0];
