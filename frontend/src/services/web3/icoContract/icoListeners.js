@@ -1,10 +1,10 @@
 import store from '@/store/'
-import { UPDATE_ICO } from '@/util/constants/types'
+import { UPDATE_ICO, UPDATE_REQUESTS } from '@/util/constants/types'
 
-export const pollICO = contract => {
+export const pollICO = (contract, requestManagement) => {
     participatedListener(contract)
     icoFinishedListener(contract)
-    transferListener(contract)
+    transferListener(contract, requestManagement)
 }
 
 const participatedListener = contract => {
@@ -31,7 +31,7 @@ const icoFinishedListener = contract => {
         })
 }
 
-const transferListener = contract => {
+const transferListener = (contract, requestManagement) => {
     let txHash = null
     contract()
         .events.Transfer()
@@ -39,6 +39,7 @@ const transferListener = contract => {
             if (txHash !== event.transactionHash) {
                 txHash = event.transactionHash
                 store.dispatch(UPDATE_ICO, contract)
+                store.dispatch(UPDATE_REQUESTS, requestManagement)
             }
         })
 }

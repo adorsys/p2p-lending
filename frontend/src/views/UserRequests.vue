@@ -1,8 +1,8 @@
 <template>
   <div class="userRequests">
     <div class="title">User Requests</div>
-    <hr class="separator">
-    <hr class="separator">
+    <hr class="separator" />
+    <hr class="separator" />
     <CreateRequest @openRequestOverlay="openRequestCreation">
       <transition>
         <CreateLendingRequest
@@ -12,10 +12,10 @@
         />
       </transition>
     </CreateRequest>
-    <hr class="separator">
-    <AskerRequests :contract="requestManagementContract"/>
-    <hr class="separator">
-    <LenderRequests :contract="requestManagementContract"/>
+    <hr class="separator" />
+    <AskerRequests :contract="requestManagementContract" />
+    <hr class="separator" />
+    <LenderRequests :contract="requestManagementContract" />
   </div>
 </template>
 
@@ -55,15 +55,14 @@ export default {
   watch: {
     requestManagementContract: {
       handler: function(contractInstance) {
-        if (contractInstance && this.ico) {
-          this.$store.dispatch(UPDATE_REQUESTS, contractInstance, this.ico)
+        if (contractInstance) {
+          this.$store.dispatch(UPDATE_REQUESTS, contractInstance)
         }
       }
     }
   }
 }
 </script>
-
 
 <style lang="scss">
 .userRequests {

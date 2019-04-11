@@ -1,11 +1,15 @@
-export const requestHelper = async (contract, ico) => {
+import store from '@/store'
+
+export const requestHelper = async contract => {
     let requests = []
 
     const openRequests = await contract()
         .methods.getRequests(contract()._address)
         .call()
 
-    if (openRequests.length !== 0) {
+    const icoContract = store.state.icoContractInstance
+
+    if (openRequests.length !== 0 && icoContract) {
         for (let i = 0; i < openRequests.length; i++) {
             const proposalParameters = await contract()
                 .methods.getProposalParameters(openRequests[i])
@@ -23,7 +27,9 @@ export const requestHelper = async (contract, ico) => {
                 proposalParameters.paybackAmount / 10 ** 18 +
                 proposalParameters.contractFee / 10 ** 18
 
-            const tokenAtAddress = (await ico().methods.balanceOf(openRequests[i]).call()) / 10 ** 18
+            const tokenAtRequest = await icoContract()
+                .methods.balanceOf(openRequests[i])
+                .call()
 
             const prop = {
                 address: openRequests[i],
@@ -38,7 +44,7 @@ export const requestHelper = async (contract, ico) => {
                 withdrawnByAsker: proposalState.withdrawnByAsker,
                 debtSettled: proposalState.debtSettled,
                 status: 'Waiting',
-                tokenBalance: tokenAtAddress
+                tokenBalance: tokenAtRequest
             }
             if (prop.lent) {
                 prop.status = 'Ether Lent'

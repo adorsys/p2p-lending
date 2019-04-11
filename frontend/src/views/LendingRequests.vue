@@ -1,9 +1,9 @@
 <template>
   <div class="home">
     <div class="title">Lending Requests</div>
-    <hr class="separator">
-    <hr class="separator">
-    <OpenRequests :contract="requestManagementContract" :icoContract="ico"/>
+    <hr class="separator" />
+    <hr class="separator" />
+    <OpenRequests :contract="requestManagementContract" :icoContract="ico" />
   </div>
 </template>
 
@@ -24,15 +24,14 @@ export default {
   watch: {
     requestManagementContract: {
       handler: function(contractInstance) {
-        if (contractInstance && this.ico) {
-          this.$store.dispatch(UPDATE_REQUESTS, contractInstance, this.ico)
+        if (contractInstance) {
+          this.$store.dispatch(UPDATE_REQUESTS, contractInstance)
         }
       }
     }
   }
 }
 </script>
-
 
 <style lang="scss">
 .home {
