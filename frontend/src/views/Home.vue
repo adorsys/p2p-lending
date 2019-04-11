@@ -19,7 +19,7 @@ export default {
 
 <style lang="scss">
 .home {
-  height: 100%;
+  height: calc(100vh - 51px);
 }
 
 .subtitle--landingpage {

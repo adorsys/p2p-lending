@@ -21,10 +21,10 @@ interface LendingRequestFactory {
 contract RequestManagement is Ownable {
     LendingRequestFactory lendingRequestFactory;
 
-    event RequestCreated(address request);
-    event RequestGranted(address request, address lender);
-    event DebtPaid(address request, address asker);
-    event Withdraw(address request);
+    event RequestCreated();
+    event RequestGranted();
+    event DebtPaid();
+    event Withdraw();
 
     mapping(address => address[]) private lendingRequests;
     mapping(address => bool) private validRequest;
@@ -41,9 +41,9 @@ contract RequestManagement is Ownable {
      */
     function ask (uint256 _amount, uint256 _paybackAmount, string memory _purpose) public {
         // validate the input parameters
-        require(_amount > 0, "invalid amount parameter");
-        require(_paybackAmount > _amount, "invalid payback parameter");
-        require(lendingRequests[msg.sender].length < 5, "too many concurrent lending requests");
+        require(_amount > 0, "invalid amount");
+        require(_paybackAmount > _amount, "invalid payback");
+        require(lendingRequests[msg.sender].length < 5, "too many requests");
 
         // create new lendingRequest via factory contract
         address request = lendingRequestFactory.newLendingRequest(_amount, _paybackAmount, _purpose, msg.sender);
@@ -54,7 +54,7 @@ contract RequestManagement is Ownable {
 
         // mark created lendingRequest as a valid request
         validRequest[request] = true;
-        emit RequestCreated(request);
+        emit RequestCreated();
     }
 
     /**
@@ -63,14 +63,14 @@ contract RequestManagement is Ownable {
      */
     function deposit(address payable _lendingRequest) public payable {
         require(validRequest[_lendingRequest], "invalid request");
-        require(msg.value > 0, "cannot call deposit without sending ether");
+        require(msg.value > 0, "invalid value");
         (bool lender, bool asker) = LendingRequest(_lendingRequest).deposit.value(msg.value)(msg.sender);
         require(lender || asker, "Deposit failed");
         
         if (lender) {
-            emit RequestGranted(_lendingRequest, msg.sender);
+            emit RequestGranted();
         } else if (asker) {
-            emit DebtPaid(_lendingRequest, msg.sender);
+            emit DebtPaid();
         }
     }
 
@@ -82,7 +82,7 @@ contract RequestManagement is Ownable {
         require(validRequest[_lendingRequest], "invalid request");
 
         LendingRequest(_lendingRequest).withdraw(msg.sender);
-        emit Withdraw(_lendingRequest);
+        emit Withdraw();
         
         // if paybackAmount was withdrawn by lender reduce number of openRequests for asker
         if(LendingRequest(_lendingRequest).withdrawnByLender()) {
@@ -105,7 +105,7 @@ contract RequestManagement is Ownable {
 
         LendingRequest(_lendingRequest).cancelRequest();
         removeRequest(_lendingRequest, msg.sender);
-        emit Withdraw(_lendingRequest);
+        emit Withdraw();
     }
 
     /**

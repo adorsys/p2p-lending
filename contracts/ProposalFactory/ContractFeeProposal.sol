@@ -1,21 +1,21 @@
 pragma solidity ^0.5.0;
 
 contract ContractFeeProposal {
-    address payable private management = address(0);
+    address payable private management;
     uint256 private proposedFee;
-    uint256 private majorityMargin;
-    uint256 private minimumNumberOfVotes;
+    uint8 private majorityMargin;
+    uint16 private minimumNumberOfVotes;
+    uint16 public numberOfVotes;
+    uint16 public numberOfPositiveVotes;
 
     mapping(address => bool) private voted;
-    uint256 public numberOfVotes = 0;
-    uint256 public numberOfPositiveVotes = 0;
-    bool public proposalPassed = false;
-    bool public proposalExecuted = false;
+    bool public proposalPassed;
+    bool public proposalExecuted;
 
     constructor(
         uint256 _proposedFee,
-        uint256 _minimumNumberOfVotes,
-        uint256 _majorityMargin,
+        uint16 _minimumNumberOfVotes,
+        uint8 _majorityMargin,
         address payable _managementContract
     ) public {
         proposedFee = _proposedFee;
@@ -28,8 +28,8 @@ contract ContractFeeProposal {
      * @notice destroys the proposal contract and forwards the remaining funds to the management contract
      */
     function kill() external {
-        require(msg.sender == management, "not called by management contract");
-        require(proposalExecuted, "proposal has to be executed first");
+        require(msg.sender == management, "invalid caller");
+        require(proposalExecuted, "!executed");
         selfdestruct(management);
     }
 
@@ -42,9 +42,9 @@ contract ContractFeeProposal {
      */
     function vote(bool _stance, address _origin) external returns (bool propPassed, bool propExecuted) {
         // check input parameters
-        require(msg.sender == management, "not called by management contract");
-        require(!proposalExecuted, "proposal was executed");
-        require(!voted[_origin], "you can only vote once");
+        require(msg.sender == management, "invalid caller");
+        require(!proposalExecuted, "executed");
+        require(!voted[_origin], "second vote");
 
         // update internal state
         voted[_origin] = true;
@@ -72,7 +72,7 @@ contract ContractFeeProposal {
      * @notice gets the proposed new contract fee
      * @return the proposed new fee
      */
-    function getContractFee() public view returns (uint256) {
+    function getContractFee() external view returns (uint256) {
         return proposedFee;
     }
 
@@ -81,10 +81,10 @@ contract ContractFeeProposal {
      */
     function execute() private {
         // check internal state
-        require(!proposalExecuted, "proposal was executed");
+        require(!proposalExecuted, "executed");
         require(
             numberOfVotes >= minimumNumberOfVotes,
-            "requirements for execution not met"
+            "cannot execute"
         );
 
         // update the internal state

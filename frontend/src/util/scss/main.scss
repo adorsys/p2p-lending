@@ -6,11 +6,12 @@
 }
 
 body {
-  font-family: 'Lucida Sans Unicode', Arial;
+  font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif;
+  // font-family: 'Lucida Sans Unicode', Arial;
   font-weight: 400;
-  margin-top: 55px;
   background-color: $navbar-hover-color;
   text-align: center;
+  height: calc(100vh - $navbar-height);
 }
 
 .separator {

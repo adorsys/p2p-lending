@@ -1,23 +1,23 @@
 pragma solidity ^0.5.0;
 
 contract MemberProposal {
-    address private management = address(0);
+    address private management;
     address public memberAddress;
     bool public adding;
-    uint256 private majorityMargin;
-    uint256 private minimumNumberOfVotes;
+    uint8 private majorityMargin;
+    uint16 private minimumNumberOfVotes;
+    uint16 public numberOfVotes;
+    uint16 public numberOfPositiveVotes;
 
     mapping(address => bool) private voted;
-    uint256 public numberOfVotes = 0;
-    uint256 public numberOfPositiveVotes = 0;
-    bool public proposalPassed = false;
-    bool public proposalExecuted = false;
+    bool public proposalPassed;
+    bool public proposalExecuted;
 
     constructor(
         address _memberAddress,
         bool _adding,
-        uint256 _minimumNumberOfVotes,
-        uint256 _majorityMargin,
+        uint16 _minimumNumberOfVotes,
+        uint8 _majorityMargin,
         address _managementContract
     ) public {
         memberAddress = _memberAddress;
@@ -31,8 +31,8 @@ contract MemberProposal {
      * @notice destroys the proposal contract and forwards the remaining funds to the management contract
      */
     function kill() external {
-        require(msg.sender == management, "not called by management contract");
-        require(proposalExecuted, "proposal has to be executed first");
+        require(msg.sender == management, "invalid caller");
+        require(proposalExecuted, "!executed");
         selfdestruct(msg.sender);
     }
 
@@ -45,9 +45,9 @@ contract MemberProposal {
      */
     function vote(bool _stance, address _origin) external returns (bool propPassed, bool propExecuted) {
         // check input parameters
-        require(msg.sender == management, "not called by management contract");
-        require(!proposalExecuted, "proposal was executed");
-        require(!voted[_origin], "you can only vote once");
+        require(msg.sender == management, "invalid caller");
+        require(!proposalExecuted, "executed");
+        require(!voted[_origin], "second vote");
 
         // update internal state
         voted[_origin] = true;
@@ -77,7 +77,7 @@ contract MemberProposal {
      * @notice gets the address of the member
      * @return memberAddress of the proposal
      */
-    function getMemberAddress() public view returns (address) {
+    function getMemberAddress() external view returns (address) {
         return memberAddress;
     }
 
@@ -85,10 +85,10 @@ contract MemberProposal {
      * @notice executes the proposal and updates the internal state
      */
     function execute() private {
-        require(!proposalExecuted, "proposal was executed");
+        require(!proposalExecuted, "executed");
         require(
             numberOfVotes >= minimumNumberOfVotes,
-            "requirements for execution not met"
+            "cannot execute"
         );
 
         proposalExecuted = true;

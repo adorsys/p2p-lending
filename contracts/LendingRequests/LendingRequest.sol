@@ -64,7 +64,7 @@ contract LendingRequest {
          *              must be paid back in one transaction and has to include contractFee
          */
         if (!moneyLent) {
-            require(_origin != asker, "Asker & Lender have to differ");
+            require(_origin != asker, "invalid lender");
             require(msg.value == amountAsked, "msg.value");
 
             moneyLent = true;
@@ -72,8 +72,8 @@ contract LendingRequest {
             originIsLender = true;
             originIsAsker = false;
         } else if (moneyLent && !debtSettled) {
-            require(_origin == asker, "Can only be paid back by the asker");
-            require(msg.value == (paybackAmount + contractFee), "not paybackAmount + contractFee");
+            require(_origin == asker, "invalid paybackaddress");
+            require(msg.value == (paybackAmount + contractFee), "invalid payback");
 
             debtSettled = true;
             originIsLender = false;
@@ -105,16 +105,16 @@ contract LendingRequest {
          *          debt has to be repaid first
          *      contractFee has to remain with the contract
          */
-        require(moneyLent, "can only be called after money was lent");
-        require(lender != address(0), "lender has to be initialized");
+        require(moneyLent, "invalid state");
+        require(lender != address(0), "invalid lender");
 
         if (_origin == asker) {
-            require(!debtSettled, "debt was settled");
+            require(!debtSettled, "debt settled");
             withdrawnByAsker = true;
             asker.transfer(address(this).balance);
         } else if (_origin == lender) {
             if (!debtSettled) {
-                require(!withdrawnByAsker, "Asker has already withdrawn the funds");
+                require(!withdrawnByAsker, "WithdrawnByAsker");
                 moneyLent = false;
                 lender.transfer(address(this).balance);
                 lender = address(0);
@@ -140,15 +140,15 @@ contract LendingRequest {
      * @notice cancels the request if possible
      */
     function cancelRequest() external {
-        require(msg.sender == managementContract, "cancellation failed");
-        require(moneyLent == false && debtSettled == false, "cancellation requirements not met");
+        require(msg.sender == managementContract, "invalid caller");
+        require(moneyLent == false && debtSettled == false, "invalid conditions");
         selfdestruct(asker);
     }
 
     /**
      * @notice getter for all relevant information of the lending request
      */
-    function getProposalParameters() public view
+    function getProposalParameters() external view
         returns (address, address, uint256, uint256, uint256, string memory) {
         return (asker, lender, amountAsked, paybackAmount, contractFee, purpose);
     }
@@ -156,7 +156,7 @@ contract LendingRequest {
     /**
      * @notice getter for proposal state
      */
-    function getProposalState() public view
+    function getProposalState() external view
         returns (bool, bool, bool, bool) {
         return (verifiedAsker, moneyLent, withdrawnByAsker, debtSettled);
     }

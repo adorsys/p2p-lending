@@ -19,19 +19,14 @@ contract ProposalManagement {
     address private proposalFactory;
 
     uint256 public contractFee;
-    uint256 public minimumNumberOfVotes = 1;
-    uint256 public majorityMargin = 50;
+    uint16 public minimumNumberOfVotes = 1;
+    uint8 public majorityMargin = 50;
     address[] public members;
 
-    modifier onlyMembers() {
-        require(memberId[msg.sender] != 0, "you need to be a member");
-        _;
-    }
-
-    event ProposalCreated(address proposalAddress, string proposalType);
-    event ProposalExecuted(address executedProposal);
-    event NewContractFee(uint256 oldFee, uint256 newFee);
-    event MembershipChanged(address memberAddress, bool memberStatus);
+    event ProposalCreated();
+    event ProposalExecuted();
+    event NewContractFee();
+    event MembershipChanged();
 
     constructor(address _proposalFactoryAddress, address _trustTokenContract) public {
         members.push(address(0));
@@ -52,23 +47,22 @@ contract ProposalManagement {
      * @param _proposedFee the new fee in range [1 ... x] which corresponds to [0.1 ... x] ETH
      * @dev only callable by registered members
      */
-    function createContractFeeProposal(uint256 _proposedFee) public onlyMembers {
+    function createContractFeeProposal(uint256 _proposedFee) external {
+        require(memberId[msg.sender] != 0, "not a member");
         // validate input
-        require(_proposedFee > 0, "fee has to be greater than 0");
-
-        uint256 feeInFinney = _proposedFee;
+        require(_proposedFee > 0, "invalid fee");
 
         // prepare payload for function call - no spaces between parameters
         bytes memory payload = abi.encodeWithSignature(
             "newProposal(uint256,uint256,uint256)",
-            feeInFinney, minimumNumberOfVotes, majorityMargin
+            _proposedFee, minimumNumberOfVotes, majorityMargin
         );
 
         // execute function call
         (bool success, bytes memory encodedReturnValue) = proposalFactory.call(payload);
 
         // check if function call was successful
-        require(success, "contractfee proposal failed");
+        require(success, "contractFee failed");
 
         // decode return value to get the address of the created proposal
         address proposal = abi.decode(encodedReturnValue, (address));
@@ -76,7 +70,7 @@ contract ProposalManagement {
         // add created proposal to management structure and set correct proposal type
         proposals.push(proposal);
         proposalType[proposal] = 1;
-        emit ProposalCreated(proposal, "contractFeeProposal");
+        emit ProposalCreated();
     }
 
     /**
@@ -85,14 +79,14 @@ contract ProposalManagement {
      * @param _adding true if member is to be added false otherwise
      * @dev only callable by registered members
      */
-    function createMemberProposal(address _memberAddress, bool _adding, uint256 _trusteeCount) public {
+    function createMemberProposal(address _memberAddress, bool _adding, uint256 _trusteeCount) external {
         // validate input
-        require(msg.sender == trustTokenContract, "can only be called by ico contract");
+        require(msg.sender == trustTokenContract, "invalid caller");
         require(_memberAddress != address(0), "invalid memberAddress");
         if(_adding) {
-            require(memberId[_memberAddress] == 0, "cannot add member twice");
+            require(memberId[_memberAddress] == 0, "cannot add twice");
         } else {
-            require(memberId[_memberAddress] != 0, "member does not exist");
+            require(memberId[_memberAddress] != 0, "no member");
         }
         // prepare payload for function call - no spaces between parameters
         bytes memory payload = abi.encodeWithSignature(
@@ -104,7 +98,7 @@ contract ProposalManagement {
         (bool success, bytes memory encodedReturnValue) = proposalFactory.call(payload);
 
         // check if function call was successful
-        require(success, "member proposal failed");
+        require(success, "memberProposal failed");
 
         // decode return value to get the address of the created proposal
         address proposal = abi.decode(encodedReturnValue, (address));
@@ -112,7 +106,7 @@ contract ProposalManagement {
         // add created proposal to management structure and set correct proposal type
         proposals.push(proposal);
         proposalType[proposal] = _adding ? 2 : 3;
-        emit ProposalCreated(proposal, "memberProposal");
+        emit ProposalCreated();
     }
 
     /**
@@ -121,15 +115,15 @@ contract ProposalManagement {
      * @param _proposalAddress the address of the proposal you want to vote for
      * @dev only callable by registered members
      */
-    function vote(bool _stance, address _proposalAddress, address _origin) public {
+    function vote(bool _stance, address _proposalAddress, address _origin) external {
         // validate input
         uint256 proposalParameter = proposalType[_proposalAddress];
-        require(proposalParameter != 0, "Invalid proposalAddress");
+        require(proposalParameter != 0, "Invalid address");
 
         if (proposalParameter == 1) {
-            require(memberId[msg.sender] != 0, "you need to be a member");
+            require(memberId[msg.sender] != 0, "not a member");
         } else if (proposalParameter == 2 || proposalParameter == 3) {
-            require(msg.sender == trustTokenContract, "vote for member proposal has to come from ico contract");
+            require(msg.sender == trustTokenContract, "invalid caller");
         }
 
         // vote for proposal at _proposalAddress
@@ -148,13 +142,13 @@ contract ProposalManagement {
 
         // decode return values to check if proposal passed
         (bool proposalPassed, bool proposalExecuted) = abi.decode(encodedReturnValue, (bool, bool));
-        emit ProposalExecuted(_proposalAddress);
+        emit ProposalExecuted();
 
         // handle return values of voting call
         if (proposalExecuted) {
             require(
                 handleVoteReturn(proposalParameter, proposalPassed, _proposalAddress),
-                "processing of vote return failed"
+                "voteReturn failed"
             );
 
             if (proposalParameter == 2 || proposalParameter == 3) {
@@ -183,7 +177,7 @@ contract ProposalManagement {
      * @notice returns number of proposals
      * @return proposals.length
      */
-    function getProposalsLength() public view returns (uint256) {
+    function getProposalsLength() external view returns (uint256) {
         return proposals.length;
     }
 
@@ -191,7 +185,7 @@ contract ProposalManagement {
      * @notice returns all saved proposals
      * @return proposals or [] if empty
      */
-    function getProposals() public view returns (address[] memory) {
+    function getProposals() external view returns (address[] memory) {
         address[] memory empty = new address[](0);
         return proposals.length != 0 ? proposals : empty;
     }
@@ -200,7 +194,7 @@ contract ProposalManagement {
      * @notice returns the number of current members
      * @return number of members
      */
-    function getMembersLength() public view returns (uint256) {
+    function getMembersLength() external view returns (uint256) {
         return members.length;
     }
 
@@ -213,7 +207,7 @@ contract ProposalManagement {
      * @return memberAddress address of the member if type is member proposal
      */
     function getProposalParameters(address _proposal)
-        public
+        external
         returns (address proposalAddress, uint256 propType, uint256 proposalFee, address memberAddress) {
         // verify input parameters
         propType = proposalType[_proposal];
@@ -225,14 +219,14 @@ contract ProposalManagement {
         if (propType == 1) {
             bytes memory payload = abi.encodeWithSignature("getContractFee()");
             (bool success, bytes memory encodedReturn) = _proposal.call(payload);
-            require(success, "could not get contract Fee for given proposal");
+            require(success, "getContractFee failed");
             proposalFee = abi.decode(encodedReturn, (uint256));
         }
 
         if (propType == 2 || propType == 3) {
             bytes memory payload = abi.encodeWithSignature("memberAddress()");
             (bool success, bytes memory encodedReturn) = _proposal.call(payload);
-            require(success, "could not get member address for given proposal");
+            require(success, "getMemberAddress failed");
             memberAddress = abi.decode(encodedReturn, (address));
         }
     }
@@ -253,15 +247,14 @@ contract ProposalManagement {
                 (bool success, bytes memory encodedReturnValue) = _proposalAddress.call(payload);
 
                 // throw if function call failed
-                require(success, "could not get new contract fee");
+                require(success, "getContractFee failed");
 
                 // decode contract fee
                 uint256 newContractFee = abi.decode(encodedReturnValue, (uint256));
-                uint256 oldContractFee = contractFee;
 
                 // update contract fee
                 setFee(newContractFee);
-                emit NewContractFee(oldContractFee, newContractFee);
+                emit NewContractFee();
             }
             // remove proposal from management contract
             removeRequest(_proposalAddress);
@@ -305,7 +298,7 @@ contract ProposalManagement {
         if (((members.length / 2) - 1) >= minimumNumberOfVotes) {
             minimumNumberOfVotes++;
         }
-        emit MembershipChanged(_memberAddress, true);
+        emit MembershipChanged();
     }
 
     /**
@@ -315,7 +308,7 @@ contract ProposalManagement {
     function removeMember(address _memberAddress) private {
         // validate input
         uint256 mId = memberId[_memberAddress];
-        require(mId != 0, "the member you want to remove does not exist");
+        require(mId != 0, "no member");
 
         // move member to the end of members array
         for(uint256 i = mId; i < members.length - 1; i++) {
@@ -331,7 +324,7 @@ contract ProposalManagement {
         if (((members.length / 2) - 1) <= minimumNumberOfVotes) {
             minimumNumberOfVotes--;
         }
-        emit MembershipChanged(_memberAddress, false);
+        emit MembershipChanged();
     }
 
     /**
@@ -357,7 +350,7 @@ contract ProposalManagement {
         (bool success, ) = _request.call(payload);
 
         // throw if error
-        require(success, "destruction of request failed");
+        require(success, "removeRequest failed");
 
         // remove _request from the management contract
         for(uint256 i = 0; i < proposals.length; i++) {
@@ -365,9 +358,10 @@ contract ProposalManagement {
             address currentRequest = proposals[i];
             if(currentRequest == _request) {
                 // move _request to the end of the array
-                for(uint256 j = i; j < proposals.length - 1; j++) {
-                    proposals[j] = proposals[j + 1];
-                }
+                proposals[i] = proposals[proposals.length - 1];
+                // for(uint256 j = i; j < proposals.length - 1; j++) {
+                //     proposals[j] = proposals[j + 1];
+                // }
                 // removes last element of storage array
                 proposals.pop();
                 break;

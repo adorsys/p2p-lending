@@ -12,8 +12,8 @@ contract ProposalFactory {
      */
     function newProposal(
         uint256 _proposedFee,
-        uint256 _minimumNumberOfVotes,
-        uint256 _majorityMargin
+        uint16 _minimumNumberOfVotes,
+        uint8 _majorityMargin
     ) external returns(address proposal) {
         proposal = address(
             new ContractFeeProposal(
@@ -35,13 +35,13 @@ contract ProposalFactory {
     function newProposal(
         address _memberAddress,
         bool _adding,
-        uint256 _trusteeCount,
-        uint256 _majorityMargin
+        uint16 _trusteeCount,
+        uint8 _majorityMargin
     ) external returns (address proposal) {
         // calculate minimum number of votes for member proposal
-        uint256 minVotes = _trusteeCount / 2;
+        uint16 minVotes = _trusteeCount / 2;
         // ensure that minVotes > 0
-        minVotes = minVotes == 0 ? ++minVotes : minVotes;
+        minVotes = minVotes == 0 ? (minVotes + 1) : minVotes;
         proposal = address(
             new MemberProposal(
                 _memberAddress,

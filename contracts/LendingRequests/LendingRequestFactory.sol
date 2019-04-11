@@ -43,14 +43,14 @@ contract LendingRequestFactory {
      * @notice checks if the user is known via uPort
      * @param _user address of the user to be verified
      */
-    function isVerified(address _user) internal returns (bool) {
+    function isVerified(address _user) private returns (bool) {
         /// try to verifiy by checking if _user is trustToken holder
         // prepare payload: bytes4 representation of the hashed function signature
         bytes memory payload = abi.encodeWithSignature("balanceOf(address)", _user);
         // execute and get encoded return value of function call
         (bool success, bytes memory encodedReturn) = trustToken.call(payload);
         // check if query was successfull
-        require(success, "could not communicate with trustToken contract");
+        require(success, "token query failed");
         // decode trustToken balance of user
         uint256 balance = abi.decode(encodedReturn, (uint256));
 
@@ -63,7 +63,7 @@ contract LendingRequestFactory {
             // execute and get encoded return value of function call
             (success, encodedReturn) = proposalManagement.call(payload);
             // check if query was successfull
-            require(success, "could not get membership status for user");
+            require(success, "member query failed");
             // decode memberId
             uint256 memberId = abi.decode(encodedReturn, (uint256));
             
