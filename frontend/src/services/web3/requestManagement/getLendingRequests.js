@@ -1,4 +1,4 @@
-export const requestHelper = async contract => {
+export const requestHelper = async (contract, ico) => {
     let requests = []
 
     const openRequests = await contract()
@@ -23,6 +23,8 @@ export const requestHelper = async contract => {
                 proposalParameters.paybackAmount / 10 ** 18 +
                 proposalParameters.contractFee / 10 ** 18
 
+            const tokenAtAddress = (await ico().methods.balanceOf(openRequests[i]).call()) / 10 ** 18
+
             const prop = {
                 address: openRequests[i],
                 asker: proposalParameters.asker,
@@ -35,7 +37,8 @@ export const requestHelper = async contract => {
                 lent: proposalState.lent,
                 withdrawnByAsker: proposalState.withdrawnByAsker,
                 debtSettled: proposalState.debtSettled,
-                status: 'Waiting'
+                status: 'Waiting',
+                tokenBalance: tokenAtAddress
             }
             if (prop.lent) {
                 prop.status = 'Ether Lent'

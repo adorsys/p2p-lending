@@ -30,7 +30,8 @@ import { UPDATE_REQUESTS } from '@/util/constants/types'
 
 export default {
   computed: mapState({
-    requestManagementContract: state => state.requestManagementInstance
+    requestManagementContract: state => state.requestManagementInstance,
+    ico: state => state.icoContractInstance
   }),
   components: {
     AskerRequests,
@@ -54,8 +55,8 @@ export default {
   watch: {
     requestManagementContract: {
       handler: function(contractInstance) {
-        if (contractInstance !== null && contractInstance !== undefined) {
-          this.$store.dispatch(UPDATE_REQUESTS, contractInstance)
+        if (contractInstance && this.ico) {
+          this.$store.dispatch(UPDATE_REQUESTS, contractInstance, this.ico)
         }
       }
     }

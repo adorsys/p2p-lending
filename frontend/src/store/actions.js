@@ -47,8 +47,8 @@ export default {
         const payload = await updateContractFeeHelper(contract)
         commit(types.UPDATE_FEE, payload)
     },
-    async [types.UPDATE_REQUESTS]({ commit }, contract) {
-        const payload = await requestHelper(contract)
+    async [types.UPDATE_REQUESTS]({ commit }, contract, ico) {
+        const payload = await requestHelper(contract, ico)
         commit(types.UPDATE_REQUESTS, payload)
     },
     async [types.UPDATE_ICO]({ commit }, contract) {

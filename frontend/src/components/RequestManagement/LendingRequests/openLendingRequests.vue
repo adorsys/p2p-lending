@@ -18,12 +18,29 @@
             <td class="table__data">{{ p.askAmount }} ETH</td>
             <td class="table__data table__data--payback">{{ p.paybackAmount }} ETH</td>
             <td class="table__data table__data--purpose">{{ p.purpose }}</td>
+            <!-- 
             <td class="table__data" v-if="p.verifiedAsker">
               <div class="table__data--trusted">Yes</div>
             </td>
             <td class="table__data" v-if="!p.verifiedAsker">
               <div class="table__data--untrusted">No</div>
+            </td> 
+            -->
+
+            <td class="table__data table__data--buttons">
+              {{ tokenBalanceRequest }}
+              <div> <input
+                type="text"
+                placeholder="TT"
+                v-model="transferTokenAmount"
+              ></div>
+              <div
+                v-on:click="trust()"
+                class="button button--table"
+              >Trust</div>
             </td>
+
+
             <td class="table__data table__data--buttons">
               <div
                 v-on:click="lend(p.address, p.askAmount)"
@@ -52,14 +69,18 @@ import { mapState } from 'vuex'
 
 export default {
   computed: mapState({
-    allRequests: state => state.allRequests
+    allRequests: state => state.allRequests,
+    tokenBalanceRequest: state => state.icoState.tokenBalanceUser,
+
   }),
-  props: ['contract'],
+  props: ['contract', 'ico'],
   data() {
     return {
       openRequests: [],
       requestGrantedListenerInstance: null,
-      requestCreatedListenerInstance: null
+      requestCreatedListenerInstance: null,
+      transferTokenAmount: null,
+
     }
   },
   methods: {
@@ -83,7 +104,25 @@ export default {
           }
         }
       })
-    }
+    },
+    async trust() {
+      if (this.tokenAmount !== null && this.transferTokenTo !== null) {
+        const amount = this.$store.state.web3
+          .web3Instance()
+          .utils.toWei(this.tokenAmount, 'ether')
+        await this.contract()
+          .methods.transfer(this.transferTokenTo, amount)
+          .send({ from: this.$store.state.web3.coinbase })
+      } else {
+        if (this.transferTokenTo === null) {
+          alert('specify the address of the recipient of the tokentransfer')
+        } else {
+          alert('specify the amount of token you want to transfer')
+        }
+      }
+      this.tokenAmount = null
+      this.transferTokenTo = null
+    },
   },
   watch: {
     allRequests: {
