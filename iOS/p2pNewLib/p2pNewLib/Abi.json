@@ -1,87 +1,1307 @@
-[
-    {
-        "constant": false,
-        "inputs": [
-            {
-                "name": "to",
-                "type": "address"
-            }
-        ],
-        "name": "delegate",
-        "outputs": [],
-        "payable": false,
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "constant": false,
-        "inputs": [
-            {
-                "name": "toVoter",
-                "type": "address"
-            }
-        ],
-        "name": "giveRightToVote",
-        "outputs": [],
-        "payable": false,
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "constant": false,
-        "inputs": [
-            {
-                "name": "toProposal",
-                "type": "uint8"
-            }
-        ],
-        "name": "vote",
-        "outputs": [],
-        "payable": false,
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "name": "_numProposals",
-                "type": "uint8"
-            }
-        ],
-        "payable": false,
-        "stateMutability": "nonpayable",
-        "type": "constructor"
-    },
-    {
-        "constant": true,
-        "inputs": [],
-        "name": "loadProposalCount",
-        "outputs": [
-            {
-                "name": "_count",
-                "type": "uint8"
-            }
-        ],
-        "payable": false,
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "constant": true,
-        "inputs": [],
-        "name": "winningProposal",
-        "outputs": [
-            {
-                "name": "_winningProposal",
-                "type": "uint8"
-            },
-            {
-                "name": "_winningVoteCount",
-                "type": "uint8"
-            }
-        ],
-        "payable": false,
-        "stateMutability": "view",
-        "type": "function"
+{
+    "contracts": {
+        "icoContract": {
+            "abi": [
+                {
+                    "constant": true,
+                    "inputs": [],
+                    "name": "name",
+                    "outputs": [
+                        {
+                            "name": "",
+                            "type": "string"
+                        }
+                    ],
+                    "payable": false,
+                    "stateMutability": "view",
+                    "type": "function",
+                    "signature": "0x06fdde03"
+                },
+                {
+                    "constant": true,
+                    "inputs": [],
+                    "name": "totalSupply",
+                    "outputs": [
+                        {
+                            "name": "",
+                            "type": "uint256"
+                        }
+                    ],
+                    "payable": false,
+                    "stateMutability": "view",
+                    "type": "function",
+                    "signature": "0x18160ddd"
+                },
+                {
+                    "constant": true,
+                    "inputs": [],
+                    "name": "isIcoActive",
+                    "outputs": [
+                        {
+                            "name": "",
+                            "type": "bool"
+                        }
+                    ],
+                    "payable": false,
+                    "stateMutability": "view",
+                    "type": "function",
+                    "signature": "0x1fc27ef2"
+                },
+                {
+                    "constant": true,
+                    "inputs": [],
+                    "name": "contractEtherBalance",
+                    "outputs": [
+                        {
+                            "name": "",
+                            "type": "uint256"
+                        }
+                    ],
+                    "payable": false,
+                    "stateMutability": "view",
+                    "type": "function",
+                    "signature": "0x1fff0ee8"
+                },
+                {
+                    "constant": true,
+                    "inputs": [
+                        {
+                            "name": "",
+                            "type": "address"
+                        }
+                    ],
+                    "name": "isUserLocked",
+                    "outputs": [
+                        {
+                            "name": "",
+                            "type": "bool"
+                        }
+                    ],
+                    "payable": false,
+                    "stateMutability": "view",
+                    "type": "function",
+                    "signature": "0x30d00505"
+                },
+                {
+                    "constant": true,
+                    "inputs": [],
+                    "name": "decimals",
+                    "outputs": [
+                        {
+                            "name": "",
+                            "type": "uint8"
+                        }
+                    ],
+                    "payable": false,
+                    "stateMutability": "view",
+                    "type": "function",
+                    "signature": "0x313ce567"
+                },
+                {
+                    "constant": true,
+                    "inputs": [
+                        {
+                            "name": "",
+                            "type": "uint256"
+                        }
+                    ],
+                    "name": "participants",
+                    "outputs": [
+                        {
+                            "name": "",
+                            "type": "address"
+                        }
+                    ],
+                    "payable": false,
+                    "stateMutability": "view",
+                    "type": "function",
+                    "signature": "0x35c1d349"
+                },
+                {
+                    "constant": true,
+                    "inputs": [],
+                    "name": "goal",
+                    "outputs": [
+                        {
+                            "name": "",
+                            "type": "uint256"
+                        }
+                    ],
+                    "payable": false,
+                    "stateMutability": "view",
+                    "type": "function",
+                    "signature": "0x40193883"
+                },
+                {
+                    "constant": true,
+                    "inputs": [
+                        {
+                            "name": "",
+                            "type": "address"
+                        },
+                        {
+                            "name": "",
+                            "type": "address"
+                        }
+                    ],
+                    "name": "allowed",
+                    "outputs": [
+                        {
+                            "name": "",
+                            "type": "uint256"
+                        }
+                    ],
+                    "payable": false,
+                    "stateMutability": "view",
+                    "type": "function",
+                    "signature": "0x5c658165"
+                },
+                {
+                    "constant": true,
+                    "inputs": [],
+                    "name": "trusteeCount",
+                    "outputs": [
+                        {
+                            "name": "",
+                            "type": "uint256"
+                        }
+                    ],
+                    "payable": false,
+                    "stateMutability": "view",
+                    "type": "function",
+                    "signature": "0x61064e63"
+                },
+                {
+                    "constant": true,
+                    "inputs": [],
+                    "name": "symbol",
+                    "outputs": [
+                        {
+                            "name": "",
+                            "type": "string"
+                        }
+                    ],
+                    "payable": false,
+                    "stateMutability": "view",
+                    "type": "function",
+                    "signature": "0x95d89b41"
+                },
+                {
+                    "constant": true,
+                    "inputs": [
+                        {
+                            "name": "",
+                            "type": "address"
+                        }
+                    ],
+                    "name": "etherBalances",
+                    "outputs": [
+                        {
+                            "name": "",
+                            "type": "uint256"
+                        }
+                    ],
+                    "payable": false,
+                    "stateMutability": "view",
+                    "type": "function",
+                    "signature": "0x9653f8a1"
+                },
+                {
+                    "constant": true,
+                    "inputs": [],
+                    "name": "proposalManagement",
+                    "outputs": [
+                        {
+                            "name": "",
+                            "type": "address"
+                        }
+                    ],
+                    "payable": false,
+                    "stateMutability": "view",
+                    "type": "function",
+                    "signature": "0xba5bb212"
+                },
+                {
+                    "constant": true,
+                    "inputs": [
+                        {
+                            "name": "",
+                            "type": "address"
+                        }
+                    ],
+                    "name": "isTrustee",
+                    "outputs": [
+                        {
+                            "name": "",
+                            "type": "bool"
+                        }
+                    ],
+                    "payable": false,
+                    "stateMutability": "view",
+                    "type": "function",
+                    "signature": "0xc784cd17"
+                },
+                {
+                    "inputs": [
+                        {
+                            "name": "_initialAmount",
+                            "type": "uint256"
+                        },
+                        {
+                            "name": "_tokenName",
+                            "type": "string"
+                        },
+                        {
+                            "name": "_decimalUnits",
+                            "type": "uint8"
+                        },
+                        {
+                            "name": "_tokenSymbol",
+                            "type": "string"
+                        }
+                    ],
+                    "payable": false,
+                    "stateMutability": "nonpayable",
+                    "type": "constructor",
+                    "signature": "constructor"
+                },
+                {
+                    "anonymous": false,
+                    "inputs": [
+                        {
+                            "indexed": false,
+                            "name": "buyer",
+                            "type": "address"
+                        }
+                    ],
+                    "name": "Participated",
+                    "type": "event",
+                    "signature": "0xfc0c6882e809c82f8fa6c478ce54548224c18a9ad203f3693ce8f61ca82c55ad"
+                },
+                {
+                    "anonymous": false,
+                    "inputs": [
+                        {
+                            "indexed": false,
+                            "name": "icoAddress",
+                            "type": "address"
+                        }
+                    ],
+                    "name": "ICOFinished",
+                    "type": "event",
+                    "signature": "0xc61f443ad72fc263e52dbf9da3998a0d855c1ec90d879baf437b0d3d5a18f948"
+                },
+                {
+                    "anonymous": false,
+                    "inputs": [
+                        {
+                            "indexed": true,
+                            "name": "_from",
+                            "type": "address"
+                        },
+                        {
+                            "indexed": true,
+                            "name": "_to",
+                            "type": "address"
+                        },
+                        {
+                            "indexed": false,
+                            "name": "_value",
+                            "type": "uint256"
+                        }
+                    ],
+                    "name": "Transfer",
+                    "type": "event",
+                    "signature": "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef"
+                },
+                {
+                    "anonymous": false,
+                    "inputs": [
+                        {
+                            "indexed": true,
+                            "name": "_owner",
+                            "type": "address"
+                        },
+                        {
+                            "indexed": true,
+                            "name": "_spender",
+                            "type": "address"
+                        },
+                        {
+                            "indexed": false,
+                            "name": "_value",
+                            "type": "uint256"
+                        }
+                    ],
+                    "name": "Approval",
+                    "type": "event",
+                    "signature": "0x8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b925"
+                },
+                {
+                    "constant": false,
+                    "inputs": [
+                        {
+                            "name": "_management",
+                            "type": "address"
+                        }
+                    ],
+                    "name": "setManagement",
+                    "outputs": [],
+                    "payable": false,
+                    "stateMutability": "nonpayable",
+                    "type": "function",
+                    "signature": "0xd4a22bde"
+                },
+                {
+                    "constant": true,
+                    "inputs": [],
+                    "name": "getICOParameters",
+                    "outputs": [
+                        {
+                            "name": "icoGoal",
+                            "type": "uint256"
+                        },
+                        {
+                            "name": "icoEtherBalance",
+                            "type": "uint256"
+                        },
+                        {
+                            "name": "isActive",
+                            "type": "bool"
+                        },
+                        {
+                            "name": "totalTokenSupply",
+                            "type": "uint256"
+                        },
+                        {
+                            "name": "icoParticipantCount",
+                            "type": "uint256"
+                        },
+                        {
+                            "name": "tokenSymbol",
+                            "type": "string"
+                        },
+                        {
+                            "name": "tokenBalanceUser",
+                            "type": "uint256"
+                        },
+                        {
+                            "name": "etherBalanceUser",
+                            "type": "uint256"
+                        },
+                        {
+                            "name": "icoName",
+                            "type": "string"
+                        },
+                        {
+                            "name": "numDecimals",
+                            "type": "uint256"
+                        },
+                        {
+                            "name": "numTrustees",
+                            "type": "uint256"
+                        }
+                    ],
+                    "payable": false,
+                    "stateMutability": "view",
+                    "type": "function",
+                    "signature": "0xd342fd64"
+                },
+                {
+                    "constant": false,
+                    "inputs": [
+                        {
+                            "name": "_memberAddress",
+                            "type": "address"
+                        },
+                        {
+                            "name": "_adding",
+                            "type": "bool"
+                        }
+                    ],
+                    "name": "createMemberProposal",
+                    "outputs": [],
+                    "payable": false,
+                    "stateMutability": "nonpayable",
+                    "type": "function",
+                    "signature": "0x66af254e"
+                },
+                {
+                    "constant": false,
+                    "inputs": [
+                        {
+                            "name": "_stance",
+                            "type": "bool"
+                        },
+                        {
+                            "name": "_proposalAddress",
+                            "type": "address"
+                        }
+                    ],
+                    "name": "vote",
+                    "outputs": [],
+                    "payable": false,
+                    "stateMutability": "nonpayable",
+                    "type": "function",
+                    "signature": "0x633dfc70"
+                },
+                {
+                    "constant": false,
+                    "inputs": [
+                        {
+                            "name": "_users",
+                            "type": "address[]"
+                        }
+                    ],
+                    "name": "unlockUsers",
+                    "outputs": [],
+                    "payable": false,
+                    "stateMutability": "nonpayable",
+                    "type": "function",
+                    "signature": "0x45680208"
+                },
+                {
+                    "constant": false,
+                    "inputs": [
+                        {
+                            "name": "_to",
+                            "type": "address"
+                        },
+                        {
+                            "name": "_value",
+                            "type": "uint256"
+                        }
+                    ],
+                    "name": "transfer",
+                    "outputs": [
+                        {
+                            "name": "success",
+                            "type": "bool"
+                        }
+                    ],
+                    "payable": false,
+                    "stateMutability": "nonpayable",
+                    "type": "function",
+                    "signature": "0xa9059cbb"
+                },
+                {
+                    "constant": false,
+                    "inputs": [
+                        {
+                            "name": "_from",
+                            "type": "address"
+                        },
+                        {
+                            "name": "_to",
+                            "type": "address"
+                        },
+                        {
+                            "name": "_value",
+                            "type": "uint256"
+                        }
+                    ],
+                    "name": "transferFrom",
+                    "outputs": [
+                        {
+                            "name": "success",
+                            "type": "bool"
+                        }
+                    ],
+                    "payable": false,
+                    "stateMutability": "nonpayable",
+                    "type": "function",
+                    "signature": "0x23b872dd"
+                },
+                {
+                    "constant": true,
+                    "inputs": [
+                        {
+                            "name": "_owner",
+                            "type": "address"
+                        }
+                    ],
+                    "name": "balanceOf",
+                    "outputs": [
+                        {
+                            "name": "balance",
+                            "type": "uint256"
+                        }
+                    ],
+                    "payable": false,
+                    "stateMutability": "view",
+                    "type": "function",
+                    "signature": "0x70a08231"
+                },
+                {
+                    "constant": false,
+                    "inputs": [
+                        {
+                            "name": "_spender",
+                            "type": "address"
+                        },
+                        {
+                            "name": "_value",
+                            "type": "uint256"
+                        }
+                    ],
+                    "name": "approve",
+                    "outputs": [
+                        {
+                            "name": "success",
+                            "type": "bool"
+                        }
+                    ],
+                    "payable": false,
+                    "stateMutability": "nonpayable",
+                    "type": "function",
+                    "signature": "0x095ea7b3"
+                },
+                {
+                    "constant": true,
+                    "inputs": [
+                        {
+                            "name": "_owner",
+                            "type": "address"
+                        },
+                        {
+                            "name": "_spender",
+                            "type": "address"
+                        }
+                    ],
+                    "name": "allowance",
+                    "outputs": [
+                        {
+                            "name": "remaining",
+                            "type": "uint256"
+                        }
+                    ],
+                    "payable": false,
+                    "stateMutability": "view",
+                    "type": "function",
+                    "signature": "0xdd62ed3e"
+                },
+                {
+                    "constant": false,
+                    "inputs": [],
+                    "name": "participate",
+                    "outputs": [],
+                    "payable": true,
+                    "stateMutability": "payable",
+                    "type": "function",
+                    "signature": "0xd11711a2"
+                },
+                {
+                    "constant": true,
+                    "inputs": [],
+                    "name": "getParticipantsCount",
+                    "outputs": [
+                        {
+                            "name": "",
+                            "type": "uint256"
+                        }
+                    ],
+                    "payable": false,
+                    "stateMutability": "view",
+                    "type": "function",
+                    "signature": "0xcabfaa18"
+                },
+                {
+                    "constant": false,
+                    "inputs": [
+                        {
+                            "name": "_value",
+                            "type": "uint256"
+                        }
+                    ],
+                    "name": "payFees",
+                    "outputs": [],
+                    "payable": false,
+                    "stateMutability": "nonpayable",
+                    "type": "function",
+                    "signature": "0x3084d735"
+                },
+                {
+                    "constant": true,
+                    "inputs": [],
+                    "name": "getEtherBalances",
+                    "outputs": [
+                        {
+                            "name": "",
+                            "type": "uint256"
+                        }
+                    ],
+                    "payable": false,
+                    "stateMutability": "view",
+                    "type": "function",
+                    "signature": "0x78b3658b"
+                }
+            ],
+            "address": "0x2E0DFb3fbAf1eAb17D82BCC5587F322514a9736d"
+        },
+        "proposalManagement": {
+            "abi": [
+                {
+                    "constant": true,
+                    "inputs": [
+                        {
+                            "name": "",
+                            "type": "address"
+                        }
+                    ],
+                    "name": "memberId",
+                    "outputs": [
+                        {
+                            "name": "",
+                            "type": "uint256"
+                        }
+                    ],
+                    "payable": false,
+                    "stateMutability": "view",
+                    "type": "function",
+                    "signature": "0x39106821"
+                },
+                {
+                    "constant": true,
+                    "inputs": [
+                        {
+                            "name": "",
+                            "type": "uint256"
+                        }
+                    ],
+                    "name": "members",
+                    "outputs": [
+                        {
+                            "name": "",
+                            "type": "address"
+                        }
+                    ],
+                    "payable": false,
+                    "stateMutability": "view",
+                    "type": "function",
+                    "signature": "0x5daf08ca"
+                },
+                {
+                    "constant": true,
+                    "inputs": [
+                        {
+                            "name": "",
+                            "type": "address"
+                        }
+                    ],
+                    "name": "proposalType",
+                    "outputs": [
+                        {
+                            "name": "",
+                            "type": "uint256"
+                        }
+                    ],
+                    "payable": false,
+                    "stateMutability": "view",
+                    "type": "function",
+                    "signature": "0x975f24b8"
+                },
+                {
+                    "constant": true,
+                    "inputs": [],
+                    "name": "majorityMargin",
+                    "outputs": [
+                        {
+                            "name": "",
+                            "type": "uint256"
+                        }
+                    ],
+                    "payable": false,
+                    "stateMutability": "view",
+                    "type": "function",
+                    "signature": "0xaa02a90f"
+                },
+                {
+                    "constant": true,
+                    "inputs": [],
+                    "name": "contractFee",
+                    "outputs": [
+                        {
+                            "name": "",
+                            "type": "uint256"
+                        }
+                    ],
+                    "payable": false,
+                    "stateMutability": "view",
+                    "type": "function",
+                    "signature": "0xd41977cd"
+                },
+                {
+                    "constant": true,
+                    "inputs": [],
+                    "name": "minimumNumberOfVotes",
+                    "outputs": [
+                        {
+                            "name": "",
+                            "type": "uint256"
+                        }
+                    ],
+                    "payable": false,
+                    "stateMutability": "view",
+                    "type": "function",
+                    "signature": "0xfd173bc0"
+                },
+                {
+                    "inputs": [
+                        {
+                            "name": "_proposalFactoryAddress",
+                            "type": "address"
+                        },
+                        {
+                            "name": "_trustTokenContract",
+                            "type": "address"
+                        }
+                    ],
+                    "payable": false,
+                    "stateMutability": "nonpayable",
+                    "type": "constructor",
+                    "signature": "constructor"
+                },
+                {
+                    "anonymous": false,
+                    "inputs": [
+                        {
+                            "indexed": false,
+                            "name": "proposalAddress",
+                            "type": "address"
+                        },
+                        {
+                            "indexed": false,
+                            "name": "proposalType",
+                            "type": "string"
+                        }
+                    ],
+                    "name": "ProposalCreated",
+                    "type": "event",
+                    "signature": "0x0a8c8ee7cecd26db26f06dfec052907a771897f47c5e48d32cfddd878b28270f"
+                },
+                {
+                    "anonymous": false,
+                    "inputs": [
+                        {
+                            "indexed": false,
+                            "name": "executedProposal",
+                            "type": "address"
+                        }
+                    ],
+                    "name": "ProposalExecuted",
+                    "type": "event",
+                    "signature": "0x077e00e56e5d36ae097a95cb003427416253dd9bb4491393d3eb4cf8f63fd41e"
+                },
+                {
+                    "anonymous": false,
+                    "inputs": [
+                        {
+                            "indexed": false,
+                            "name": "oldFee",
+                            "type": "uint256"
+                        },
+                        {
+                            "indexed": false,
+                            "name": "newFee",
+                            "type": "uint256"
+                        }
+                    ],
+                    "name": "NewContractFee",
+                    "type": "event",
+                    "signature": "0xa22dd4ccf7e82541885c8c08e49329d130d4b75ed0cefb827cdddbd45b0e6683"
+                },
+                {
+                    "anonymous": false,
+                    "inputs": [
+                        {
+                            "indexed": false,
+                            "name": "memberAddress",
+                            "type": "address"
+                        },
+                        {
+                            "indexed": false,
+                            "name": "memberStatus",
+                            "type": "bool"
+                        }
+                    ],
+                    "name": "MembershipChanged",
+                    "type": "event",
+                    "signature": "0x27b022af4a8347100c7a041ce5ccf8e14d644ff05de696315196faae8cd50c9b"
+                },
+                {
+                    "constant": false,
+                    "inputs": [
+                        {
+                            "name": "_proposedFee",
+                            "type": "uint256"
+                        }
+                    ],
+                    "name": "createContractFeeProposal",
+                    "outputs": [],
+                    "payable": false,
+                    "stateMutability": "nonpayable",
+                    "type": "function",
+                    "signature": "0x8bb450e2"
+                },
+                {
+                    "constant": false,
+                    "inputs": [
+                        {
+                            "name": "_memberAddress",
+                            "type": "address"
+                        },
+                        {
+                            "name": "_adding",
+                            "type": "bool"
+                        },
+                        {
+                            "name": "_trusteeCount",
+                            "type": "uint256"
+                        }
+                    ],
+                    "name": "createMemberProposal",
+                    "outputs": [],
+                    "payable": false,
+                    "stateMutability": "nonpayable",
+                    "type": "function",
+                    "signature": "0x3d023cad"
+                },
+                {
+                    "constant": false,
+                    "inputs": [
+                        {
+                            "name": "_stance",
+                            "type": "bool"
+                        },
+                        {
+                            "name": "_proposalAddress",
+                            "type": "address"
+                        },
+                        {
+                            "name": "_origin",
+                            "type": "address"
+                        }
+                    ],
+                    "name": "vote",
+                    "outputs": [],
+                    "payable": false,
+                    "stateMutability": "nonpayable",
+                    "type": "function",
+                    "signature": "0xabf342f6"
+                },
+                {
+                    "constant": true,
+                    "inputs": [],
+                    "name": "getProposalsLength",
+                    "outputs": [
+                        {
+                            "name": "",
+                            "type": "uint256"
+                        }
+                    ],
+                    "payable": false,
+                    "stateMutability": "view",
+                    "type": "function",
+                    "signature": "0xbc378a73"
+                },
+                {
+                    "constant": true,
+                    "inputs": [],
+                    "name": "getProposals",
+                    "outputs": [
+                        {
+                            "name": "",
+                            "type": "address[]"
+                        }
+                    ],
+                    "payable": false,
+                    "stateMutability": "view",
+                    "type": "function",
+                    "signature": "0x62564c48"
+                },
+                {
+                    "constant": true,
+                    "inputs": [],
+                    "name": "getMembersLength",
+                    "outputs": [
+                        {
+                            "name": "",
+                            "type": "uint256"
+                        }
+                    ],
+                    "payable": false,
+                    "stateMutability": "view",
+                    "type": "function",
+                    "signature": "0xfc53c821"
+                },
+                {
+                    "constant": false,
+                    "inputs": [
+                        {
+                            "name": "_proposal",
+                            "type": "address"
+                        }
+                    ],
+                    "name": "getProposalParameters",
+                    "outputs": [
+                        {
+                            "name": "proposalAddress",
+                            "type": "address"
+                        },
+                        {
+                            "name": "propType",
+                            "type": "uint256"
+                        },
+                        {
+                            "name": "proposalFee",
+                            "type": "uint256"
+                        },
+                        {
+                            "name": "memberAddress",
+                            "type": "address"
+                        }
+                    ],
+                    "payable": false,
+                    "stateMutability": "nonpayable",
+                    "type": "function",
+                    "signature": "0xd09e8707"
+                }
+            ],
+            "address": "0x7BA89fc1E681cF9F925f549747df164F2f7B7328"
+        },
+        "requestManagement": {
+            "abi": [
+                {
+                    "constant": false,
+                    "inputs": [],
+                    "name": "renounceOwnership",
+                    "outputs": [],
+                    "payable": false,
+                    "stateMutability": "nonpayable",
+                    "type": "function",
+                    "signature": "0x715018a6"
+                },
+                {
+                    "constant": false,
+                    "inputs": [
+                        {
+                            "name": "_newOwner",
+                            "type": "address"
+                        }
+                    ],
+                    "name": "transferOwnership",
+                    "outputs": [],
+                    "payable": false,
+                    "stateMutability": "nonpayable",
+                    "type": "function",
+                    "signature": "0xf2fde38b"
+                },
+                {
+                    "inputs": [
+                        {
+                            "name": "_trustToken",
+                            "type": "address"
+                        },
+                        {
+                            "name": "_proposalManagement",
+                            "type": "address"
+                        }
+                    ],
+                    "payable": false,
+                    "stateMutability": "nonpayable",
+                    "type": "constructor",
+                    "signature": "constructor"
+                },
+                {
+                    "anonymous": false,
+                    "inputs": [
+                        {
+                            "indexed": false,
+                            "name": "request",
+                            "type": "address"
+                        }
+                    ],
+                    "name": "RequestCreated",
+                    "type": "event",
+                    "signature": "0x60dc38bed424a87163b4220b98edb283977533b0a85a5743f8d35c28fd495e47"
+                },
+                {
+                    "anonymous": false,
+                    "inputs": [
+                        {
+                            "indexed": false,
+                            "name": "request",
+                            "type": "address"
+                        },
+                        {
+                            "indexed": false,
+                            "name": "lender",
+                            "type": "address"
+                        }
+                    ],
+                    "name": "RequestGranted",
+                    "type": "event",
+                    "signature": "0xa09de0fdf873ef8dddebac7d497588b2fc67dc917d5a72fe260d4c69ff2d1543"
+                },
+                {
+                    "anonymous": false,
+                    "inputs": [
+                        {
+                            "indexed": false,
+                            "name": "request",
+                            "type": "address"
+                        },
+                        {
+                            "indexed": false,
+                            "name": "asker",
+                            "type": "address"
+                        }
+                    ],
+                    "name": "DebtPaid",
+                    "type": "event",
+                    "signature": "0xeab25e3cc607d4a76de445b91c0b4bbf59d8298458af77e9b4770d9ce3dec412"
+                },
+                {
+                    "anonymous": false,
+                    "inputs": [
+                        {
+                            "indexed": false,
+                            "name": "request",
+                            "type": "address"
+                        }
+                    ],
+                    "name": "Withdraw",
+                    "type": "event",
+                    "signature": "0xf67611512e0a2d90c96fd3f08dca4971bc45fba9dc679eabe839a32abbe58a8e"
+                },
+                {
+                    "anonymous": false,
+                    "inputs": [
+                        {
+                            "indexed": true,
+                            "name": "previousOwner",
+                            "type": "address"
+                        }
+                    ],
+                    "name": "OwnershipRenounced",
+                    "type": "event",
+                    "signature": "0xf8df31144d9c2f0f6b59d69b8b98abd5459d07f2742c4df920b25aae33c64820"
+                },
+                {
+                    "anonymous": false,
+                    "inputs": [
+                        {
+                            "indexed": true,
+                            "name": "previousOwner",
+                            "type": "address"
+                        },
+                        {
+                            "indexed": true,
+                            "name": "newOwner",
+                            "type": "address"
+                        }
+                    ],
+                    "name": "OwnershipTransferred",
+                    "type": "event",
+                    "signature": "0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0"
+                },
+                {
+                    "constant": false,
+                    "inputs": [
+                        {
+                            "name": "_amount",
+                            "type": "uint256"
+                        },
+                        {
+                            "name": "_paybackAmount",
+                            "type": "uint256"
+                        },
+                        {
+                            "name": "_purpose",
+                            "type": "string"
+                        }
+                    ],
+                    "name": "ask",
+                    "outputs": [],
+                    "payable": false,
+                    "stateMutability": "nonpayable",
+                    "type": "function",
+                    "signature": "0x75cd8856"
+                },
+                {
+                    "constant": false,
+                    "inputs": [
+                        {
+                            "name": "_lendingRequest",
+                            "type": "address"
+                        }
+                    ],
+                    "name": "deposit",
+                    "outputs": [],
+                    "payable": true,
+                    "stateMutability": "payable",
+                    "type": "function",
+                    "signature": "0xf340fa01"
+                },
+                {
+                    "constant": false,
+                    "inputs": [
+                        {
+                            "name": "_lendingRequest",
+                            "type": "address"
+                        }
+                    ],
+                    "name": "withdraw",
+                    "outputs": [],
+                    "payable": false,
+                    "stateMutability": "nonpayable",
+                    "type": "function",
+                    "signature": "0x51cff8d9"
+                },
+                {
+                    "constant": false,
+                    "inputs": [
+                        {
+                            "name": "_lendingRequest",
+                            "type": "address"
+                        }
+                    ],
+                    "name": "cancelRequest",
+                    "outputs": [],
+                    "payable": false,
+                    "stateMutability": "nonpayable",
+                    "type": "function",
+                    "signature": "0xaf98f757"
+                },
+                {
+                    "constant": false,
+                    "inputs": [],
+                    "name": "withdrawFees",
+                    "outputs": [],
+                    "payable": false,
+                    "stateMutability": "nonpayable",
+                    "type": "function",
+                    "signature": "0x476343ee"
+                },
+                {
+                    "constant": false,
+                    "inputs": [],
+                    "name": "kill",
+                    "outputs": [],
+                    "payable": false,
+                    "stateMutability": "nonpayable",
+                    "type": "function",
+                    "signature": "0x41c0e1b5"
+                },
+                {
+                    "constant": true,
+                    "inputs": [
+                        {
+                            "name": "_user",
+                            "type": "address"
+                        }
+                    ],
+                    "name": "getRequests",
+                    "outputs": [
+                        {
+                            "name": "",
+                            "type": "address[]"
+                        }
+                    ],
+                    "payable": false,
+                    "stateMutability": "view",
+                    "type": "function",
+                    "signature": "0x804e44f3"
+                },
+                {
+                    "constant": true,
+                    "inputs": [],
+                    "name": "contractBalance",
+                    "outputs": [
+                        {
+                            "name": "",
+                            "type": "uint256"
+                        }
+                    ],
+                    "payable": false,
+                    "stateMutability": "view",
+                    "type": "function",
+                    "signature": "0x8b7afe2e"
+                },
+                {
+                    "constant": true,
+                    "inputs": [
+                        {
+                            "name": "_lendingRequest",
+                            "type": "address"
+                        }
+                    ],
+                    "name": "getProposalParameters",
+                    "outputs": [
+                        {
+                            "name": "asker",
+                            "type": "address"
+                        },
+                        {
+                            "name": "lender",
+                            "type": "address"
+                        },
+                        {
+                            "name": "askAmount",
+                            "type": "uint256"
+                        },
+                        {
+                            "name": "paybackAmount",
+                            "type": "uint256"
+                        },
+                        {
+                            "name": "contractFee",
+                            "type": "uint256"
+                        },
+                        {
+                            "name": "purpose",
+                            "type": "string"
+                        }
+                    ],
+                    "payable": false,
+                    "stateMutability": "view",
+                    "type": "function",
+                    "signature": "0xd09e8707"
+                },
+                {
+                    "constant": true,
+                    "inputs": [
+                        {
+                            "name": "_lendingRequest",
+                            "type": "address"
+                        }
+                    ],
+                    "name": "getProposalState",
+                    "outputs": [
+                        {
+                            "name": "verifiedAsker",
+                            "type": "bool"
+                        },
+                        {
+                            "name": "lent",
+                            "type": "bool"
+                        },
+                        {
+                            "name": "withdrawnByAsker",
+                            "type": "bool"
+                        },
+                        {
+                            "name": "debtSettled",
+                            "type": "bool"
+                        }
+                    ],
+                    "payable": false,
+                    "stateMutability": "view",
+                    "type": "function",
+                    "signature": "0x2be0c244"
+                }
+            ],
+            "address": "0x85bf9B6ca5184AAc65ADCfEE33d789639F263B2b"
+        }
     }
-]
+}

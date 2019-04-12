@@ -17,11 +17,12 @@ class ViewController: UIViewController {
 
     var numberOfProposals = 0
 
+    //ganache first
     let privateKey = try! EthereumPrivateKey(hexPrivateKey:"0xb7553adc227436ddd9a41fa114f2248cc6247f80276726c3450b93861866d8b0")
-    let etherNode = Web3( rpcURL: "http://172.16.121.109:8545")
+    let etherNode = Web3( rpcURL: "http://192.168.178.148:8545")
 
 
-    let contractAddress = EthereumAddress(hexString: "0x24aa30159759ee23421aa808c5d50998736d346e")
+    var contractAddress = EthereumAddress(hexString: "0x24aa30159759ee23421aa808c5d50998736d346e")
     var contract: DynamicContract?
 
     override func viewDidLoad() {
@@ -34,34 +35,59 @@ class ViewController: UIViewController {
         tableview.dataSource = self
         tableview.delegate = self
 
-
-        guard let jsonAbi = loadAbi() else {return}
-
-        contract = try! etherNode.eth.Contract(json: jsonAbi, abiKey: nil, address: contractAddress)
+        if let contractAddress = extractContractAdress(from: "Abi"){
+        contract = createContract(from: "Abi",at: contractAddress)
+        }
 
         guard let contract = contract else {return}
 
-        let loadPropsalCount = contract["loadProposalCount"]!().createCall()
-        contract.call(loadPropsalCount!, outputs: [.init(name: "_count", type: .uint8)]) { (response, error) in
-            if let response = response,
-                let item = response["_count"] as? UInt8
-            {
-                self.numberOfProposals = Int(item)
-                DispatchQueue.main.async {
-                    self.tableview.reloadData()
-                    self.showWinning()
-                }
-
-            }
-
-        }
+//        let loadPropsalCount = contract["loadProposalCount"]!().createCall()
+//        contract.call(loadPropsalCount!, outputs: [.init(name: "_count", type: .uint8)]) { (response, error) in
+//            if let response = response,
+//                let item = response["_count"] as? UInt8
+//            {
+//                self.numberOfProposals = Int(item)
+//                DispatchQueue.main.async {
+//                    self.tableview.reloadData()
+//                    self.showWinning()
+//                }
+//
+//            }
+//
+//        }
     }
 }
 
 extension ViewController{
 
-    func loadAbi()->Data?{
-        if let path = Bundle.main.path(forResource: "Abi", ofType: "json"),
+    func createContract(from abi:String,at address:EthereumAddress) -> DynamicContract?{
+
+        guard let jsonAbi = loadAbi(from: abi) else {return nil}
+
+        let containerObject = try? JSONSerialization.jsonObject(with: jsonAbi, options: []) as? [String: Any]
+
+        if let pureAbiJSON = ((containerObject??["contracts"] as? [String: Any])?["requestManagement"] as? [String: Any]){
+        let jsonData = (try? JSONSerialization.data(withJSONObject: pureAbiJSON)) ?? Data()
+            let contract = try? etherNode.eth.Contract(json: jsonData, abiKey: "abi", address: address)
+            return contract
+        }
+        return nil
+    }
+
+
+    func extractContractAdress(from abi:String) -> EthereumAddress?{
+        guard let jsonAbi = loadAbi(from: abi) else {return nil}
+
+        let containerObject = try? JSONSerialization.jsonObject(with: jsonAbi, options: []) as? [String: Any]
+
+        if let pureAbiJSON = ((containerObject??["contracts"] as? [String: Any])?["requestManagement"] as? [String: Any])?["address"] as? String{
+            return EthereumAddress(hexString: pureAbiJSON)
+        }
+        return nil
+    }
+
+    func loadAbi(from path:String)->Data?{
+        if let path = Bundle.main.path(forResource: path, ofType: "json"),
             let data = try? Data(contentsOf: URL(fileURLWithPath: path)) {
             return data
         }
@@ -106,7 +132,6 @@ extension ViewController:UITableViewDelegate{
         etherNode.eth.getTransactionCount(address: privateKey.address, block: .latest){ response in
             print (response.result!.quantity)
 
-//            self.etherNode.eth.estimateGas(call: , response: <#T##(Web3Response<EthereumQuantity>) -> ()#>)
             let trans = c!.createTransaction(nonce: response.result!,
                                              from: self.privateKey.address,
                                              value: 0,

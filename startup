@@ -1,0 +1,10 @@
+#! /bin/bash
+echo "delete build folder"
+rm -rf build/
+echo "compile"
+truffle compile
+echo "start contracts"
+npm run migrate:dev
+echo "start frontend"
+cd frontend
+npm start
