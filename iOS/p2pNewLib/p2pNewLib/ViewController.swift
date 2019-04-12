@@ -17,9 +17,11 @@ class ViewController: UIViewController {
 
     var numberOfProposals = 0
 
-    let privateKey = try! EthereumPrivateKey(hexPrivateKey: "0xb7553adc227436ddd9a41fa114f2248cc6247f80276726c3450b93861866d8b0")
+    let privateKey = try! EthereumPrivateKey(hexPrivateKey:"0xb7553adc227436ddd9a41fa114f2248cc6247f80276726c3450b93861866d8b0")
     let etherNode = Web3( rpcURL: "http://172.16.121.109:8545")
-    let contractAddress = EthereumAddress(hexString: "0x012b98879e24aa7f3ddf5f81ecbc8c82911b2163")
+
+
+    let contractAddress = EthereumAddress(hexString: "0x24aa30159759ee23421aa808c5d50998736d346e")
     var contract: DynamicContract?
 
     override func viewDidLoad() {
@@ -104,14 +106,14 @@ extension ViewController:UITableViewDelegate{
         etherNode.eth.getTransactionCount(address: privateKey.address, block: .latest){ response in
             print (response.result!.quantity)
 
-            self.etherNode.eth.estimateGas(call: , response: <#T##(Web3Response<EthereumQuantity>) -> ()#>)
+//            self.etherNode.eth.estimateGas(call: , response: <#T##(Web3Response<EthereumQuantity>) -> ()#>)
             let trans = c!.createTransaction(nonce: response.result!,
                                              from: self.privateKey.address,
                                              value: 0,
                                              gas: 643074,
                                              gasPrice: EthereumQuantity(quantity: 1.gwei))
 
-
+            
             let signedTx = try! trans?.sign(with: self.privateKey,chainId: 5777)
 
             self.etherNode.eth.sendRawTransaction(transaction: signedTx!) { response in
