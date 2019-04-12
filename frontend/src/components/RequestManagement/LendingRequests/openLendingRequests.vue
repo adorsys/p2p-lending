@@ -16,7 +16,9 @@
           <tr class="table__row" v-for="p in openRequests" :key="p.idx">
             <td class="table__data table__data--asker">{{ p.asker }}</td>
             <td class="table__data">{{ p.askAmount }} ETH</td>
-            <td class="table__data table__data--payback">{{ p.paybackAmount }} ETH</td>
+            <td class="table__data table__data--payback">
+              {{ p.paybackAmount }} ETH
+            </td>
             <td class="table__data table__data--purpose">{{ p.purpose }}</td>
             <!-- 
             <td class="table__data" v-if="p.verifiedAsker">
@@ -28,24 +30,24 @@
             -->
 
             <td class="table__data table__data--buttons">
-              {{ tokenBalanceRequest }}
-              <div> <input
-                type="text"
-                placeholder="TT"
-                v-model="transferTokenAmount"
-              ></div>
-              <div
-                v-on:click="trust()"
-                class="button button--table"
-              >Trust</div>
+              {{ p.tokenBalance }}
+              <div>
+                <input
+                  type="text"
+                  placeholder="TT"
+                  v-model="transferTokenAmount"
+                />
+              </div>
+              <div v-on:click="trust()" class="button button--table">Trust</div>
             </td>
-
 
             <td class="table__data table__data--buttons">
               <div
                 v-on:click="lend(p.address, p.askAmount)"
                 class="button button--table button--lend"
-              >Lend</div>
+              >
+                Lend
+              </div>
             </td>
           </tr>
         </tbody>
@@ -57,7 +59,9 @@
           </tr>
         </thead>
         <tbody>
-          <td class="table__data table__data--empty">No Lending Requests Found</td>
+          <td class="table__data table__data--empty">
+            No Lending Requests Found
+          </td>
         </tbody>
       </table>
     </div>
@@ -69,9 +73,7 @@ import { mapState } from 'vuex'
 
 export default {
   computed: mapState({
-    allRequests: state => state.allRequests,
-    tokenBalanceRequest: state => state.icoState.tokenBalanceUser,
-
+    allRequests: state => state.allRequests
   }),
   props: ['contract', 'ico'],
   data() {
@@ -79,8 +81,7 @@ export default {
       openRequests: [],
       requestGrantedListenerInstance: null,
       requestCreatedListenerInstance: null,
-      transferTokenAmount: null,
-
+      transferTokenAmount: null
     }
   },
   methods: {
@@ -122,7 +123,7 @@ export default {
       }
       this.tokenAmount = null
       this.transferTokenTo = null
-    },
+    }
   },
   watch: {
     allRequests: {
