@@ -1,16 +1,13 @@
 <template>
   <div class="home">
-    <div class="title">p2p Lending</div>
-    <div class="subtitle subtitle--landingpage">
-      A decentralised lending platform
-    </div>
-    <LandingPage />
+    <LandingPage title="p2p Lending" />
   </div>
 </template>
 
 <script>
-import LandingPage from '@/components/LandingPage/landingpage'
+import LandingPage from '@/components/LandingPage/landingPage'
 export default {
+  name: 'home',
   components: {
     LandingPage
   }
@@ -19,11 +16,6 @@ export default {
 
 <style lang="scss">
 .home {
-  height: calc(100vh - 51px);
-}
-
-.subtitle--landingpage {
-  text-decoration: none;
-  font-size: 2rem;
+  height: 92vh;
 }
 </style>

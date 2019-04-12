@@ -3,15 +3,25 @@
 * {
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
 }
 
 body {
   font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif;
-  // font-family: 'Lucida Sans Unicode', Arial;
-  font-weight: 400;
+  font-size: 17px;
+  line-height: 1.6;
   background-color: $navbar-hover-color;
+}
+
+#app {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  height: calc(100vh - $navbar-height);
+  height: 100vh;
+}
+
+.content {
+  padding-top: 8vh;
 }
 
 .separator {
@@ -39,9 +49,7 @@ body {
 .title {
   font-weight: 800;
   font-size: 2.8rem;
-  color: $link-text-color-darkened;
-  margin-top: 0.3em;
-  margin-bottom: 0.3em;
+  color: #2c3e50;
   text-decoration: underline;
 }
 

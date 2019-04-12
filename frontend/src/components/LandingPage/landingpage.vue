@@ -1,50 +1,39 @@
 <template>
-  <div class="landingpage">
-    <div class="landingpage__container">
-      <div
-        class="landingpage__item landingpage__item--ask"
-        @click="$router.push('userrequests')"
-      >
-        <div class="content__container">
-          <div class="subtitle subtitle--landingpageItem">Asker</div>
-          <div class="subtitle subtitle--description">Create a Request</div>
-        </div>
+  <div class="landingPage">
+    <section class="landingPage__logo">
+      <img src="../../assets/ethereum.svg" class="logo__image" />
+      <div class="title">{{ title }}</div>
+    </section>
+    <section class="landingPage__roles">
+      <div class="roles__item" @click="$router.push({ name: 'userrequests' })">
+        <div class="item__title">&lt;&lt; Asker &gt;&gt;</div>
       </div>
       <div
-        class="landingpage__item landingpage__item--lend"
-        @click="$router.push('lendingrequests')"
+        class="roles__item"
+        @click="$router.push({ name: 'lendingrequests' })"
       >
-        <div class="content__container">
-          <div class="subtitle subtitle--landingpageItem">Lender</div>
-          <div class="subtitle subtitle--description">See open requests</div>
-        </div>
+        <div class="item__title">&lt;&lt; Lender &gt;&gt;</div>
       </div>
-      <div
-        class="landingpage__item landingpage__item--ico"
-        v-if="icoActive || bMember"
-        @click="$router.push('ico')"
-      >
-        <div class="content__container">
-          <div class="subtitle subtitle--landingpageItem">ICO</div>
-          <div class="subtitle subtitle--description" v-if="icoActive">
-            Participate in ICO
-          </div>
-          <div class="subtitle subtitle--description" v-if="!icoActive">
-            Manage Token
-          </div>
-        </div>
+      <div class="roles__item" @click="$router.push({ name: 'ico' })">
+        <div class="item__title">&lt;&lt; Investor &gt;&gt;</div>
       </div>
-      <div
-        class="landingpage__item landingpage__item--manage"
-        v-if="bMember || tHolder"
-        @click="$router.push('p2pManagement')"
-      >
-        <div class="content__container">
-          <div class="subtitle subtitle--landingpageItem">Stakeholder</div>
-          <div class="subtitle subtitle--description">Management</div>
-        </div>
-      </div>
-    </div>
+    </section>
+    <section class="landingPage__textArea">
+      <p class="textArea--description">
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestias
+        expedita excepturi non, saepe voluptatem laborum molestiae maxime
+        aliquid, iure laboriosam quam veniam, aliquam cupiditate nulla. Ipsum
+        laborum nostrum dicta velit fugit, similique unde obcaecati possimus ad
+        quibusdam sapiente quisquam temporibus doloribus asperiores, cum
+        corporis incidunt exercitationem! Nesciunt, aspernatur? Repellendus
+        nihil, neque aliquam delectus quibusdam maxime alias excepturi nostrum
+        in laboriosam ullam doloremque deleniti error itaque libero aperiam
+        laborum fugit esse tenetur culpa, sed quaerat fugiat. Soluta amet
+        voluptates tempora natus odio incidunt tempore dolore? Dignissimos
+        dolorem harum aliquam veniam a quis possimus! Ut ad pariatur maiores
+        accusamus quaerat eaque accusantium?
+      </p>
+    </section>
   </div>
 </template>
 
@@ -52,6 +41,10 @@
 import { mapState } from 'vuex'
 
 export default {
+  name: 'LandingPage',
+  props: {
+    title: String
+  },
   computed: mapState({
     icoActive: state => state.icoState.isIcoActive,
     bMember: state => state.boardMember,
@@ -61,5 +54,5 @@ export default {
 </script>
 
 <style lang="scss">
-@import './landingpage';
+@import './landingPage';
 </style>

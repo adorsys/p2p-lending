@@ -1,58 +1,73 @@
 @import '../../util/scss/variables';
 
-.landingpage {
-  height: 100%;
+.landingPage {
+  height: 92vh;
+  background-color: #2c3e50;
 }
 
-.landingpage__container {
-  height: 25%;
-  margin-top: 2em;
+.landingPage__logo {
+  background-color: $navbar-hover-color;
+  padding-top: 1em;
+}
+
+.logo__image {
+  height: 20vh;
+}
+
+.landingPage__roles {
+  padding-top: 1.5em;
+  padding-bottom: 1.5em;
+  height: 30vh;
   display: flex;
-  justify-content: space-evenly;
+  justify-content: space-around;
+  align-items: center;
 }
 
-.landingpage__item {
-  margin: 0;
-  background-position: center;
-  background-size: cover;
-  background-color: rgba($color: darkblue, $alpha: 0.05);
-  border: 1px solid rgba($color: #000000, $alpha: 0.4);
-  border-radius: 2px;
-  box-shadow: 0 0px 12px -6px rgba($color: #000000, $alpha: 0.3);
-  width: 20%;
-  height: 100%;
-}
-
-.landingpage__item:hover {
+.roles__item {
+  display: flex;
+  height: 50%;
+  width: 25%;
+  border: 2px solid $navbar-hover-color;
+  justify-content: center;
+  align-items: center;
   cursor: pointer;
 }
 
-.content__container {
-  display: grid;
-  grid-template-columns: 5% auto 5%;
-  grid-template-rows: 1fr 1fr;
-  height: 100%;
+.item__title {
+  font-weight: 600;
+  font-size: 2rem;
+  color: lightgray;
 }
 
-.subtitle--landingpageItem {
-  text-decoration: none;
-  font-size: 1.8rem;
-  grid-column: 2;
+.landingPage__textArea {
+  background-color: $navbar-hover-color;
+  color: #2c3e50;
+  letter-spacing: 1.2px;
+  font-size: 18px;
+  margin-bottom: 1em;
 }
 
-.subtitle--description {
-  text-decoration: none;
-  font-weight: 500;
-  grid-column: 2;
+.textArea--description {
+  padding: 1em;
 }
 
-.button--landingpage {
-  margin: 0;
-  padding: 15px;
-  width: 70%;
+@media screen and (max-width: 480px) {
+  .landingPage__roles {
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    height: 40vh;
+  }
+
+  .roles__item {
+    height: 25%;
+    width: 65%;
+  }
 }
 
-.landingpage--route {
-  text-decoration: none;
-  color: $link-text-color-darkened;
+@media screen and (min-width: 480px) and (max-width: 1024px) {
+  .roles__item {
+    height: 40%;
+    width: 30%;
+  }
 }

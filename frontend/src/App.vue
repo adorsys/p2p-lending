@@ -1,21 +1,19 @@
 <template>
   <div id="app">
-    <Sidebar>
-      <router-view slot="router-view" />
-    </Sidebar>
     <Navbar />
+    <div class="content">
+      <router-view />
+    </div>
   </div>
 </template>
 
 <script>
 import Navbar from '@/components/Navbar/navbar'
-import Sidebar from '@/components/Sidebar/sidebar'
 import { INIT_CONNECTION } from '@/util/constants/types'
 
 export default {
   components: {
-    Navbar,
-    Sidebar
+    Navbar
   },
   beforeCreate() {
     this.$store.dispatch(INIT_CONNECTION)
