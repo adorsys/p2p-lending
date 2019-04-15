@@ -1,6 +1,6 @@
 <template>
   <div class="askerRequest__management">
-    <div class="subtitle subtitle--askerRequest">Your Requests</div>
+    <div class="subtitle subtitle--requests">Your Requests</div>
     <table class="table" v-if="askerRequests.length !== 0">
       <thead>
         <tr>

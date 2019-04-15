@@ -1,5 +1,5 @@
 <template>
-  <div class="home">
+  <div class="lendingRequests">
     <div class="title">Lending Requests</div>
     <hr class="separator" />
     <hr class="separator" />
@@ -33,12 +33,7 @@ export default {
 </script>
 
 <style lang="scss">
-.home {
+.lendingRequests {
   text-align: center;
-}
-
-.subtitle--description {
-  text-decoration: none;
-  margin-bottom: 0.5em;
 }
 </style>

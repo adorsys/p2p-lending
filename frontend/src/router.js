@@ -44,6 +44,12 @@ export default new Router({
                 import(/* webpackChunkName: "ICO" */ './views/ICO.vue')
         },
         {
+            path: '/requests',
+            name: 'requests',
+            component: () =>
+                import(/* webpackChunkName: "Requests" */ './views/Requests.vue')
+        },
+        {
             path: '/lendingrequests',
             name: 'lendingrequests',
             component: () =>

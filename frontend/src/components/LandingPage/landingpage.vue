@@ -2,20 +2,18 @@
   <div class="landingPage">
     <section class="landingPage__logo">
       <img src="../../assets/ethereum.svg" class="logo__image" />
-      <div class="title">{{ title }}</div>
+      <div class="title title--landingPage">{{ title }}</div>
     </section>
     <section class="landingPage__roles">
-      <div class="roles__item" @click="$router.push({ name: 'userrequests' })">
-        <div class="item__title">&lt;&lt; Asker &gt;&gt;</div>
+      <div class="roles__item" @click="$router.push({ name: 'requests' })">
+        <div class="item__title">Manage Requests</div>
       </div>
       <div
         class="roles__item"
-        @click="$router.push({ name: 'lendingrequests' })"
+        @click="$router.push({ name: 'ico' })"
+        v-if="icoActive"
       >
-        <div class="item__title">&lt;&lt; Lender &gt;&gt;</div>
-      </div>
-      <div class="roles__item" @click="$router.push({ name: 'ico' })">
-        <div class="item__title">&lt;&lt; Investor &gt;&gt;</div>
+        <div class="item__title">Investor</div>
       </div>
     </section>
     <section class="landingPage__textArea">
@@ -54,5 +52,5 @@ export default {
 </script>
 
 <style lang="scss">
-@import './landingPage';
+@import './landingpage';
 </style>

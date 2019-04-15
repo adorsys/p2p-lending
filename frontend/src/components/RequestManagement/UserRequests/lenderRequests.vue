@@ -1,6 +1,6 @@
 <template>
   <div class="lenderRequest__management">
-    <div class="subtitle subtitle--lenderRequest">Lender For</div>
+    <div class="subtitle subtitle--requests">Lender For</div>
     <table class="table" v-if="lenderRequests.length !== 0">
       <thead>
         <tr>

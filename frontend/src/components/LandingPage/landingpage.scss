@@ -2,12 +2,13 @@
 
 .landingPage {
   height: 92vh;
-  background-color: #2c3e50;
+  background-color: $text-color-dark;
 }
 
 .landingPage__logo {
-  background-color: $navbar-hover-color;
+  background-color: $background-color;
   padding-top: 1em;
+  padding-bottom: 1em;
 }
 
 .logo__image {
@@ -15,8 +16,8 @@
 }
 
 .landingPage__roles {
-  padding-top: 1.5em;
-  padding-bottom: 1.5em;
+  padding-top: 1em;
+  padding-bottom: 1em;
   height: 30vh;
   display: flex;
   justify-content: space-around;
@@ -27,7 +28,7 @@
   display: flex;
   height: 50%;
   width: 25%;
-  border: 2px solid $navbar-hover-color;
+  border: $border-width solid $background-color;
   justify-content: center;
   align-items: center;
   cursor: pointer;
@@ -36,12 +37,12 @@
 .item__title {
   font-weight: 600;
   font-size: 2rem;
-  color: lightgray;
+  color: $text-color-light;
 }
 
 .landingPage__textArea {
-  background-color: $navbar-hover-color;
-  color: #2c3e50;
+  background-color: $background-color;
+  color: $text-color-dark;
   letter-spacing: 1.2px;
   font-size: 18px;
   margin-bottom: 1em;
@@ -51,23 +52,23 @@
   padding: 1em;
 }
 
-@media screen and (max-width: 480px) {
+@media screen and (max-width: 1024px) {
+  .roles__item {
+    height: 50%;
+    width: 30%;
+  }
+}
+
+@media screen and (max-width: 768px) {
   .landingPage__roles {
     flex-direction: column;
     align-items: center;
-    justify-content: space-between;
+    justify-content: space-evenly;
     height: 40vh;
   }
 
   .roles__item {
-    height: 25%;
+    height: 35%;
     width: 65%;
-  }
-}
-
-@media screen and (min-width: 480px) and (max-width: 1024px) {
-  .roles__item {
-    height: 40%;
-    width: 30%;
   }
 }

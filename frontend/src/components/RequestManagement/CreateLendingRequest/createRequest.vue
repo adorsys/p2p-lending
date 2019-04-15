@@ -1,18 +1,22 @@
 <template>
   <div class="createLendingRequest">
-    <div class="subtitle subtitle--lendingRequest">Create Lending Request</div>
     <div
       class="button button--lendingRequest"
       @click="$emit('openRequestOverlay')"
     >
-      Create Lending Request
+      Create Request
     </div>
     <slot />
   </div>
 </template>
 
 <style lang="scss">
+@import '../../../util/scss/variables';
+
 .button--lendingRequest {
-  width: 200px;
+  margin: 0;
+  color: $text-color-dark;
+  width: 150px;
+  border: 1.5px solid rgba($color: $text-color-dark, $alpha: 0.2);
 }
 </style>

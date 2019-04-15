@@ -1,7 +1,7 @@
 <template>
   <div id="app">
-    <Navbar />
-    <div class="content">
+    <Navbar @toggleSidebar="toggleSidebar" />
+    <div class="content" v-bind:class="{ toggleOverflow: sidebar }">
       <router-view />
     </div>
   </div>
@@ -15,8 +15,18 @@ export default {
   components: {
     Navbar
   },
+  data() {
+    return {
+      sidebar: false
+    }
+  },
   beforeCreate() {
     this.$store.dispatch(INIT_CONNECTION)
+  },
+  methods: {
+    toggleSidebar() {
+      this.sidebar = !this.sidebar
+    }
   }
 }
 </script>
