@@ -17,7 +17,7 @@
     "compile": "truffle compile",
     "test": "truffle test",
     "migrate": "npm run migrate:ropsten",
-    "migrate:dev": "truffle migrate --reset --network development",
+    "migrate:dev": "rm -rf build/ && truffle compile && truffle migrate --reset --network development",
     "migrate:ropsten": "truffle migrate --reset --network ropsten",
     "deploy:app": "cd ./frontend && ./deploy.sh"
   },

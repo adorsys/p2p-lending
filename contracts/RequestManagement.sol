@@ -1,21 +1,7 @@
 pragma solidity ^0.5.0;
 
 import "./Ownable.sol";
-
-interface LendingRequest {
-    function deposit(address payable) external payable returns (bool, bool);
-    function withdraw(address) external;
-    function cleanUp() external;
-    function cancelRequest() external;
-    function getProposalParameters() external view returns (address, address, uint256, uint256, uint256, string memory);
-    function getProposalState() external view returns (bool, bool, bool, bool);
-    function withdrawnByLender() external view returns (bool);
-    function asker() external view returns (address payable);
-}
-
-interface LendingRequestFactory {
-    function newLendingRequest(uint256, uint256, string calldata, address payable) external returns (address);
-}
+import "./LendingRequests/LendingRequestFactory.sol";
 
 /// @author Daniel Hohner
 contract RequestManagement is Ownable {
