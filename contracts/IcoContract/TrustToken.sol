@@ -266,11 +266,6 @@ contract TrustToken is EIP20Interface {
             numTrustees = trusteeCount;
     }
 
-    // * @return Amount of all Trustees
-    // function getParticipantsCount() public view returns(uint256) {
-    //     return participants.length;
-    // }
-
     /**
      * @return Ether balance of 'msg.sender'
      */
