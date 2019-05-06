@@ -1,15 +1,15 @@
 import { pollWeb3 } from '@/services/web3/pollWeb3'
 import * as types from '@/util/constants/types'
-import { initializeRequestManagementContract } from '../services/web3/requestManagement/initializeRmContract'
-import { pollRequestManagement } from '../services/web3/requestManagement/RequestManagementListeners'
-import { initializeProposalManagement } from '../services/web3/proposalManagement/initializeProposalManagement'
-import { pollProposalManagement } from '../services/web3/proposalManagement/proposalManagementListeners'
+import { initializeRequestManagementContract } from '../services/requestManagement/initializeRmContract'
+import { pollRequestManagement } from '../services/requestManagement/RequestManagementListeners'
+import { initializeProposalManagement } from '../services/proposalManagement/initializeProposalManagement'
+import { pollProposalManagement } from '../services/proposalManagement/proposalManagementListeners'
 import {
     initializeIcoContract,
     getTokenContractData
-} from '../services/web3/icoContract/initializeICO'
-import { updateContractFee } from '../services/web3/proposalManagement/updateContractFee'
-import { pollICO } from '../services/web3/icoContract/icoListeners'
+} from '../services/icoContract/initializeICO'
+import { updateContractFee } from '../services/proposalManagement/updateContractFee'
+import { pollICO } from '../services/icoContract/icoListeners'
 
 export default {
     [types.INIT_CONNECTION](state, payload) {

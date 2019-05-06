@@ -1,10 +1,13 @@
-import { icoAddress, icoAbi } from '@/util/constants/ICOContract'
+import data from '@/../../build/contracts/TrustToken.json'
 import { INIT_ICO, INIT_ICO_CONTRACT } from '@/util/constants/types'
 import store from '@/store/'
 
+const abi = data.abi
+const address = data.networks[Object.keys(data.networks)[0]].address
+
 export const initializeTokenContract = async () => {
     const web3 = store.state.web3.web3Instance()
-    const contract = await new web3.eth.Contract(icoAbi, icoAddress)
+    const contract = await new web3.eth.Contract(abi, address)
 
     const payload = () => {
         return contract

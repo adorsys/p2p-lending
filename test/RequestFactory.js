@@ -1,13 +1,13 @@
-const LendingRequestFactory = artifacts.require("LendingRequestFactory");
+const RequestFactory = artifacts.require("RequestFactory");
 const LendingRequest = artifacts.require("LendingRequest");
 const ProposalManagement = artifacts.require("ProposalManagement");
 const TrustToken = artifacts.require("TrustToken");
 
-contract("LendingRequestFactory", accounts => {
+contract("RequestFactory", accounts => {
     beforeEach(async () => {
         asker = accounts[0];
         lender = accounts[1];
-        lendingRequestFactory = await LendingRequestFactory.new(
+        requestFactory = await RequestFactory.new(
             TrustToken.address,
             ProposalManagement.address,
             { from: asker }
@@ -16,7 +16,7 @@ contract("LendingRequestFactory", accounts => {
 
     it("create new LendingRequest", async () => {
         // create lendingRequest
-        let lendingRequest = await lendingRequestFactory.newLendingRequest.call(
+        let lendingRequest = await requestFactory.createLendingRequest.call(
             1,
             2,
             "test",
@@ -31,7 +31,7 @@ contract("LendingRequestFactory", accounts => {
 
     it("factory cannot receive ETH", async () => {
         try {
-            await lendingRequestFactory.send(web3.utils.toWei("1", "ether"));
+            await requestFactory.send(web3.utils.toWei("1", "ether"));
         } catch (error) {
             assert(
                 error.message.indexOf("revert") >= 0,

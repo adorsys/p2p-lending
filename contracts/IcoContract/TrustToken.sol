@@ -2,6 +2,7 @@
  * Directory: P2P-Lending/contracts/IcoContract/TrustToken.sol
  * Implements EIP20 token standard: https://github.com/ethereum/EIPs/blob/master/EIPS/eip-20.md
  */
+
 pragma solidity ^0.5.0;                                                                             // Solidity compiler version
 import "./EIP20Interface.sol";
 import "../SafeMath.sol";
@@ -43,7 +44,6 @@ contract TrustToken is EIP20Interface {
     uint256 public contractEtherBalance;                                                            // total ether balance of this contract
     uint8 public decimals;                                                                          // How many decimals to show
 
-    bool private setManagementLock;                                                                 // to check if ProposalManagement address is already set
     bool public isIcoActive;                                                                        // checks if ICO is active or not
 
     /// Display transactions and approvals
@@ -72,10 +72,9 @@ contract TrustToken is EIP20Interface {
      * @param _management The address of the proposalManagement
      */
     function setManagement(address _management) external {
-        if (setManagementLock) {
+        if (proposalManagement != address(0)) {
             require(msg.sender == proposalManagement, "invalid caller");
         }
-        setManagementLock = true;
         proposalManagement = _management;
     }
 
@@ -119,7 +118,7 @@ contract TrustToken is EIP20Interface {
      * @param _users List of users to unlock
      * @dev calledByLB Only callable by Trustess 
      */
-    function unlockUsers(address [] calldata _users) external calledByProposalManagement {
+    function unlockUsers(address[] calldata _users) external calledByProposalManagement {
         for(uint256 i; i < _users.length; i++) {
             unlockUser(_users[i]);
         }

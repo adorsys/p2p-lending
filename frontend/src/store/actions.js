@@ -1,18 +1,18 @@
 import * as types from '@/util/constants/types'
 
 import initializeConnection from '@/services/web3/initializeConnection'
-import { initializeProposalManagementHelper } from '../services/web3/proposalManagement/initializeProposalManagement'
+import { initializeProposalManagementHelper } from '../services/proposalManagement/initializeProposalManagement'
 import {
     initializeIcoContractHelper,
     initializeTokenContract
-} from '@/services/web3/icoContract/initializeICO'
+} from '@/services/icoContract/initializeICO'
 import { pollHelper } from '@/services/web3/pollWeb3'
-import { requestManagementHelper } from '../services/web3/requestManagement/initializeRmContract'
-import { requestHelper } from '../services/web3/requestManagement/getLendingRequests'
-import { authenticate } from '../services/web3/authenticate'
-import { updateProposalHelper } from '../services/web3/proposalManagement/updateProposals'
-import { updateContractFeeHelper } from '../services/web3/proposalManagement/updateContractFee'
-import { updateIcoParameters } from '../services/web3/icoContract/updateICO'
+import { requestManagementHelper } from '../services/requestManagement/initializeRmContract'
+import { requestHelper } from '../services/requestManagement/getLendingRequests'
+import { authenticate } from '../services/authenticate'
+import { updateProposalHelper } from '../services/proposalManagement/updateProposals'
+import { updateContractFeeHelper } from '../services/proposalManagement/updateContractFee'
+import { updateIcoParameters } from '../services/icoContract/updateICO'
 
 export default {
     async [types.INIT_CONNECTION]({ commit }) {

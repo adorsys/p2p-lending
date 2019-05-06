@@ -1,11 +1,9 @@
 pragma solidity ^0.5.0;
 
-import "./Ownable.sol";
-import "./LendingRequests/LendingRequestFactory.sol";
+import "./RequestFactory/RequestFactory.sol";
 
-/// @author Daniel Hohner
-contract RequestManagement is Ownable {
-    LendingRequestFactory lendingRequestFactory;
+contract RequestManagement {
+    RequestFactory requestFactory;
 
     event RequestCreated();
     event RequestGranted();
@@ -15,8 +13,8 @@ contract RequestManagement is Ownable {
     mapping(address => address[]) private lendingRequests;
     mapping(address => bool) private validRequest;
 
-    constructor(address _factory) Ownable() public {
-        lendingRequestFactory = LendingRequestFactory(_factory);
+    constructor(address _factory) public {
+        requestFactory = RequestFactory(_factory);
     }
 
     /**
@@ -32,7 +30,12 @@ contract RequestManagement is Ownable {
         require(lendingRequests[msg.sender].length < 5, "too many requests");
 
         // create new lendingRequest via factory contract
-        address request = lendingRequestFactory.newLendingRequest(_amount, _paybackAmount, _purpose, msg.sender);
+        address request = requestFactory.createLendingRequest(
+            _amount,
+            _paybackAmount,
+            _purpose,
+            msg.sender
+        );
 
         // add created lendingRequest to management structures
         lendingRequests[msg.sender].push(request);
@@ -92,22 +95,6 @@ contract RequestManagement is Ownable {
         LendingRequest(_lendingRequest).cancelRequest();
         removeRequest(_lendingRequest, msg.sender);
         emit Withdraw();
-    }
-
-    /**
-     * @notice transfers current contract balance to the owner of the contract
-     * @dev should be called before relinquishing the contract
-     */
-    function withdrawFees() public onlyOwner {
-        owner.transfer(address(this).balance);
-    }
-
-    /**
-     * @notice Destroys the management contract
-     * @dev deletes the contract and transfers the contract balance to the owner
-     */
-    function kill() public onlyOwner {
-        selfdestruct(owner);
     }
 
     /**

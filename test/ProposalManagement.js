@@ -84,7 +84,9 @@ contract("ProposalManagement", accounts => {
                 true,
                 contractFeeProposal,
                 nonMember,
-                { from: nonMember }
+                {
+                    from: nonMember
+                }
             );
         } catch (error) {
             assert(
@@ -113,11 +115,6 @@ contract("ProposalManagement", accounts => {
             vote.logs[0].event,
             "ProposalExecuted",
             "second event should be ProposalExecuted"
-        );
-        assert.strictEqual(
-            vote.logs[0].args.executedProposal,
-            proposal,
-            "execute should log the correct proposal"
         );
 
         // contractFee does NOT get changed
@@ -149,11 +146,6 @@ contract("ProposalManagement", accounts => {
             "ProposalExecuted",
             "second event should be ProposalExecuted"
         );
-        assert.strictEqual(
-            vote.logs[0].args.executedProposal,
-            proposal,
-            "execute should log the correct proposal"
-        );
 
         // NewContractFee event gets triggered with expected parameters
         assert.strictEqual(
@@ -161,20 +153,9 @@ contract("ProposalManagement", accounts => {
             "NewContractFee",
             "third event should be NewContractFee"
         );
-        assert.strictEqual(
-            parseInt(vote.logs[1].args.oldFee, 10),
-            parseInt(web3.utils.toWei("1", "ether"), 10),
-            "old Fee should be 1 ETH"
-        );
-
-        assert.strictEqual(
-            parseInt(vote.logs[1].args.newFee, 10),
-            parseInt(web3.utils.toWei("0.2", "ether"), 10),
-            "new Fee should be 0.2 ETH"
-        );
 
         // contract fee get changed to expected new fee
-        let newFee = parseInt(await proposalManagement.contractFee.call());
+        let newFee = parseInt(await proposalManagement.contractFee.call(), 10);
         assert.strictEqual(
             newFee,
             parseInt(web3.utils.toWei("0.2", "ether"), 10),

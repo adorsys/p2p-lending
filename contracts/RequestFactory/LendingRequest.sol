@@ -6,8 +6,8 @@ contract LendingRequest {
 
     address payable public asker;
     address payable public lender;
-    bool private withdrawnByAsker = false;
-    bool public withdrawnByLender = false;
+    bool private withdrawnByAsker;
+    bool public withdrawnByLender;
 
     bool private verifiedAsker;
 
@@ -29,14 +29,11 @@ contract LendingRequest {
         address payable _trustToken
     ) public {
         asker = _asker;
-        lender = address(0);
         verifiedAsker = _verifiedAsker;
         amountAsked = _amountAsked;
         paybackAmount = _paybackAmount;
         contractFee = _contractFee;
         purpose = _purpose;
-        moneyLent = false;
-        debtSettled = false;
         managementContract = _managementContract;
         trustToken = _trustToken;
     }
@@ -149,7 +146,7 @@ contract LendingRequest {
      * @notice getter for all relevant information of the lending request
      */
     function getProposalParameters() external view
-        returns (address, address, uint256, uint256, uint256, string memory) {
+        returns (address payable, address payable, uint256, uint256, uint256, string memory) {
         return (asker, lender, amountAsked, paybackAmount, contractFee, purpose);
     }
 

@@ -1,5 +1,5 @@
 const RequestManagement = artifacts.require("RequestManagement");
-const LendingRequestFactory = artifacts.require("LendingRequestFactory");
+const RequestFactory = artifacts.require("RequestFactory");
 const LendingRequest = artifacts.require("LendingRequest");
 
 contract("RequestManagement", accounts => {
@@ -29,9 +29,7 @@ contract("RequestManagement", accounts => {
     let contractFee;
 
     beforeEach(async () => {
-        requestManagement = await RequestManagement.new(
-            LendingRequestFactory.address
-        );
+        requestManagement = await RequestManagement.new(RequestFactory.address);
 
         firstAccount = accounts[0];
         asker = accounts[1];

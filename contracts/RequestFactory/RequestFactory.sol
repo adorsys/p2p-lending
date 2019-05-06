@@ -2,13 +2,11 @@ pragma solidity ^0.5.0;
 
 import "./LendingRequest.sol";
 
-contract LendingRequestFactory {
-    address private managementContract;
+contract RequestFactory {
     address payable private trustToken;
     address private proposalManagement;
 
     constructor(address payable _trustToken, address _proposalManagement) public {
-        managementContract = msg.sender;
         trustToken = _trustToken;
         proposalManagement = _proposalManagement;
     }
@@ -20,17 +18,17 @@ contract LendingRequestFactory {
      * @param _purpose the reason the asker wants to borrow money
      * @param _origin origin address of the call -> address of the asker
      */
-    function newLendingRequest( 
+    function createLendingRequest(
         uint256 _amount,
         uint256 _paybackAmount,
-        string calldata _purpose,
+        string memory _purpose,
         address payable _origin
-    ) external returns (address lendingRequest) {  
-        // check if asker is verifyable 
+    ) public returns (address lendingRequest) {
+        // check if asker is verifyable
         bool verified = isVerified(_origin);
 
         uint256 contractFee = getContractFee();
-        
+
         // create new lendingRequest contract
         lendingRequest = address(
             new LendingRequest(
@@ -66,12 +64,8 @@ contract LendingRequestFactory {
             require(success, "member query failed");
             // decode memberId
             uint256 memberId = abi.decode(encodedReturn, (uint256));
-            
-            if (memberId != 0) {
-                return true;
-            } else {
-                return false;
-            }
+
+            return memberId != 0;
         }
         // TODO: Uport verification
     }

@@ -1,6 +1,6 @@
 export default {
     web3: {
-        isInjected: null,
+        isInjected: false,
         networkID: null,
         coinbase: null,
         web3Instance: null

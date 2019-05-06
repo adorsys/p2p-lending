@@ -1,5 +1,14 @@
 pragma solidity ^0.5.0;
 
+interface TrustToken {
+    function setManagement(address) external;
+}
+
+interface ProposalFactory {
+    function newContractFeeProposal(uint256, uint16, uint8) external returns(address);
+    function newMemberProposal(address, bool, uint256, uint8) external returns(address);
+}
+
 contract ProposalManagement {
     /*
      * proposalType == 0 -> invalid proposal
@@ -37,9 +46,7 @@ contract ProposalManagement {
         trustTokenContract = _trustTokenContract;
 
         // update ICO Contract with own address
-        bytes memory payload = abi.encodeWithSignature("setManagement(address)", address(this));
-        (bool success, ) = trustTokenContract.call(payload);
-        require(success, "update of TrustToken failed");
+        TrustToken(trustTokenContract).setManagement(address(this));
     }
 
     /**
@@ -52,20 +59,8 @@ contract ProposalManagement {
         // validate input
         require(_proposedFee > 0, "invalid fee");
 
-        // prepare payload for function call - no spaces between parameters
-        bytes memory payload = abi.encodeWithSignature(
-            "newProposal(uint256,uint256,uint256)",
-            _proposedFee, minimumNumberOfVotes, majorityMargin
-        );
-
-        // execute function call
-        (bool success, bytes memory encodedReturnValue) = proposalFactory.call(payload);
-
-        // check if function call was successful
-        require(success, "contractFee failed");
-
-        // decode return value to get the address of the created proposal
-        address proposal = abi.decode(encodedReturnValue, (address));
+        address proposal = ProposalFactory(proposalFactory)
+            .newContractFeeProposal(_proposedFee, minimumNumberOfVotes, majorityMargin);
 
         // add created proposal to management structure and set correct proposal type
         proposals.push(proposal);
@@ -88,20 +83,8 @@ contract ProposalManagement {
         } else {
             require(memberId[_memberAddress] != 0, "no member");
         }
-        // prepare payload for function call - no spaces between parameters
-        bytes memory payload = abi.encodeWithSignature(
-            "newProposal(address,bool,uint256,uint256)",
-            _memberAddress, _adding, _trusteeCount, majorityMargin
-        );
 
-        // execute function call
-        (bool success, bytes memory encodedReturnValue) = proposalFactory.call(payload);
-
-        // check if function call was successful
-        require(success, "memberProposal failed");
-
-        // decode return value to get the address of the created proposal
-        address proposal = abi.decode(encodedReturnValue, (address));
+        address proposal = ProposalFactory(proposalFactory).newMemberProposal(_memberAddress, _adding, _trusteeCount, majorityMargin);
 
         // add created proposal to management structure and set correct proposal type
         proposals.push(proposal);
@@ -163,9 +146,7 @@ contract ProposalManagement {
                     // decrease locked count for all users locked for the current proposal
                     userProposalLocks[lockedUsers[i]]--;
                 }
-                // 
                 payload = abi.encodeWithSignature("unlockUsers(address[])", unlockUsers[_proposalAddress]);
-                
                 (success, ) = trustTokenContract.call(payload);
                 require(success, "unlocking failed");
             }

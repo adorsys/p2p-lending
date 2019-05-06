@@ -10,7 +10,7 @@ contract ProposalFactory {
      * @param _minimumNumberOfVotes the minimum number of votes needed to execute the proposal
      * @param _majorityMargin the percentage of positive votes needed for proposal to pass
      */
-    function newProposal(
+    function newContractFeeProposal(
         uint256 _proposedFee,
         uint16 _minimumNumberOfVotes,
         uint8 _majorityMargin
@@ -32,14 +32,14 @@ contract ProposalFactory {
      * @param _trusteeCount the current number of TrustToken-Holders
      * @param _majorityMargin the percentage of positive votes needed for proposal to pass
      */
-    function newProposal(
+    function newMemberProposal(
         address _memberAddress,
         bool _adding,
-        uint16 _trusteeCount,
+        uint256 _trusteeCount,
         uint8 _majorityMargin
     ) external returns (address proposal) {
         // calculate minimum number of votes for member proposal
-        uint16 minVotes = _trusteeCount / 2;
+        uint256 minVotes = _trusteeCount / 2;
         // ensure that minVotes > 0
         minVotes = minVotes == 0 ? (minVotes + 1) : minVotes;
         proposal = address(

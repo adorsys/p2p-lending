@@ -4,8 +4,8 @@ contract MemberProposal {
     address private management;
     address public memberAddress;
     bool public adding;
+    uint256 private minimumNumberOfVotes;
     uint8 private majorityMargin;
-    uint16 private minimumNumberOfVotes;
     uint16 public numberOfVotes;
     uint16 public numberOfPositiveVotes;
 
@@ -16,7 +16,7 @@ contract MemberProposal {
     constructor(
         address _memberAddress,
         bool _adding,
-        uint16 _minimumNumberOfVotes,
+        uint256 _minimumNumberOfVotes,
         uint8 _majorityMargin,
         address _managementContract
     ) public {
