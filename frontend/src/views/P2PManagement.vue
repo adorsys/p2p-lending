@@ -1,10 +1,7 @@
 <template>
   <div class="lendingBoard">
     <div class="title">p2p Management</div>
-    <GeneralManagement
-      :proposalContract="proposalManagementContract"
-      :ico="icoContract"
-    />
+    <GeneralManagement :proposalContract="proposalManagementContract" :ico="icoContract"/>
   </div>
 </template>
 

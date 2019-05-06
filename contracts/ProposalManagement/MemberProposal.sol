@@ -3,15 +3,14 @@ pragma solidity ^0.5.0;
 contract MemberProposal {
     address private management;
     address public memberAddress;
-    bool public adding;
-    uint256 private minimumNumberOfVotes;
-    uint8 private majorityMargin;
-    uint16 public numberOfVotes;
-    uint16 public numberOfPositiveVotes;
-
     mapping(address => bool) private voted;
     bool public proposalPassed;
     bool public proposalExecuted;
+    bool public adding;
+    uint8 private majorityMargin;
+    uint16 public numberOfVotes;
+    uint16 public numberOfPositiveVotes;
+    uint256 private minimumNumberOfVotes;
 
     constructor(
         address _memberAddress,
@@ -48,15 +47,12 @@ contract MemberProposal {
         require(msg.sender == management, "invalid caller");
         require(!proposalExecuted, "executed");
         require(!voted[_origin], "second vote");
-
         // update internal state
         voted[_origin] = true;
         numberOfVotes += 1;
-
         if (_stance) {
             numberOfPositiveVotes++;
         }
-
         // check if execution of proposal should be triggered and update return values
         if ((numberOfVotes >= minimumNumberOfVotes)) {
             execute();
@@ -74,14 +70,6 @@ contract MemberProposal {
     }
 
     /**
-     * @notice gets the address of the member
-     * @return memberAddress of the proposal
-     */
-    function getMemberAddress() external view returns (address) {
-        return memberAddress;
-    }
-
-    /**
      * @notice executes the proposal and updates the internal state
      */
     function execute() private {
@@ -90,9 +78,7 @@ contract MemberProposal {
             numberOfVotes >= minimumNumberOfVotes,
             "cannot execute"
         );
-
         proposalExecuted = true;
-
         if (((numberOfPositiveVotes * 100) / numberOfVotes) >= majorityMargin) {
             proposalPassed = true;
         } else {

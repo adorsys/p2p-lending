@@ -1,14 +1,13 @@
 pragma solidity ^0.5.0;
 
 contract ContractFeeProposal {
+    mapping(address => bool) private voted;
     address payable private management;
-    uint256 private proposedFee;
     uint8 private majorityMargin;
     uint16 private minimumNumberOfVotes;
     uint16 public numberOfVotes;
     uint16 public numberOfPositiveVotes;
-
-    mapping(address => bool) private voted;
+    uint256 public proposedFee;
     bool public proposalPassed;
     bool public proposalExecuted;
 
@@ -45,13 +44,10 @@ contract ContractFeeProposal {
         require(msg.sender == management, "invalid caller");
         require(!proposalExecuted, "executed");
         require(!voted[_origin], "second vote");
-
         // update internal state
         voted[_origin] = true;
         numberOfVotes += 1;
-
         if (_stance) numberOfPositiveVotes++;
-
         // check if execution of proposal should be triggered and update return values
         if ((numberOfVotes >= minimumNumberOfVotes)) {
             execute();
@@ -69,14 +65,6 @@ contract ContractFeeProposal {
     }
 
     /**
-     * @notice gets the proposed new contract fee
-     * @return the proposed new fee
-     */
-    function getContractFee() external view returns (uint256) {
-        return proposedFee;
-    }
-
-    /**
      * @notice executes the proposal and updates the internal state
      */
     function execute() private {
@@ -86,10 +74,8 @@ contract ContractFeeProposal {
             numberOfVotes >= minimumNumberOfVotes,
             "cannot execute"
         );
-
         // update the internal state
         proposalExecuted = true;
-        
         if (((numberOfPositiveVotes * 100) / numberOfVotes) >= majorityMargin) {
             proposalPassed = true;
         } else {
