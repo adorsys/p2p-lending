@@ -2,6 +2,7 @@ pragma solidity ^0.5.0;
 
 contract ContractFeeProposal {
     mapping(address => bool) private voted;
+
     address payable private management;
     uint8 private majorityMargin;
     uint16 private minimumNumberOfVotes;
@@ -44,10 +45,12 @@ contract ContractFeeProposal {
         require(msg.sender == management, "invalid caller");
         require(!proposalExecuted, "executed");
         require(!voted[_origin], "second vote");
+
         // update internal state
         voted[_origin] = true;
         numberOfVotes += 1;
         if (_stance) numberOfPositiveVotes++;
+
         // check if execution of proposal should be triggered and update return values
         if ((numberOfVotes >= minimumNumberOfVotes)) {
             execute();
@@ -74,6 +77,7 @@ contract ContractFeeProposal {
             numberOfVotes >= minimumNumberOfVotes,
             "cannot execute"
         );
+
         // update the internal state
         proposalExecuted = true;
         if (((numberOfPositiveVotes * 100) / numberOfVotes) >= majorityMargin) {

@@ -94,6 +94,7 @@ contract TrustToken is EIP20Interface {
             allowedToAdd = goal.sub(contractEtherBalance);
             returnAmount = msg.value.sub(allowedToAdd);                         // save the amount of ether that is to be returned afterwards
         }
+
         etherBalances[msg.sender] = etherBalances[msg.sender].add(allowedToAdd);
         contractEtherBalance = contractEtherBalance.add(allowedToAdd);
 
@@ -101,13 +102,16 @@ contract TrustToken is EIP20Interface {
             participants.push(msg.sender);                                      // add msg.sender to participants
             isTrustee[msg.sender] = true;
         }
+
         emit Participated();
+
         if(contractEtherBalance >= goal) {                                      // distribute token after goal was reached
             isIcoActive = false;
             trusteeCount = participants.length;
             distributeToken();
             emit ICOFinished();
         }
+
         if (returnAmount > 0) {
             msg.sender.transfer(returnAmount);                                  // transfer ether over limit back to sender
         }
@@ -124,16 +128,19 @@ contract TrustToken is EIP20Interface {
 
         tokenBalances[msg.sender] = tokenBalances[msg.sender].sub(_value);
         tokenBalances[_to] = tokenBalances[_to].add(_value);
+
         emit Transfer(msg.sender, _to, _value);
 
         if (!isTrustee[_to]) {
             trusteeCount = trusteeCount.add(1);
             isTrustee[_to] = true;                                              // register recipient as new trustee
         }
+
         if (tokenBalances[msg.sender] == 0) {
             isTrustee[msg.sender] = false;                                      // remove sender from trustees if balance of token equals zero
             trusteeCount = trusteeCount.sub(1);
         }
+
         return true;
     }
 
@@ -152,16 +159,19 @@ contract TrustToken is EIP20Interface {
         tokenBalances[_to] = tokenBalances[_to].add(_value);
         tokenBalances[_from] = tokenBalances[_from].sub(_value);
         allowed[_from][msg.sender] = allowed[_from][msg.sender].sub(_value);
+
         emit Transfer(_from, _to, _value);
 
         if (!isTrustee[_to]) {
             trusteeCount = trusteeCount.add(1);                                                     // register recipient as new trustee
             isTrustee[_to] = true;
         }
+
         if (tokenBalances[_from] == 0) {
             isTrustee[_from] = false;                                                               // remove sender from trustees if balance of token equals zero
             trusteeCount = trusteeCount.sub(1);
         }
+
         return true;
     }
 

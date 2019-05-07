@@ -24,6 +24,7 @@ contract ProposalFactory {
             )
         );
     }
+
     /**
      * @notice creates a new member proposal
      * @param _memberAddress address of the member
@@ -39,8 +40,10 @@ contract ProposalFactory {
     ) external returns (address proposal) {
         // calculate minimum number of votes for member proposal
         uint256 minVotes = _trusteeCount / 2;
+
         // ensure that minVotes > 0
         minVotes = minVotes == 0 ? (minVotes + 1) : minVotes;
+
         proposal = address(
             new MemberProposal(
                 _memberAddress,

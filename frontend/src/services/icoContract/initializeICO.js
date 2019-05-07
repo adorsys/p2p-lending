@@ -37,26 +37,26 @@ const initializeIcoContractHelper = async () => {
     }
 
     payload.icoGoal = parseFloat(
-        web3.utils.fromWei(parameters.icoGoal._hex, 'ether')
+        web3.utils.fromWei(parameters.icoGoal, 'ether')
     )
     payload.decimals = parseInt(parameters.numDecimals, 10)
     payload.name = parameters.icoName
     payload.icoEtherBalance = parseFloat(
-        web3.utils.fromWei(parameters.icoEtherBalance._hex, 'ether')
+        web3.utils.fromWei(parameters.icoEtherBalance, 'ether')
     )
     payload.isIcoActive = parameters.isActive
     payload.totalTokenSupply = parseInt(
-        web3.utils.fromWei(parameters.totalTokenSupply._hex, 'ether'),
+        web3.utils.fromWei(parameters.totalTokenSupply, 'ether'),
         10
     )
     payload.icoParticipantCount = parseInt(parameters.icoParticipantCount, 10)
     payload.tokenSymbol = parameters.tokenSymbol
     payload.tokenBalanceUser = parseInt(
-        web3.utils.fromWei(parameters.tokenBalanceUser._hex, 'ether'),
+        web3.utils.fromWei(parameters.tokenBalanceUser, 'ether'),
         10
     )
     payload.etherBalanceUser = parseFloat(
-        web3.utils.fromWei(parameters.etherBalanceUser._hex)
+        web3.utils.fromWei(parameters.etherBalanceUser)
     )
 
     payload.tokenHolders = parseInt(parameters.numTrustees, 10)

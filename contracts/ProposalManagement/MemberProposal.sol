@@ -1,9 +1,10 @@
 pragma solidity ^0.5.0;
 
 contract MemberProposal {
+    mapping(address => bool) private voted;
+
     address private management;
     address public memberAddress;
-    mapping(address => bool) private voted;
     bool public proposalPassed;
     bool public proposalExecuted;
     bool public adding;
@@ -47,12 +48,12 @@ contract MemberProposal {
         require(msg.sender == management, "invalid caller");
         require(!proposalExecuted, "executed");
         require(!voted[_origin], "second vote");
+
         // update internal state
         voted[_origin] = true;
         numberOfVotes += 1;
-        if (_stance) {
-            numberOfPositiveVotes++;
-        }
+        if (_stance) numberOfPositiveVotes++;
+        
         // check if execution of proposal should be triggered and update return values
         if ((numberOfVotes >= minimumNumberOfVotes)) {
             execute();

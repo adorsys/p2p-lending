@@ -3,20 +3,17 @@ pragma solidity ^0.5.0;
 contract LendingRequest {
     address payable private managementContract;
     address payable private trustToken;
-
     address payable public asker;
     address payable public lender;
     bool private withdrawnByAsker;
     bool public withdrawnByLender;
-
     bool private verifiedAsker;
-
+    bool public moneyLent;
+    bool public debtSettled;
     uint256 public amountAsked;
     uint256 public paybackAmount;
     uint256 public contractFee;
     string public purpose;
-    bool public moneyLent;
-    bool public debtSettled;
 
     constructor(
         address payable _asker,
@@ -63,7 +60,6 @@ contract LendingRequest {
         if (!moneyLent) {
             require(_origin != asker, "invalid lender");
             require(msg.value == amountAsked, "msg.value");
-
             moneyLent = true;
             lender = _origin;
             originIsLender = true;
@@ -71,12 +67,10 @@ contract LendingRequest {
         } else if (moneyLent && !debtSettled) {
             require(_origin == asker, "invalid paybackaddress");
             require(msg.value == (paybackAmount + contractFee), "invalid payback");
-
             debtSettled = true;
             originIsLender = false;
             originIsAsker = true;
-        }
-        else {
+        } else {
             revert("Error");
         }
     }
@@ -104,7 +98,6 @@ contract LendingRequest {
          */
         require(moneyLent, "invalid state");
         require(lender != address(0), "invalid lender");
-
         if (_origin == asker) {
             require(!debtSettled, "debt settled");
             withdrawnByAsker = true;
@@ -115,8 +108,7 @@ contract LendingRequest {
                 moneyLent = false;
                 lender.transfer(address(this).balance);
                 lender = address(0);
-            }
-            else {
+            } else {
                 withdrawnByLender = true;
                 lender.transfer(address(this).balance - contractFee);
             }
@@ -153,8 +145,7 @@ contract LendingRequest {
     /**
      * @notice getter for proposal state
      */
-    function getProposalState() external view
-        returns (bool, bool, bool, bool) {
+    function getProposalState() external view returns (bool, bool, bool, bool) {
         return (verifiedAsker, moneyLent, withdrawnByAsker, debtSettled);
     }
 }

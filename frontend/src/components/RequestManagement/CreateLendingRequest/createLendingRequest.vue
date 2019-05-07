@@ -64,11 +64,8 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
 export default {
-  computed: mapState({
-    contract: state => state.requestManagementInstance
-  }),
+  props: ['contract'],
   data() {
     return {
       askAmount: null,
@@ -78,8 +75,8 @@ export default {
   },
   methods: {
     async createRequest() {
-      const payback = parseFloat(this.paybackAmount, 10)
-      const asking = parseFloat(this.askAmount, 10)
+      const payback = parseFloat(this.paybackAmount)
+      const asking = parseFloat(this.askAmount)
       if (
         this.askAmount !== null &&
         this.paybackAmount !== null &&
@@ -92,10 +89,10 @@ export default {
         const paybackWei = this.$store.state.web3
           .web3Instance()
           .utils.toWei(this.paybackAmount, 'Ether')
+        this.$emit('closeRequestOverlay')
         await this.contract()
           .methods.ask(askWei, paybackWei, this.requestPurpose)
           .send({ from: this.$store.state.web3.coinbase })
-        this.$emit('closeRequestOverlay')
       } else {
         console.log('invalid input')
       }

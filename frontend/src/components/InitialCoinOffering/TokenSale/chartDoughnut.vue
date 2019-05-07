@@ -29,7 +29,7 @@ export default {
   data() {
     return {
       mywidth: 400,
-      myheight: 100,
+      myheight: 75,
       loaded: false,
       datasets: [
         {

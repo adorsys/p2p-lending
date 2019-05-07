@@ -1,25 +1,25 @@
 pragma solidity ^0.5.0;
 
-interface TrustToken {
+interface TrustTokenInterface {
     function setManagement(address) external;
-    function isTrustee(address) external returns(bool);
-    function trusteeCount() external returns(uint256);
+    function isTrustee(address) external view returns(bool);
+    function trusteeCount() external view returns(uint256);
     function lockUser(address) external returns(bool);
     function unlockUsers(address[] calldata) external;
 }
 
-interface ProposalFactory {
+interface ProposalFactoryInterface {
     function newContractFeeProposal(uint256, uint16, uint8) external returns(address);
     function newMemberProposal(address, bool, uint256, uint8) external returns(address);
 }
 
-interface ContractFeeProposal {
+interface ContractFeeProposalInterface {
     function vote(bool, address) external returns(bool, bool);
     function proposedFee() external view returns(uint256);
     function kill() external;
 }
 
-interface MemberProposal {
+interface MemberProposalInterface {
     function vote(bool, address) external returns(bool, bool);
     function memberAddress() external view returns(address);
     function kill() external;
@@ -59,7 +59,7 @@ contract ProposalManagement {
         contractFee = 1 ether;
         proposalFactory = _proposalFactoryAddress;
         trustTokenContract = _trustTokenContract;
-        TrustToken(trustTokenContract).setManagement(address(this));
+        TrustTokenInterface(trustTokenContract).setManagement(address(this));
     }
 
     /**
@@ -70,12 +70,15 @@ contract ProposalManagement {
         // validate input
         require(memberId[msg.sender] != 0, "not a member");
         require(_proposedFee > 0, "invalid fee");
-        address proposal = ProposalFactory(proposalFactory)
+
+        address proposal = ProposalFactoryInterface(proposalFactory)
             .newContractFeeProposal(_proposedFee, minimumNumberOfVotes, majorityMargin);
+
         // add created proposal to management structure and set correct proposal type
         proposalIndex[proposal] = proposals.length;
         proposals.push(proposal);
         proposalType[proposal] = 1;
+
         emit ProposalCreated();
     }
 
@@ -87,19 +90,22 @@ contract ProposalManagement {
      */
     function createMemberProposal(address _memberAddress, bool _adding) external {
         // validate input
-        require(TrustToken(trustTokenContract).isTrustee(msg.sender), "invalid caller");
+        require(TrustTokenInterface(trustTokenContract).isTrustee(msg.sender), "invalid caller");
         require(_memberAddress != address(0), "invalid memberAddress");
         if(_adding) {
             require(memberId[_memberAddress] == 0, "cannot add twice");
         } else {
             require(memberId[_memberAddress] != 0, "no member");
         }
-        uint256 trusteeCount = TrustToken(trustTokenContract).trusteeCount();
-        address proposal = ProposalFactory(proposalFactory).newMemberProposal(_memberAddress, _adding, trusteeCount, majorityMargin);
+
+        uint256 trusteeCount = TrustTokenInterface(trustTokenContract).trusteeCount();
+        address proposal = ProposalFactoryInterface(proposalFactory).newMemberProposal(_memberAddress, _adding, trusteeCount, majorityMargin);
+
         // add created proposal to management structure and set correct proposal type
         proposalIndex[proposal] = proposals.length;
         proposals.push(proposal);
         proposalType[proposal] = _adding ? 2 : 3;
+
         emit ProposalCreated();
     }
 
@@ -113,20 +119,27 @@ contract ProposalManagement {
         // validate input
         uint256 proposalParameter = proposalType[_proposalAddress];
         require(proposalParameter != 0, "Invalid address");
+
         bool proposalPassed;
         bool proposalExecuted;
+
         if (proposalParameter == 1) {
             require(memberId[msg.sender] != 0, "not a member");
-            (proposalPassed, proposalExecuted) = ContractFeeProposal(_proposalAddress).vote(_stance, msg.sender);
+
+            (proposalPassed, proposalExecuted) = ContractFeeProposalInterface(_proposalAddress).vote(_stance, msg.sender);
         } else if (proposalParameter == 2 || proposalParameter == 3) {
-            require(TrustToken(trustTokenContract).isTrustee(msg.sender), "invalid caller");
-            require(TrustToken(trustTokenContract).lockUser(msg.sender), "userlock failed");
-            (proposalPassed, proposalExecuted) = MemberProposal(_proposalAddress).vote(_stance, msg.sender);
+            require(TrustTokenInterface(trustTokenContract).isTrustee(msg.sender), "invalid caller");
+            require(TrustTokenInterface(trustTokenContract).lockUser(msg.sender), "userlock failed");
+
+            (proposalPassed, proposalExecuted) = MemberProposalInterface(_proposalAddress).vote(_stance, msg.sender);
             lockedUsersPerProposal[_proposalAddress].push(msg.sender);
+
             // update number of locks for voting user
             userProposalLocks[msg.sender]++;
         }
+
         emit ProposalExecuted();
+
         // handle return values of voting call
         if (proposalExecuted) {
             require(
@@ -144,7 +157,7 @@ contract ProposalManagement {
                     // decrease locked count for all users locked for the current proposal
                     userProposalLocks[lockedUsers[i]]--;
                 }
-                TrustToken(trustTokenContract).unlockUsers(unlockUsers[_proposalAddress]);
+                TrustTokenInterface(trustTokenContract).unlockUsers(unlockUsers[_proposalAddress]);
             }
         }
     }
@@ -188,11 +201,12 @@ contract ProposalManagement {
         // verify input parameters
         propType = proposalType[_proposal];
         require(propType != 0, "invalid input");
+
         proposalAddress = _proposal;
         if (propType == 1) {
-            proposalFee = ContractFeeProposal(_proposal).proposedFee();
+            proposalFee = ContractFeeProposalInterface(_proposal).proposedFee();
         } else if (propType == 2 || propType == 3) {
-            memberAddress = MemberProposal(_proposal).memberAddress();
+            memberAddress = MemberProposalInterface(_proposal).memberAddress();
         }
     }
 
@@ -207,7 +221,7 @@ contract ProposalManagement {
         /// case: contractFeeProposal
         if (_parameter == 1) {
             if(_passed) {
-                uint256 newContractFee = ContractFeeProposal(_proposalAddress).proposedFee();
+                uint256 newContractFee = ContractFeeProposalInterface(_proposalAddress).proposedFee();
                 // update contract fee
                 contractFee = newContractFee;
                 emit NewContractFee();
@@ -215,10 +229,11 @@ contract ProposalManagement {
             // remove proposal from management contract
             removeProposal(_proposalAddress);
             return true;
+
         /// case: memberProposal
         } else if (_parameter == 2 || _parameter == 3) {
             if(_passed) {
-                address memberAddress = MemberProposal(_proposalAddress).memberAddress();
+                address memberAddress = MemberProposalInterface(_proposalAddress).memberAddress();
                 // add | remove member
                 _parameter == 2 ? addMember(memberAddress) : removeMember(memberAddress);
             }
@@ -226,6 +241,7 @@ contract ProposalManagement {
             removeProposal(_proposalAddress);
             return true;
         }
+
         return false;
     }
 
@@ -237,12 +253,15 @@ contract ProposalManagement {
         // validate input
         require(_memberAddress != address(0), "invalid address");
         require(memberId[_memberAddress] == 0, "already a member");
+
         memberId[_memberAddress] = members.length;
         members.push(_memberAddress);
+
         // if necessary: update voting parameters
         if (((members.length / 2) - 1) >= minimumNumberOfVotes) {
             minimumNumberOfVotes++;
         }
+
         emit MembershipChanged();
     }
 
@@ -254,6 +273,7 @@ contract ProposalManagement {
         // validate input
         uint256 mId = memberId[_memberAddress];
         require(mId != 0, "no member");
+
         // move member to the end of members array
         memberId[members[members.length - 1]] = mId;
         members[mId] = members[members.length - 1];
@@ -261,10 +281,12 @@ contract ProposalManagement {
         members.pop();
         // mark memberId as invalid
         memberId[_memberAddress] = 0;
+
         // if necessary: update voting parameters
         if (((members.length / 2) - 1) <= minimumNumberOfVotes) {
             minimumNumberOfVotes--;
         }
+
         emit MembershipChanged();
     }
 
@@ -277,10 +299,11 @@ contract ProposalManagement {
         uint256 propType = proposalType[_proposal];
         require(propType != 0, "invalid request");
         if (propType == 1) {
-            ContractFeeProposal(_proposal).kill();
+            ContractFeeProposalInterface(_proposal).kill();
         } else if (propType == 2 || propType == 3) {
-            MemberProposal(_proposal).kill();
+            MemberProposalInterface(_proposal).kill();
         }
+
         // remove _proposal from the management contract
         uint256 idx = proposalIndex[_proposal];
         if (proposals[idx] == _proposal) {
@@ -288,6 +311,7 @@ contract ProposalManagement {
             proposals[idx] = proposals[proposals.length - 1];
             proposals.pop();
         }
+
         // mark _proposal as invalid proposal
         proposalType[_proposal] = 0;
     }
