@@ -99,7 +99,7 @@ contract("ProposalManagement", accounts => {
     it("negative vote for contractFeeProposal has expected results", async () => {
         // negative vote for contractFeeProposal
         let proposal = (await proposalManagement.getProposals.call())[0];
-        let vote = await proposalManagement.vote(false, proposal, firstVoter, {
+        let vote = await proposalManagement.vote(false, proposal, {
             from: firstVoter
         });
 
@@ -129,7 +129,7 @@ contract("ProposalManagement", accounts => {
     it("positive vote for contractFeeProposal has expected results", async () => {
         // positive vote for contractFeeProposal
         let proposal = (await proposalManagement.getProposals.call())[0];
-        let vote = await proposalManagement.vote(true, proposal, firstVoter, {
+        let vote = await proposalManagement.vote(true, proposal, {
             from: firstVoter
         });
 

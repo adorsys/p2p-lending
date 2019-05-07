@@ -24,7 +24,6 @@ contract ProposalFactory {
             )
         );
     }
-
     /**
      * @notice creates a new member proposal
      * @param _memberAddress address of the member

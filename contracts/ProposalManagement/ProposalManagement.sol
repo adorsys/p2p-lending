@@ -2,6 +2,9 @@ pragma solidity ^0.5.0;
 
 interface TrustToken {
     function setManagement(address) external;
+    function isTrustee(address) external returns(bool);
+    function trusteeCount() external returns(uint256);
+    function lockUser(address) external returns(bool);
     function unlockUsers(address[] calldata) external;
 }
 
@@ -18,7 +21,7 @@ interface ContractFeeProposal {
 
 interface MemberProposal {
     function vote(bool, address) external returns(bool, bool);
-    function memberAddress() external returns(address);
+    function memberAddress() external view returns(address);
     function kill() external;
 }
 
@@ -34,6 +37,7 @@ contract ProposalManagement {
     mapping(address => address[]) private lockedUsersPerProposal;
     mapping(address => uint256) private userProposalLocks;
     mapping(address => address[]) private unlockUsers;
+    mapping(address => uint256) private proposalIndex;
 
     address[] private proposals;
     address private trustTokenContract;
@@ -61,15 +65,15 @@ contract ProposalManagement {
     /**
      * @notice creates a proposal contract to change the fee used in LendingRequests
      * @param _proposedFee the new fee
-     * @dev only callable by registered members
      */
     function createContractFeeProposal(uint256 _proposedFee) external {
-        require(memberId[msg.sender] != 0, "not a member");
         // validate input
+        require(memberId[msg.sender] != 0, "not a member");
         require(_proposedFee > 0, "invalid fee");
         address proposal = ProposalFactory(proposalFactory)
             .newContractFeeProposal(_proposedFee, minimumNumberOfVotes, majorityMargin);
         // add created proposal to management structure and set correct proposal type
+        proposalIndex[proposal] = proposals.length;
         proposals.push(proposal);
         proposalType[proposal] = 1;
         emit ProposalCreated();
@@ -81,17 +85,19 @@ contract ProposalManagement {
      * @param _adding true if member is to be added false otherwise
      * @dev only callable by registered members
      */
-    function createMemberProposal(address _memberAddress, bool _adding, uint256 _trusteeCount) external {
+    function createMemberProposal(address _memberAddress, bool _adding) external {
         // validate input
-        require(msg.sender == trustTokenContract, "invalid caller");
+        require(TrustToken(trustTokenContract).isTrustee(msg.sender), "invalid caller");
         require(_memberAddress != address(0), "invalid memberAddress");
         if(_adding) {
             require(memberId[_memberAddress] == 0, "cannot add twice");
         } else {
             require(memberId[_memberAddress] != 0, "no member");
         }
-        address proposal = ProposalFactory(proposalFactory).newMemberProposal(_memberAddress, _adding, _trusteeCount, majorityMargin);
+        uint256 trusteeCount = TrustToken(trustTokenContract).trusteeCount();
+        address proposal = ProposalFactory(proposalFactory).newMemberProposal(_memberAddress, _adding, trusteeCount, majorityMargin);
         // add created proposal to management structure and set correct proposal type
+        proposalIndex[proposal] = proposals.length;
         proposals.push(proposal);
         proposalType[proposal] = _adding ? 2 : 3;
         emit ProposalCreated();
@@ -103,7 +109,7 @@ contract ProposalManagement {
      * @param _proposalAddress the address of the proposal you want to vote for
      * @dev only callable by registered members
      */
-    function vote(bool _stance, address _proposalAddress, address _origin) external {
+    function vote(bool _stance, address _proposalAddress) external {
         // validate input
         uint256 proposalParameter = proposalType[_proposalAddress];
         require(proposalParameter != 0, "Invalid address");
@@ -111,13 +117,14 @@ contract ProposalManagement {
         bool proposalExecuted;
         if (proposalParameter == 1) {
             require(memberId[msg.sender] != 0, "not a member");
-            (proposalPassed, proposalExecuted) = ContractFeeProposal(_proposalAddress).vote(_stance, _origin);
+            (proposalPassed, proposalExecuted) = ContractFeeProposal(_proposalAddress).vote(_stance, msg.sender);
         } else if (proposalParameter == 2 || proposalParameter == 3) {
-            require(msg.sender == trustTokenContract, "invalid caller");
-            (proposalPassed, proposalExecuted) = MemberProposal(_proposalAddress).vote(_stance, _origin);
-            lockedUsersPerProposal[_proposalAddress].push(_origin);
+            require(TrustToken(trustTokenContract).isTrustee(msg.sender), "invalid caller");
+            require(TrustToken(trustTokenContract).lockUser(msg.sender), "userlock failed");
+            (proposalPassed, proposalExecuted) = MemberProposal(_proposalAddress).vote(_stance, msg.sender);
+            lockedUsersPerProposal[_proposalAddress].push(msg.sender);
             // update number of locks for voting user
-            userProposalLocks[_origin]++;
+            userProposalLocks[msg.sender]++;
         }
         emit ProposalExecuted();
         // handle return values of voting call
@@ -154,9 +161,8 @@ contract ProposalManagement {
      * @notice returns all saved proposals
      * @return proposals or [] if empty
      */
-    function getProposals() external view returns (address[] memory) {
-        address[] memory empty = new address[](0);
-        return proposals.length != 0 ? proposals : empty;
+    function getProposals() external view returns (address[] memory props) {
+        return proposals.length != 0 ? proposals : props;
     }
 
     /**
@@ -177,6 +183,7 @@ contract ProposalManagement {
      */
     function getProposalParameters(address _proposal)
         external
+        view
         returns (address proposalAddress, uint256 propType, uint256 proposalFee, address memberAddress) {
         // verify input parameters
         propType = proposalType[_proposal];
@@ -202,11 +209,11 @@ contract ProposalManagement {
             if(_passed) {
                 uint256 newContractFee = ContractFeeProposal(_proposalAddress).proposedFee();
                 // update contract fee
-                setFee(newContractFee);
+                contractFee = newContractFee;
                 emit NewContractFee();
             }
             // remove proposal from management contract
-            removeRequest(_proposalAddress);
+            removeProposal(_proposalAddress);
             return true;
         /// case: memberProposal
         } else if (_parameter == 2 || _parameter == 3) {
@@ -215,8 +222,8 @@ contract ProposalManagement {
                 // add | remove member
                 _parameter == 2 ? addMember(memberAddress) : removeMember(memberAddress);
             }
-            removeRequest(_proposalAddress);
             // remove proposal from mangement contract
+            removeProposal(_proposalAddress);
             return true;
         }
         return false;
@@ -248,10 +255,8 @@ contract ProposalManagement {
         uint256 mId = memberId[_memberAddress];
         require(mId != 0, "no member");
         // move member to the end of members array
-        for(uint256 i = mId; i < members.length - 1; i++) {
-            memberId[members[i + 1]]--;
-            members[i] = members[i + 1];
-        }
+        memberId[members[members.length - 1]] = mId;
+        members[mId] = members[members.length - 1];
         // removes last element of storage array
         members.pop();
         // mark memberId as invalid
@@ -264,18 +269,10 @@ contract ProposalManagement {
     }
 
     /**
-     * @dev changes the current fee to the new fee
-     * @param _val the new fee
-     */
-    function setFee(uint256 _val) private {
-        contractFee = _val;
-    }
-
-    /**
      * @notice removes the proposal from the management structures
      * @param _proposal address of the proposal to remove
      */
-    function removeRequest(address _proposal) private {
+    function removeProposal(address _proposal) private {
         // validate input
         uint256 propType = proposalType[_proposal];
         require(propType != 0, "invalid request");
@@ -285,16 +282,11 @@ contract ProposalManagement {
             MemberProposal(_proposal).kill();
         }
         // remove _proposal from the management contract
-        for(uint256 i; i < proposals.length; i++) {
-            // get index of _proposal in proposals array
-            address currentRequest = proposals[i];
-            if(currentRequest == _proposal) {
-                // move _proposal to the end of the array
-                proposals[i] = proposals[proposals.length - 1];
-                // removes last element of storage array
-                proposals.pop();
-                break;
-            }
+        uint256 idx = proposalIndex[_proposal];
+        if (proposals[idx] == _proposal) {
+            proposalIndex[proposals[proposals.length - 1]] = idx;
+            proposals[idx] = proposals[proposals.length - 1];
+            proposals.pop();
         }
         // mark _proposal as invalid proposal
         proposalType[_proposal] = 0;

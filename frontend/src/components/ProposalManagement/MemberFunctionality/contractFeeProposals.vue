@@ -80,7 +80,7 @@ export default {
     },
     async vote(stance, proposalAddress) {
       await this.contract()
-        .methods.vote(stance, proposalAddress, this.$store.state.web3.coinbase)
+        .methods.vote(stance, proposalAddress)
         .send({ from: this.$store.state.web3.coinbase })
     }
   },

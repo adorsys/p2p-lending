@@ -23,7 +23,5 @@ export const updateIcoParameters = async contract => {
     payload.icoActive = parameters.isActive
     payload.tokenHolders = parseInt(parameters.numTrustees, 10)
 
-    console.log(parameters)
-
     return payload
 }

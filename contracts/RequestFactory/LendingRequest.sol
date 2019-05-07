@@ -49,7 +49,7 @@ contract LendingRequest {
          *          Lending Request is being covered by lender
          *          checks:
          *              must not be covered twice (!moneyLent)
-         *              must not be covered if the debt has been settled 
+         *              must not be covered if the debt has been settled
          *              must not be covered by the asker
          *              has to be covered with one transaction
          * Case 2:

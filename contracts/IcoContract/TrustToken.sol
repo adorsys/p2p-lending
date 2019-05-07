@@ -2,7 +2,6 @@
  * Directory: P2P-Lending/contracts/IcoContract/TrustToken.sol
  * Implements EIP20 token standard: https://github.com/ethereum/EIPs/blob/master/EIPS/eip-20.md
  */
-
 pragma solidity ^0.5.0;                                                                             // Solidity compiler version
 import "./EIP20Interface.sol";
 import "../SafeMath.sol";
@@ -10,17 +9,6 @@ import "../SafeMath.sol";
 contract TrustToken is EIP20Interface {
     using SafeMath for uint256;
 
-    /**
-     * @notice Checks if caller is a Trustee
-     */
-    modifier isTrusteeMod {
-        require(isTrustee[msg.sender], "invalid caller");
-        _;
-    }
-
-    /**
-     * @notice Checkss if '_add' is the address of ProposalManagement
-     */
     modifier calledByProposalManagement {
         require(msg.sender == proposalManagement, "invalid caller");
         _;
@@ -34,25 +22,21 @@ contract TrustToken is EIP20Interface {
 
     address public proposalManagement;
     address[] public participants;
-
     string public name;
     string public symbol;
-
     uint256 public totalSupply;
     uint256 public trusteeCount;
     uint256 public goal = 10 ether;
     uint256 public contractEtherBalance;
     uint8 public decimals;
-
     bool public isIcoActive;
 
     /// Display transactions and approvals
     event Transfer(address indexed _from, address indexed _to, uint256 _value);
     event Approval(address indexed _owner, address indexed _spender, uint256 _value);
-
-    /// Track Participation && ICO Status
-    event Participated(address buyer);
-    event ICOFinished(address icoAddress);
+    /// Track Participation & ICO Status
+    event Participated();
+    event ICOFinished();
 
     constructor(
         uint256 _initialAmount,
@@ -79,37 +63,12 @@ contract TrustToken is EIP20Interface {
     }
 
     /**
-     * @notice Creates a proposal contract to change membership status for the member
-     * @param _memberAddress The address of the member
-     * @param _adding True if member is to be added false otherwise
-     * @dev Only callable by Trustees
+     * @notice Locks the token of '_user'
+     * @param _user Address of user to lock
      */
-    function createMemberProposal(address _memberAddress, bool _adding) external isTrusteeMod {
-        bytes memory payload = abi.encodeWithSignature(
-            "createMemberProposal(address,bool,uint256)",
-            _memberAddress,
-            _adding,
-            trusteeCount
-        );
-        (bool success, ) = proposalManagement.call(payload);
-        require(success, "createMemberProposal failed");
-    }
-
-    /**
-     * @notice Vote for a proposal at '_proposalAddress' with '_stance'
-     * @param _stance True if you want to cast a positive vote, false otherwise
-     * @param _proposalAddress The address of the proposal you want to vote for
-     */
-    function vote(bool _stance, address _proposalAddress) external isTrusteeMod {
-        lockUser(msg.sender);
-        bytes memory payload = abi.encodeWithSignature(
-            "vote(bool,address,address)",
-            _stance,
-            _proposalAddress,
-            msg.sender
-        );
-        (bool success, ) = proposalManagement.call(payload);
-        require(success, "ICO vote failed");
+    function lockUser(address _user) external calledByProposalManagement returns(bool) {
+        isUserLocked[_user] = true;
+        return isUserLocked[_user];
     }
 
     /**
@@ -118,7 +77,7 @@ contract TrustToken is EIP20Interface {
      */
     function unlockUsers(address[] calldata _users) external calledByProposalManagement {
         for(uint256 i; i < _users.length; i++) {
-            unlockUser(_users[i]);
+            isUserLocked[_users[i]] = false;
         }
     }
 
@@ -127,6 +86,7 @@ contract TrustToken is EIP20Interface {
      */
     function participate () external payable {
         require(isIcoActive, "ICO inactive");
+
         uint256 allowedToAdd = msg.value;
         uint256 returnAmount;
 
@@ -134,24 +94,20 @@ contract TrustToken is EIP20Interface {
             allowedToAdd = goal.sub(contractEtherBalance);
             returnAmount = msg.value.sub(allowedToAdd);                         // save the amount of ether that is to be returned afterwards
         }
-
         etherBalances[msg.sender] = etherBalances[msg.sender].add(allowedToAdd);
         contractEtherBalance = contractEtherBalance.add(allowedToAdd);
 
-        if(!isTrustee[msg.sender]) {                                            // add msg.sender to participants
-            participants.push(msg.sender);
+        if(!isTrustee[msg.sender]) {
+            participants.push(msg.sender);                                      // add msg.sender to participants
             isTrustee[msg.sender] = true;
         }
-
-        emit Participated(msg.sender);
-
+        emit Participated();
         if(contractEtherBalance >= goal) {                                      // distribute token after goal was reached
-            distributeToken();
             isIcoActive = false;
             trusteeCount = participants.length;
-            emit ICOFinished(address(this));
+            distributeToken();
+            emit ICOFinished();
         }
-
         if (returnAmount > 0) {
             msg.sender.transfer(returnAmount);                                  // transfer ether over limit back to sender
         }
@@ -165,6 +121,7 @@ contract TrustToken is EIP20Interface {
      */
     function transfer(address _to, uint256 _value) public returns (bool success) {
         require(tokenBalances[msg.sender] >= _value, "insufficient funds");
+
         tokenBalances[msg.sender] = tokenBalances[msg.sender].sub(_value);
         tokenBalances[_to] = tokenBalances[_to].add(_value);
         emit Transfer(msg.sender, _to, _value);
@@ -173,12 +130,10 @@ contract TrustToken is EIP20Interface {
             trusteeCount = trusteeCount.add(1);
             isTrustee[_to] = true;                                              // register recipient as new trustee
         }
-
         if (tokenBalances[msg.sender] == 0) {
             isTrustee[msg.sender] = false;                                      // remove sender from trustees if balance of token equals zero
             trusteeCount = trusteeCount.sub(1);
         }
-
         return true;
     }
 
@@ -203,7 +158,6 @@ contract TrustToken is EIP20Interface {
             trusteeCount = trusteeCount.add(1);                                                     // register recipient as new trustee
             isTrustee[_to] = true;
         }
-
         if (tokenBalances[_from] == 0) {
             isTrustee[_from] = false;                                                               // remove sender from trustees if balance of token equals zero
             trusteeCount = trusteeCount.sub(1);
@@ -276,25 +230,9 @@ contract TrustToken is EIP20Interface {
      */
     function distributeToken() private {
         for(uint256 i; i < participants.length; i++) {
-            tokenBalances[participants[i]] = etherBalances[participants[i]].mul(totalSupply).div(contractEtherBalance);
-            emit Transfer(address(0), participants[i], tokenBalances[participants[i]]);
+            tokenBalances[participants[i]] = (etherBalances[participants[i]].mul(totalSupply)).div(contractEtherBalance);
+            emit Transfer(address(this), participants[i], tokenBalances[participants[i]]);
         }
-    }
-
-    /**
-     * @notice Locks the token of '_user'
-     * @param _user Address of user to lock
-     */
-    function lockUser(address _user) private {
-        isUserLocked[_user] = true;
-    }
-
-    /**
-     * @notice Unlocks token of a user
-     * @param _user Address of user to unlock
-     */
-    function unlockUser(address _user) private {
-         isUserLocked[_user] = false;
     }
 }
 
