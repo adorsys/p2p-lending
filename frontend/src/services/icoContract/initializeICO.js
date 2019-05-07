@@ -8,11 +8,9 @@ const address = data.networks[Object.keys(data.networks)[0]].address
 export const initializeTokenContract = async () => {
     const web3 = store.state.web3.web3Instance()
     const contract = await new web3.eth.Contract(abi, address)
-
     const payload = () => {
         return contract
     }
-
     return payload
 }
 
@@ -39,32 +37,29 @@ const initializeIcoContractHelper = async () => {
     }
 
     payload.icoGoal = parseFloat(
-        web3.utils.fromWei(parameters.icoGoal, 'ether'),
-        10
+        web3.utils.fromWei(parameters.icoGoal._hex, 'ether')
     )
-    payload.decimals = parseFloat(parameters.numDecimals)
+    payload.decimals = parseInt(parameters.numDecimals, 10)
     payload.name = parameters.icoName
     payload.icoEtherBalance = parseFloat(
-        web3.utils.fromWei(parameters.icoEtherBalance, 'ether'),
-        10
+        web3.utils.fromWei(parameters.icoEtherBalance._hex, 'ether')
     )
     payload.isIcoActive = parameters.isActive
-    payload.totalTokenSupply = parseFloat(
-        web3.utils.fromWei(parameters.totalTokenSupply, 'ether'),
+    payload.totalTokenSupply = parseInt(
+        web3.utils.fromWei(parameters.totalTokenSupply._hex, 'ether'),
         10
     )
-    payload.icoParticipantCount = parseFloat(parameters.icoParticipantCount, 10)
+    payload.icoParticipantCount = parseInt(parameters.icoParticipantCount, 10)
     payload.tokenSymbol = parameters.tokenSymbol
-    payload.tokenBalanceUser = parseFloat(
-        web3.utils.fromWei(parameters.tokenBalanceUser, 'ether'),
+    payload.tokenBalanceUser = parseInt(
+        web3.utils.fromWei(parameters.tokenBalanceUser._hex, 'ether'),
         10
     )
     payload.etherBalanceUser = parseFloat(
-        web3.utils.fromWei(parameters.etherBalanceUser),
-        10
+        web3.utils.fromWei(parameters.etherBalanceUser._hex)
     )
 
-    payload.tokenHolders = parameters.numTrustees
+    payload.tokenHolders = parseInt(parameters.numTrustees, 10)
 
     return payload
 }

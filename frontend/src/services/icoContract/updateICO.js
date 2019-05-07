@@ -21,7 +21,9 @@ export const updateIcoParameters = async contract => {
     payload.etherBalanceUser = parameters.etherBalanceUser / 10 ** 18
     payload.tokenBalanceUser = parameters.tokenBalanceUser / 10 ** 18
     payload.icoActive = parameters.isActive
-    payload.tokenHolders = parameters.numTrustees
+    payload.tokenHolders = parseInt(parameters.numTrustees, 10)
+
+    console.log(parameters)
 
     return payload
 }

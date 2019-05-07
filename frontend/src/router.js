@@ -28,7 +28,9 @@ export default new Router({
             path: '/p2pManagement',
             name: 'p2pManagement',
             component: () =>
-                import(/* webpackChunkName: "lendingBoard" */ './views/P2PManagement.vue'),
+                import(
+                    /* webpackChunkName: "lendingBoard" */ './views/P2PManagement.vue'
+                ),
             beforeEnter: (to, from, next) => {
                 if (store.state.tokenHolder || store.state.boardMember) {
                     next()
@@ -47,19 +49,25 @@ export default new Router({
             path: '/requests',
             name: 'requests',
             component: () =>
-                import(/* webpackChunkName: "Requests" */ './views/Requests.vue')
+                import(
+                    /* webpackChunkName: "Requests" */ './views/Requests.vue'
+                )
         },
         {
             path: '/lendingrequests',
             name: 'lendingrequests',
             component: () =>
-                import(/* webpackChunkName: "lendingRequests" */ './views/LendingRequests.vue')
+                import(
+                    /* webpackChunkName: "lendingRequests" */ './views/LendingRequests.vue'
+                )
         },
         {
             path: '/userrequests',
             name: 'userrequests',
             component: () =>
-                import(/* webpackChunkName: "userRequests" */ './views/UserRequests.vue')
+                import(
+                    /* webpackChunkName: "userRequests" */ './views/UserRequests.vue'
+                )
         }
     ]
 })
