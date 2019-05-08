@@ -1,8 +1,12 @@
 export const requestHelper = async contract => {
     let requests = []
 
+    // const openRequests = await contract()
+    //     .methods.getRequests(contract()._address)
+    //     .call()
+
     const openRequests = await contract()
-        .methods.getRequests(contract()._address)
+        .methods.getRequests()
         .call()
 
     if (openRequests.length !== 0) {

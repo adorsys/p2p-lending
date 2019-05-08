@@ -21,10 +21,12 @@ contract RequestManagement {
     event DebtPaid();
     event Withdraw();
 
-    address private requestFactory;
-
-    mapping(address => address[]) private lendingRequests;
+    mapping(address => uint256) private requestIndex;
+    mapping(address => uint256) private userRequestCount;
     mapping(address => bool) private validRequest;
+
+    address private requestFactory;
+    address[] private lendingRequests;
 
     constructor(address _factory) public {
         requestFactory = _factory;
@@ -40,7 +42,8 @@ contract RequestManagement {
         // validate the input parameters
         require(_amount > 0, "invalid amount");
         require(_paybackAmount > _amount, "invalid payback");
-        require(lendingRequests[msg.sender].length < 5, "too many requests");
+        // require(lendingRequests[msg.sender].length < 5, "too many requests");
+        require(userRequestCount[msg.sender] < 5, "too many requests");
 
         // create new lendingRequest
         address request = RequestFactoryInterface(requestFactory).createLendingRequest(
@@ -50,9 +53,11 @@ contract RequestManagement {
             msg.sender
         );
 
+        // update number of requests for asker
+        userRequestCount[msg.sender]++;
         // add created lendingRequest to management structures
-        lendingRequests[msg.sender].push(request);
-        lendingRequests[address(this)].push(request);
+        requestIndex[request] = lendingRequests.length;
+        lendingRequests.push(request);
         // mark created lendingRequest as a valid request
         validRequest[request] = true;
 
@@ -87,7 +92,6 @@ contract RequestManagement {
         require(validRequest[_lendingRequest], "invalid request");
 
         LendingRequestInterface(_lendingRequest).withdraw(msg.sender);
-        emit Withdraw();
 
         // if paybackAmount was withdrawn by lender reduce number of openRequests for asker
         if(LendingRequestInterface(_lendingRequest).withdrawnByLender()) {
@@ -97,6 +101,8 @@ contract RequestManagement {
             // remove lendingRequest from managementContract
             removeRequest(_lendingRequest, asker);
         }
+
+        emit Withdraw();
     }
 
     /**
@@ -115,12 +121,10 @@ contract RequestManagement {
 
     /**
      * @notice gets the lendingRequests for the specified user
-     * @param _user user you want to see the lendingRequests of
-     * @return the lendingRequests for _user
+     * @return all lendingRequests
      */
-    function getRequests(address _user) public view returns(address[] memory) {
-        address[] memory empty = new address[](0);
-        return lendingRequests[_user].length != 0 ? lendingRequests[_user] : empty;
+    function getRequests() public view returns(address[] memory) {
+        return lendingRequests;
     }
 
     /**
@@ -152,34 +156,20 @@ contract RequestManagement {
     /**
      * @notice removes the lendingRequest from the management structures
      * @param _request the lendingRequest that will be removed
-     * @param _asker the author of _request
      */
-    function removeRequest(address payable _request, address _asker) private {
+    function removeRequest(address _request, address _sender) private {
         // validate input
         require(validRequest[_request], "invalid request");
 
-        // remove _request for asker
-        for(uint256 i; i < lendingRequests[_asker].length; i++) {
-            address currentRequest = lendingRequests[_asker][i];
-            if(currentRequest == _request) {
-                lendingRequests[_asker][i] = lendingRequests[_asker][lendingRequests[_asker].length - 1];
-                // removes last element of storage array
-                lendingRequests[_asker].pop();
-                break;
-            }
-        }
-
+        // update number of requests for asker
+        userRequestCount[_sender]--;
         // remove _request from the management contract
-        for(uint256 i; i < lendingRequests[address(this)].length; i++) {
-            address currentRequest = lendingRequests[address(this)][i];
-            if(currentRequest == _request) {
-                lendingRequests[address(this)][i] = lendingRequests[address(this)][lendingRequests[address(this)].length - 1];
-                // removes last element of storage array
-                lendingRequests[address(this)].pop();
-                break;
-            }
+        uint256 idx = requestIndex[_request];
+        if(lendingRequests[idx] == _request) {
+            requestIndex[lendingRequests[lendingRequests.length - 1]] = idx;
+            lendingRequests[idx] = lendingRequests[lendingRequests.length - 1];
+            lendingRequests.pop();
         }
-
         // mark _request as invalid lendingRequest
         validRequest[_request] = false;
     }

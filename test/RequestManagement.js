@@ -38,13 +38,11 @@ contract("RequestManagement", accounts => {
         await requestManagement.ask(askAmount, paybackAmount, purpose, {
             from: asker
         });
-        lendingRequestsAmount = (await requestManagement.getRequests.call(
-            asker
-        )).length;
-        askerLendingRequestsAddresses = await requestManagement.getRequests(
-            asker,
-            { from: firstAccount }
-        );
+        lendingRequestsAmount = (await requestManagement.getRequests.call())
+            .length;
+        askerLendingRequestsAddresses = await requestManagement.getRequests({
+            from: firstAccount
+        });
         lendingRequest = await LendingRequest.at(
             askerLendingRequestsAddresses[0]
         );
