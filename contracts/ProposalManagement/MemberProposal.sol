@@ -53,20 +53,12 @@ contract MemberProposal {
         voted[_origin] = true;
         numberOfVotes += 1;
         if (_stance) numberOfPositiveVotes++;
-        
+
         // check if execution of proposal should be triggered and update return values
         if ((numberOfVotes >= minimumNumberOfVotes)) {
             execute();
-            if (proposalPassed) {
-                propPassed = true;
-                propExecuted = true;
-            } else {
-                propPassed = false;
-                propExecuted = false;
-            }
-        } else {
-            propPassed = false;
-            propExecuted = false;
+            propExecuted = true;
+            propPassed = proposalPassed;
         }
     }
 
@@ -80,10 +72,6 @@ contract MemberProposal {
             "cannot execute"
         );
         proposalExecuted = true;
-        if (((numberOfPositiveVotes * 100) / numberOfVotes) >= majorityMargin) {
-            proposalPassed = true;
-        } else {
-            proposalPassed = false;
-        }
+        proposalPassed = ((numberOfPositiveVotes * 100) / numberOfVotes) >= majorityMargin;
     }
 }

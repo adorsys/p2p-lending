@@ -146,19 +146,6 @@ contract ProposalManagement {
                 handleVoteReturn(proposalParameter, proposalPassed, _proposalAddress),
                 "voteReturn failed"
             );
-            if (proposalParameter == 2 || proposalParameter == 3) {
-                // get locked users for proposal
-                address[] memory lockedUsers = lockedUsersPerProposal[_proposalAddress];
-                for(uint256 i; i < lockedUsers.length; i++) {
-                    // if user is locked for 1 proposal remember user for unlocking
-                    if (userProposalLocks[lockedUsers[i]] == 1) {
-                        unlockUsers[_proposalAddress].push(lockedUsers[i]);
-                    }
-                    // decrease locked count for all users locked for the current proposal
-                    userProposalLocks[lockedUsers[i]]--;
-                }
-                TrustTokenInterface(trustTokenContract).unlockUsers(unlockUsers[_proposalAddress]);
-            }
         }
     }
 
@@ -237,6 +224,17 @@ contract ProposalManagement {
                 // add | remove member
                 _parameter == 2 ? addMember(memberAddress) : removeMember(memberAddress);
             }
+            // get locked users for proposal
+            address[] memory lockedUsers = lockedUsersPerProposal[_proposalAddress];
+            for(uint256 i; i < lockedUsers.length; i++) {
+                // if user is locked for 1 proposal remember user for unlocking
+                if (userProposalLocks[lockedUsers[i]] == 1) {
+                    unlockUsers[_proposalAddress].push(lockedUsers[i]);
+                }
+                // decrease locked count for all users locked for the current proposal
+                userProposalLocks[lockedUsers[i]]--;
+            }
+            TrustTokenInterface(trustTokenContract).unlockUsers(unlockUsers[_proposalAddress]);
             // remove proposal from mangement contract
             removeProposal(_proposalAddress);
             return true;
