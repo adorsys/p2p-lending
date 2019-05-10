@@ -1,21 +1,35 @@
 <template>
   <div class="home">
-    <LandingPage title="p2p Lending" />
+    <section class="landingPage">
+      <div class="dark-overlay">
+        <LandingPageFinished v-if="!icoActive" />
+      </div>
+    </section>
   </div>
 </template>
 
 <script>
-import LandingPage from '@/components/LandingPage/landingpage'
+import { mapState } from 'vuex'
+import LandingPageFinished from '@/components/LandingPage/LandingPage-icoFinished'
+
 export default {
   name: 'home',
+  computed: mapState({
+    icoActive: state => state.icoState.isIcoActive
+  }),
   components: {
-    LandingPage
+    LandingPageFinished
   }
 }
 </script>
 
 <style lang="scss">
+@import '../util/scss/_utilities';
 .home {
-  height: 92vh;
+  height: 100vh;
+  background: url('../assets/ethereum-bg.jpg') no-repeat center center/cover;
+}
+.landingPage {
+  padding-top: 6vh;
 }
 </style>

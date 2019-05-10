@@ -1,59 +1,29 @@
 <template>
-  <nav class="navbar">
-    <div class="navbar__logo">
-      <h4>p2plending</h4>
-    </div>
-    <ul
-      class="navbar__links"
-      v-bind:class="{
-        'navbar__links--active': navOpen,
-        'navbar__links--loggedIn': loggedIn
-      }"
-    >
-      <li class="navbar__link-container" @click="closeSlider">
-        <router-link
-          :to="{ name: 'home' }"
-          class="navbar__link"
-          exact-active-class="navbar__link--active"
-          >Home</router-link
+  <nav class="navbar bg-light">
+    <h1>
+      <router-link
+        :to="{ name: 'home' }"
+        class="navbar__link navbar__link--title"
+        >p2pLending</router-link
+      >
+    </h1>
+    <ul class="navbar__link-container">
+      <li>
+        <router-link :to="{ name: 'requests' }" class="navbar__link"
+          >Request</router-link
         >
       </li>
-      <li class="navbar__link-container" @click="closeSlider">
-        <router-link
-          :to="{ name: 'requests' }"
-          class="navbar__link"
-          exact-active-class="navbar__link--active"
-          >Requests</router-link
-        >
-      </li>
-      <li class="navbar__link-container" @click="closeSlider" v-if="loggedIn">
-        <router-link
-          :to="{ name: 'p2pManagement' }"
-          class="navbar__link"
-          exact-active-class="navbar__link--active"
-          >Management</router-link
-        >
-      </li>
-      <li class="navbar__link-container" @click="closeSlider" v-if="icoActive">
-        <router-link
-          :to="{ name: 'ico' }"
-          class="navbar__link"
-          exact-active-class="navbar__link--active"
+      <li>
+        <router-link :to="{ name: 'ico' }" class="navbar__link"
           >ICO</router-link
         >
       </li>
-      <li class="navbar__link-container" @click="closeSlider" v-if="!loggedIn">
-        <div class="navbar__authenticate" @click="logIn">LogIn</div>
-      </li>
-      <li class="navbar__link-container" @click="closeSlider" v-if="loggedIn">
-        <div class="navbar__authenticate" @click="logOut">LogOut</div>
+      <li>
+        <router-link :to="{ name: 'p2pManagement' }" class="navbar__link"
+          >LogIn</router-link
+        >
       </li>
     </ul>
-    <div class="navbar__burger" @click="openSlider">
-      <div class="burger__line"></div>
-      <div class="burger__line"></div>
-      <div class="burger__line"></div>
-    </div>
   </nav>
 </template>
 

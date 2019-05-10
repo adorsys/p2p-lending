@@ -1,4 +1,4 @@
-@import './variables';
+@import 'variables';
 
 * {
   margin: 0;
@@ -7,29 +7,33 @@
 }
 
 body {
-  font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif;
-  font-size: 17px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1rem;
   line-height: 1.6;
-  background-color: $background-color;
+  text-align: center;
+  background-color: $light-color;
 }
 
 #app {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  height: 100vh;
 }
 
-.content {
-  padding-top: 8vh;
+a {
+  text-decoration: none;
+  color: $primary-color;
+}
+
+ul {
+  list-style: none;
+}
+
+img {
+  width: 100%;
 }
 
 .toggleOverflow {
   overflow: hidden;
-}
-
-.separator {
-  color: $background-color-dark;
 }
 
 .button {
@@ -48,26 +52,6 @@ body {
   border-radius: 4px;
   box-shadow: 0 0px 12px -6px rgba($color: #000000, $alpha: 0.3);
   font-weight: 600;
-}
-
-.title {
-  font-weight: 800;
-  font-size: 2.5rem;
-  color: $text-color-dark;
-  text-decoration: underline;
-}
-
-.subtitle {
-  font-weight: 600;
-  font-size: 1.7rem;
-  color: $link-text-color-darkened;
-  padding-top: 1em;
-  padding-bottom: 1em;
-  text-decoration: underline;
-}
-
-.subtitle--requests {
-  color: $text-color-light;
 }
 
 .button--table {

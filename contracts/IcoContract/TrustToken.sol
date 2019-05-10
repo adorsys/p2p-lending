@@ -182,6 +182,7 @@ contract TrustToken is EIP20Interface {
      * @return Whether the approval was successful or not
      */
     function approve(address _spender, uint256 _value) public returns (bool success) {
+        require(balanceOf(msg.sender) >= _value, "insufficient funds");
         allowed[msg.sender][_spender] = _value;
         emit Approval(msg.sender, _spender, _value);
         return true;

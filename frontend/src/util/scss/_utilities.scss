@@ -1,0 +1,117 @@
+@import 'variables';
+
+// mixins
+@mixin set-background($color) {
+  background-color: $color;
+  color: set-text-color($color);
+}
+
+@mixin set-shadow-and-border($input) {
+  box-shadow: 0 0 12px -6px rgba($color: invert($input), $alpha: 0.3);
+  border: 1px solid
+    rgba($color: scale-color($input, $lightness: -20%), $alpha: 0.3);
+}
+
+// functions
+@function set-text-color($color) {
+  @if (lightness($color) > 50) {
+    @return $dark-color;
+  } @else {
+    @return #f3f3f3;
+  }
+}
+
+// text-styles
+.x-large {
+  font-size: 4rem;
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 1rem 0;
+}
+
+.large {
+  font-size: 2rem;
+  line-height: 1.4;
+  margin: 1rem 0;
+}
+
+.lead {
+  font-size: 1.4rem;
+  margin: 1rem 0;
+}
+
+// buttons
+
+.btn {
+  all: unset;
+  display: inline-block;
+  width: 125px;
+  padding: 0.45rem 0;
+  cursor: pointer;
+  border-radius: 2px;
+  margin: 0.5rem;
+
+  &--primary {
+    @include set-background($primary-color);
+    @include set-shadow-and-border($primary-color);
+    transition: all 0.2s ease-in-out;
+
+    &:hover {
+      @include set-background(scale-color($primary-color, $lightness: -20%));
+      @include set-shadow-and-border(
+        scale-color($primary-color, $lightness: -20%)
+      );
+    }
+  }
+
+  &--light {
+    @include set-background($light-color);
+    @include set-shadow-and-border($light-color);
+    transition: all 0.2s ease-in-out;
+
+    &:hover {
+      @include set-background(scale-color($light-color, $lightness: -20%));
+      @include set-shadow-and-border(
+        scale-color($light-color, $lightness: -20%)
+      );
+    }
+  }
+
+  &--dark {
+    @include set-background($dark-color);
+    @include set-shadow-and-border($dark-color);
+    transition: all 0.2s ease-in-out;
+
+    &:hover {
+      @include set-background(scale-color($dark-color, $lightness: 20%));
+      @include set-shadow-and-border(scale-color($dark-color, $lightness: 20%));
+    }
+  }
+}
+
+// overlay(s)
+.dark-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background-color: rgba($color: #000000, $alpha: 0.7);
+}
+
+// background(s)
+.bg {
+  &-primary {
+    @include set-background($primary-color);
+  }
+  &-light {
+    @include set-background($light-color);
+  }
+  &-dark {
+    @include set-background($dark-color);
+  }
+  &-white {
+    @include set-background(#f3f3f3);
+    border: #ccc 1px solid;
+  }
+}
