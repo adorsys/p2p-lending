@@ -1,17 +1,7 @@
 <template>
   <div class="userRequests">
-    <div class="title">User Requests</div>
+    <div class="x-large">User Requests</div>
     <hr class="separator" />
-    <hr class="separator" />
-    <CreateRequest @openRequestOverlay="openRequestCreation">
-      <transition>
-        <CreateLendingRequest
-          v-if="createRequest"
-          @closeRequestOverlay="closeRequestCreation"
-          :contract="requestManagementContract"
-        />
-      </transition>
-    </CreateRequest>
     <hr class="separator" />
     <AskerRequests :contract="requestManagementContract" />
     <hr class="separator" />
@@ -22,8 +12,6 @@
 <script>
 import AskerRequests from '@/components/RequestManagement/UserRequests/askerRequests'
 import LenderRequests from '@/components/RequestManagement/UserRequests/lenderRequests'
-import CreateRequest from '@/components/RequestManagement/CreateLendingRequest/createRequest'
-import CreateLendingRequest from '@/components/RequestManagement/CreateLendingRequest/createLendingRequest'
 
 import { mapState } from 'vuex'
 import { UPDATE_REQUESTS } from '@/util/constants/types'
@@ -34,22 +22,7 @@ export default {
   }),
   components: {
     AskerRequests,
-    LenderRequests,
-    CreateRequest,
-    CreateLendingRequest
-  },
-  data() {
-    return {
-      createRequest: false
-    }
-  },
-  methods: {
-    openRequestCreation() {
-      this.createRequest = true
-    },
-    closeRequestCreation() {
-      this.createRequest = false
-    }
+    LenderRequests
   },
   watch: {
     requestManagementContract: {

@@ -11,7 +11,8 @@ body {
   font-size: 1rem;
   line-height: 1.6;
   text-align: center;
-  background-color: $light-color;
+  background-color: $primary-light-color;
+  height: 100vh;
 }
 
 #app {
@@ -21,19 +22,31 @@ body {
 
 a {
   text-decoration: none;
-  color: $primary-color;
+  color: $secondary-dark-color;
 }
 
 ul {
   list-style: none;
 }
 
-img {
-  width: 100%;
-}
+.content {
+  height: 100vh;
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  grid-template-rows: 6vh 1fr;
 
-.toggleOverflow {
-  overflow: hidden;
+  &--icoActive {
+    grid-template-columns: 1fr;
+  }
+
+  .view {
+    grid-column: 2;
+    grid-row: 2;
+
+    &--icoActive {
+      grid-column: 1;
+    }
+  }
 }
 
 .button {
@@ -134,29 +147,4 @@ img {
 
 .table__row:nth-child(2n) .button--table {
   background: $navbar-hover-color;
-}
-
-.userInput {
-  margin-top: 2em;
-  margin-bottom: 25px;
-  display: grid;
-  grid-template-columns: 5% 30% 15% 15% 30% 5%;
-  grid-template-rows: auto;
-  align-items: center;
-  justify-items: center;
-}
-
-.userInput__inputField {
-  padding: 1em;
-  margin-bottom: 0.3em;
-  text-align: center;
-  background-color: $navbar-hover-color;
-  border: 2px solid rgba($color: $border-color, $alpha: 0.3);
-  width: 75%;
-}
-
-.userInput__label {
-  color: $link-text-color;
-  font-size: 1.4rem;
-  font-weight: 600;
 }

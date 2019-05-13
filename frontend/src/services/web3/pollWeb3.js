@@ -21,8 +21,11 @@ let pollWeb3 = (proposalManagement, requestManagement, icoContract) => {
     // eslint-disable-next-line no-undef
     ethereum.on('accountsChanged', () => {
         // force authentification if currently on p2pManagement
-        if (router.currentRoute.name === 'p2pManagement') {
-            store.dispatch(types.LOGOUT)
+        store.dispatch(types.LOGOUT)
+        if (
+            router.currentRoute.name === 'p2pManagement' ||
+            router.currentRoute.name === 'ico'
+        ) {
             router.push({ name: 'home' })
         }
         store.dispatch(types.POLL_WEB3)

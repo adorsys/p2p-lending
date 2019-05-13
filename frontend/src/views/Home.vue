@@ -1,35 +1,20 @@
 <template>
   <div class="home">
-    <section class="landingPage">
-      <div class="dark-overlay">
-        <LandingPageFinished v-if="!icoActive" />
-      </div>
-    </section>
+    <LandingPage />
   </div>
 </template>
 
 <script>
-import { mapState } from 'vuex'
-import LandingPageFinished from '@/components/LandingPage/LandingPage-icoFinished'
+import LandingPage from '@/components/LandingPage/LandingPage'
 
 export default {
   name: 'home',
-  computed: mapState({
-    icoActive: state => state.icoState.isIcoActive
-  }),
   components: {
-    LandingPageFinished
+    LandingPage
   }
 }
 </script>
 
 <style lang="scss">
 @import '../util/scss/_utilities';
-.home {
-  height: 100vh;
-  background: url('../assets/ethereum-bg.jpg') no-repeat center center/cover;
-}
-.landingPage {
-  padding-top: 6vh;
-}
 </style>

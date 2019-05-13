@@ -1,6 +1,5 @@
 <template>
   <div class="ICO">
-    <!-- <Ico/> -->
     <div class="title">ICO Management</div>
     <hr class="separator" />
     <hr class="separator" />
@@ -21,11 +20,11 @@
 
 <script>
 import { mapState } from 'vuex'
-import BuyToken from '@/components/InitialCoinOffering/TokenSale/buyToken'
-import TokenSaleInfo from '@/components/InitialCoinOffering/TokenSale/tokenSaleInfo'
-import ChartDoughnut from '@/components/InitialCoinOffering/TokenSale/chartDoughnut'
-import IcoInfo from '@/components/InitialCoinOffering/IcoManagement/icoInfo'
-import IcoManagement from '@/components/InitialCoinOffering/IcoManagement/icoManagement'
+import BuyToken from '@/components/ICO/TokenSale/buyToken'
+import TokenSaleInfo from '@/components/ICO/TokenSale/tokenSaleInfo'
+import ChartDoughnut from '@/components/ICO/TokenSale/chartDoughnut'
+import IcoInfo from '@/components/ICO/IcoManagement/icoInfo'
+import IcoManagement from '@/components/ICO/IcoManagement/icoManagement'
 
 export default {
   computed: mapState({

@@ -1,27 +1,26 @@
 <template>
   <nav class="navbar bg-light">
-    <h1>
+    <div>
       <router-link
         :to="{ name: 'home' }"
         class="navbar__link navbar__link--title"
         >p2pLending</router-link
       >
-    </h1>
+    </div>
     <ul class="navbar__link-container">
-      <li>
-        <router-link :to="{ name: 'requests' }" class="navbar__link"
-          >Request</router-link
-        >
+      <li
+        class="navbar__link"
+        @click="logIn"
+        v-if="!icoActive && !boardMember && !tokenHolder"
+      >
+        LogIn
       </li>
-      <li>
-        <router-link :to="{ name: 'ico' }" class="navbar__link"
-          >ICO</router-link
-        >
-      </li>
-      <li>
-        <router-link :to="{ name: 'p2pManagement' }" class="navbar__link"
-          >LogIn</router-link
-        >
+      <li
+        class="navbar__link"
+        @click="logOut"
+        v-if="!icoActive && (boardMember || tokenHolder)"
+      >
+        LogOut
       </li>
     </ul>
   </nav>
@@ -39,47 +38,10 @@ export default {
   }),
   data() {
     return {
-      navOpen: false,
       loggedIn: false
     }
   },
   methods: {
-    openSlider() {
-      if (this.navOpen) {
-        // close slider
-        this.navOpen = false
-        // reset animation for all elements
-        document.querySelectorAll('.navbar__link-container').forEach(link => {
-          link.style.animation = ''
-        })
-        this.$emit('toggleSidebar')
-      } else {
-        this.navOpen = true
-        document
-          .querySelectorAll('.navbar__link-container')
-          .forEach((link, index) => {
-            if (link.style.animation) {
-              link.style.animation = ''
-            } else {
-              link.style.animation = `navLinkFade 0.5s ease forwards ${index /
-                7 +
-                0.5}s`
-            }
-          })
-        this.$emit('toggleSidebar')
-      }
-    },
-    closeSlider() {
-      if (this.navOpen) {
-        // close slider
-        this.navOpen = false
-        // reset animation for all elements
-        document.querySelectorAll('.navbar__link-container').forEach(link => {
-          link.style.animation = ''
-        })
-        this.$emit('toggleSidebar')
-      }
-    },
     logIn() {
       this.$store.dispatch(AUTHENTICATE)
     },

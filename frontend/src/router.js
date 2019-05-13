@@ -43,30 +43,42 @@ export default new Router({
             path: '/ico',
             name: 'ico',
             component: () =>
-                import(/* webpackChunkName: "ICO" */ './views/ICO.vue')
+                import(/* webpackChunkName: "ICO" */ './views/ICO.vue'),
+            beforeEnter: (to, from, next) => {
+                if (store.state.icoState.isIcoActive) {
+                    next()
+                } else if (
+                    store.state.tokenHolder &&
+                    !store.state.icoState.isIcoActive
+                ) {
+                    next()
+                } else {
+                    next({ name: 'home' })
+                }
+            }
         },
         {
-            path: '/requests',
-            name: 'requests',
-            component: () =>
-                import(
-                    /* webpackChunkName: "Requests" */ './views/Requests.vue'
-                )
-        },
-        {
-            path: '/lendingrequests',
-            name: 'lendingrequests',
+            path: '/lendingRequests',
+            name: 'lendingRequests',
             component: () =>
                 import(
                     /* webpackChunkName: "lendingRequests" */ './views/LendingRequests.vue'
                 )
         },
         {
-            path: '/userrequests',
-            name: 'userrequests',
+            path: '/userRequests',
+            name: 'userRequests',
             component: () =>
                 import(
                     /* webpackChunkName: "userRequests" */ './views/UserRequests.vue'
+                )
+        },
+        {
+            path: '/createRequest',
+            name: 'createRequest',
+            component: () =>
+                import(
+                    /* webpackChunkName: "createRequest" */ './views/CreateRequest.vue'
                 )
         }
     ]

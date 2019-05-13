@@ -8,21 +8,21 @@
 
 @mixin set-shadow-and-border($input) {
   box-shadow: 0 0 12px -6px rgba($color: invert($input), $alpha: 0.3);
-  border: 1px solid
-    rgba($color: scale-color($input, $lightness: -20%), $alpha: 0.3);
+  border: 1px solid rgba($color: $secondary-color, $alpha: 0.2);
 }
 
 // functions
 @function set-text-color($color) {
   @if (lightness($color) > 50) {
-    @return $dark-color;
+    @return $secondary-dark-color;
   } @else {
-    @return #f3f3f3;
+    @return $primary-font-color;
   }
 }
 
 // text-styles
 .x-large {
+  color: scale-color($secondary-dark-color, $lightness: -10%);
   font-size: 4rem;
   font-weight: 700;
   line-height: 1.2;
@@ -36,8 +36,20 @@
 }
 
 .lead {
-  font-size: 1.4rem;
+  font-size: 1.8rem;
   margin: 1rem 0;
+}
+
+.bulletpoint {
+  font-size: 1.4rem;
+  margin: 0.2rem 0;
+}
+
+.error {
+  font-size: 2rem;
+  text-transform: uppercase;
+  margin: 1rem 0;
+  color: darkred;
 }
 
 // buttons
@@ -45,15 +57,17 @@
 .btn {
   all: unset;
   display: inline-block;
-  width: 125px;
-  padding: 0.45rem 0;
+  width: 175px;
+  padding: 0.25rem 0;
   cursor: pointer;
   border-radius: 2px;
   margin: 0.5rem;
+  font-size: 1.2rem;
+  font-weight: 700;
 
   &--primary {
     @include set-background($primary-color);
-    @include set-shadow-and-border($primary-color);
+    @include set-shadow-and-border($primary-light-color);
     transition: all 0.2s ease-in-out;
 
     &:hover {
@@ -65,26 +79,32 @@
   }
 
   &--light {
-    @include set-background($light-color);
-    @include set-shadow-and-border($light-color);
+    @include set-background($primary-light-color);
+    @include set-shadow-and-border($primary-light-color);
     transition: all 0.2s ease-in-out;
 
     &:hover {
-      @include set-background(scale-color($light-color, $lightness: -20%));
+      @include set-background(
+        scale-color($primary-light-color, $lightness: -5%)
+      );
       @include set-shadow-and-border(
-        scale-color($light-color, $lightness: -20%)
+        scale-color($primary-light-color, $lightness: -20%)
       );
     }
   }
 
   &--dark {
-    @include set-background($dark-color);
-    @include set-shadow-and-border($dark-color);
+    @include set-background($primary-dark-color);
+    @include set-shadow-and-border($primary-dark-color);
     transition: all 0.2s ease-in-out;
 
     &:hover {
-      @include set-background(scale-color($dark-color, $lightness: 20%));
-      @include set-shadow-and-border(scale-color($dark-color, $lightness: 20%));
+      @include set-background(
+        scale-color($primary-dark-color, $lightness: 20%)
+      );
+      @include set-shadow-and-border(
+        scale-color($primary-dark-color, $lightness: 20%)
+      );
     }
   }
 }
@@ -96,7 +116,7 @@
   left: 0;
   height: 100%;
   width: 100%;
-  background-color: rgba($color: #000000, $alpha: 0.7);
+  background-color: rgba($color: #000000, $alpha: 0.8);
 }
 
 // background(s)
@@ -105,10 +125,10 @@
     @include set-background($primary-color);
   }
   &-light {
-    @include set-background($light-color);
+    @include set-background($primary-light-color);
   }
   &-dark {
-    @include set-background($dark-color);
+    @include set-background($primary-dark-color);
   }
   &-white {
     @include set-background(#f3f3f3);
