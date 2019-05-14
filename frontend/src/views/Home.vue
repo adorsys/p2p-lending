@@ -10,8 +10,8 @@ import LandingPage from '@/components/LandingPage/LandingPage'
 export default {
   name: 'home',
   components: {
-    LandingPage
-  }
+    LandingPage,
+  },
 }
 </script>
 

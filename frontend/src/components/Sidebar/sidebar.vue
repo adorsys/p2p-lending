@@ -72,9 +72,9 @@
 import { mapState } from 'vuex'
 export default {
   computed: mapState({
-    boardMember: state => state.boardMember,
-    tokenHolder: state => state.tokenHolder
-  })
+    boardMember: (state) => state.boardMember,
+    tokenHolder: (state) => state.tokenHolder,
+  }),
 }
 </script>
 

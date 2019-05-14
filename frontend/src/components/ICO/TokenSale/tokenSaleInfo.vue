@@ -22,15 +22,15 @@
 import { mapState } from 'vuex'
 export default {
   computed: mapState({
-    icoActive: state => state.icoState.isIcoActive,
-    contractEtherBalance: state => state.icoState.icoEtherBalance,
-    icoGoal: state => state.icoState.icoGoal,
-    etherBalanceUser: state => state.icoState.etherBalanceUser,
-    icoParticipants: state => state.icoState.icoParticipantCount
+    icoActive: (state) => state.icoState.isIcoActive,
+    contractEtherBalance: (state) => state.icoState.icoEtherBalance,
+    icoGoal: (state) => state.icoState.icoGoal,
+    etherBalanceUser: (state) => state.icoState.etherBalanceUser,
+    icoParticipants: (state) => state.icoState.icoParticipantCount,
   }),
   data() {
     return {}
-  }
+  },
 }
 </script>
 

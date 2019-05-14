@@ -3,7 +3,8 @@
 .sidebar {
   grid-column: 1;
   grid-row: 2;
-  border-right: solid 2px $primary-dark-color;
+  opacity: 0.9;
+  border-right: solid 2px $border-color-light;
 
   &__container {
     display: flex;
@@ -17,8 +18,7 @@
   &__items {
     &:first-of-type {
       padding-top: 1rem;
-      border-bottom: double thick
-        scale-color($primary-dark-color, $lightness: 30%);
+      border-bottom: double 4px $border-color-light;
       padding-bottom: 1rem;
     }
 
@@ -34,13 +34,12 @@
   }
 
   &__request {
-    border-bottom: 2px solid scale-color($primary-dark-color, $lightness: 30%);
+    border-bottom: solid 1px $border-color-light;
     padding: 1rem 0;
-    color: scale-color($color: $secondary-dark-color, $lightness: -30%);
+    color: $navigation-color-grouping;
 
     &:nth-of-type(2n) {
-      border-bottom: double thick
-        scale-color($primary-dark-color, $lightness: 30%);
+      border-bottom: double 4px $border-color-light;
     }
   }
 
@@ -55,15 +54,14 @@
   &__link {
     font-size: 1.4rem;
     font-weight: 700;
-    color: $secondary-dark-color;
+    color: $navigation-color;
     cursor: pointer;
     border-bottom: 2px solid transparent;
     transition: all 0.2s ease-in-out;
 
     &:hover {
-      color: scale-color($secondary-dark-color, $lightness: 15%);
-      border-bottom: 2px solid
-        scale-color($secondary-dark-color, $lightness: 15%);
+      color: $navigation-color-hover;
+      border-bottom: 2px solid $navigation-color-hover;
     }
   }
 

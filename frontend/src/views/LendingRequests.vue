@@ -1,6 +1,6 @@
 <template>
   <div class="lendingRequests">
-    <div class="title">Lending Requests</div>
+    <div class="x-large">Lending Requests</div>
     <hr class="separator" />
     <hr class="separator" />
     <OpenRequests :contract="requestManagementContract" />
@@ -15,10 +15,10 @@ import { UPDATE_REQUESTS } from '@/util/constants/types'
 
 export default {
   computed: mapState({
-    requestManagementContract: state => state.requestManagementInstance
+    requestManagementContract: (state) => state.requestManagementInstance,
   }),
   components: {
-    OpenRequests
+    OpenRequests,
   },
   watch: {
     requestManagementContract: {
@@ -26,9 +26,9 @@ export default {
         if (contractInstance) {
           this.$store.dispatch(UPDATE_REQUESTS, contractInstance)
         }
-      }
-    }
-  }
+      },
+    },
+  },
 }
 </script>
 

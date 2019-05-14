@@ -1,38 +1,37 @@
 <template>
   <div class="newRequest">
-    <div class="x-large">Create Request</div>
-    <div class="newRequests__inputs">
-      <div class="error" v-if="error">{{ error }}</div>
-      <div class="newRequest__input-group">
-        <input
-          type="text"
-          id="newRequest__asked"
-          class="newRequest__form-control"
-          v-model="credit"
-          v-bind:class="{ hasContent: credit.length > 0 }"
-        />
-        <label for="newRequest__asked">Credit</label>
-      </div>
-      <div class="newRequest__input-group">
-        <input
-          type="text"
-          id="newRequest__payback"
-          class="newRequest__form-control"
-          v-model="payback"
-          v-bind:class="{ hasContent: payback.length > 0 }"
-        />
-        <label for="newRequest__payback">Payback</label>
-      </div>
-      <div class="newRequest__input-group">
-        <input
-          type="text"
-          id="newRequest__description"
-          class="newRequest__form-control"
-          v-model="description"
-          v-bind:class="{ hasContent: description.length > 0 }"
-        />
-        <label for="newRequest__description">Description</label>
-      </div>
+    <div class="newRequest__input-group">
+      <input
+        type="text"
+        id="newRequest__asked"
+        class="newRequest__form-control"
+        v-model="credit"
+        v-bind:class="{ hasContent: credit.length > 0 }"
+      />
+      <label for="newRequest__asked">Credit</label>
+    </div>
+    <div class="newRequest__input-group">
+      <input
+        type="text"
+        id="newRequest__payback"
+        class="newRequest__form-control"
+        v-model="payback"
+        v-bind:class="{ hasContent: payback.length > 0 }"
+      />
+      <label for="newRequest__payback">Payback</label>
+    </div>
+    <div class="newRequest__input-group">
+      <input
+        type="text"
+        id="newRequest__description"
+        class="newRequest__form-control"
+        v-model="description"
+        v-bind:class="{ hasContent: description.length > 0 }"
+      />
+      <label for="newRequest__description">Description</label>
+    </div>
+    <div class="error" v-bind:class="{ displayError: error }">
+      {{ errorMsg }}
     </div>
     <div class="newRequest__buttons">
       <div class="btn btn--light" @click="submit">Submit</div>
@@ -49,13 +48,16 @@ export default {
       credit: '',
       payback: '',
       description: '',
-      error: null
+      errorMsg: 'Invalid Input',
+      error: false,
     }
   },
   methods: {
     async submit() {
+      this.error = false
       const paybackAmount = parseFloat(this.payback)
       const askAmount = parseFloat(this.credit)
+
       if (
         this.credit.length > 0 &&
         this.payback.length > 0 &&
@@ -74,16 +76,16 @@ export default {
           .send({ from: this.$store.state.web3.coinbase })
         this.reset()
       } else {
-        this.error = 'invalid input!'
+        this.error = true
       }
     },
     reset() {
       this.credit = ''
       this.payback = ''
       this.description = ''
-      this.error = ''
-    }
-  }
+      this.error = false
+    },
+  },
 }
 </script>
 

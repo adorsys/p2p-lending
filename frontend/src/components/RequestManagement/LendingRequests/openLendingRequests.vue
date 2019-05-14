@@ -1,6 +1,6 @@
 <template>
   <div class="lendingRequestManagement">
-    <div class="subtitle subtitle--requests">Available Requests</div>
+    <div class="large">Available Requests</div>
     <table class="table" v-if="openRequests.length !== 0">
       <thead>
         <tr>
@@ -57,14 +57,14 @@ import { mapState } from 'vuex'
 
 export default {
   computed: mapState({
-    allRequests: state => state.allRequests
+    allRequests: (state) => state.allRequests,
   }),
   props: ['contract'],
   data() {
     return {
       openRequests: [],
       requestGrantedListenerInstance: null,
-      requestCreatedListenerInstance: null
+      requestCreatedListenerInstance: null,
     }
   },
   methods: {
@@ -79,7 +79,7 @@ export default {
     getRequests() {
       this.openRequests = []
       const account = this.$store.state.web3.coinbase
-      this.allRequests.forEach(element => {
+      this.allRequests.forEach((element) => {
         if (
           String(account).toUpperCase() !== String(element.asker).toUpperCase()
         ) {
@@ -88,20 +88,20 @@ export default {
           }
         }
       })
-    }
+    },
   },
   watch: {
     allRequests: {
       handler: function() {
         this.getRequests()
-      }
-    }
+      },
+    },
   },
   mounted() {
     if (this.allRequests.length !== 0 && this.contract !== null) {
       this.getRequests()
     }
-  }
+  },
 }
 </script>
 

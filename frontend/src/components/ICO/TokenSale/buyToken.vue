@@ -23,7 +23,7 @@
 export default {
   data() {
     return {
-      amountToSpend: null
+      amountToSpend: null,
     }
   },
   props: ['contract'],
@@ -40,8 +40,8 @@ export default {
         alert('Please enter the amount you want to spend')
       }
       this.amountToSpend = null
-    }
-  }
+    },
+  },
 }
 </script>
 

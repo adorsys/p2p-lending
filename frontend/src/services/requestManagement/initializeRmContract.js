@@ -8,15 +8,15 @@ const address = data.networks[Object.keys(data.networks)[0]].address
 import getWeb3 from '@/services/web3/getWeb3'
 
 export const requestManagementHelper = async () => {
-    let web3Instance = await getWeb3()
-    let contractInstance = await new web3Instance.eth.Contract(abi, address)
-    const contract = () => {
-        return contractInstance
-    }
+  let web3Instance = await getWeb3()
+  let contractInstance = await new web3Instance.eth.Contract(abi, address)
+  const contract = () => {
+    return contractInstance
+  }
 
-    return contract
+  return contract
 }
 
 export const initializeRequestManagementContract = () => {
-    store.dispatch(INIT_REQUESTMANAGEMENT)
+  store.dispatch(INIT_REQUESTMANAGEMENT)
 }

@@ -22,8 +22,8 @@ import { mapState } from 'vuex'
 export default {
   computed: mapState({
     //get data from TrustToken contract
-    icoGoal: state => state.icoState.icoGoal,
-    icoEtherBalance: state => state.icoState.icoEtherBalance
+    icoGoal: (state) => state.icoState.icoGoal,
+    icoEtherBalance: (state) => state.icoState.icoEtherBalance,
   }),
 
   data() {
@@ -35,12 +35,12 @@ export default {
         {
           data: [],
           backgroundColor: ['#4edf4a', '#c9c9c9'],
-          hoverBackgroundColor: ['#673ab7', '#673ab7']
-        }
+          hoverBackgroundColor: ['#673ab7', '#673ab7'],
+        },
       ],
       labels: null,
       option: {},
-      chart: null
+      chart: null,
     }
   },
   methods: {
@@ -53,10 +53,10 @@ export default {
         (this.icoGoal - etherBalance).toFixed(2) +
           ' ETH needed to reach goal of ' +
           this.icoGoal +
-          ' ETH'
+          ' ETH',
       ]
       this.loaded = true //data from TrustToken had been loaded
-    }
+    },
   },
   watch: {
     icoEtherBalance: {
@@ -64,13 +64,13 @@ export default {
         if (etherBalance !== null) {
           this.getData(etherBalance)
         }
-      }
-    }
+      },
+    },
   },
   mounted() {
     if (this.icoEtherBalance !== null) {
       this.getData(this.icoEtherBalance)
     }
-  }
+  },
 }
 </script>

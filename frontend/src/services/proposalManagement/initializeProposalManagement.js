@@ -6,16 +6,16 @@ const abi = data.abi
 const address = data.networks[Object.keys(data.networks)[0]].address
 
 export const initializeProposalManagementHelper = async () => {
-    let web3 = store.state.web3.web3Instance()
-    let contract = await new web3.eth.Contract(abi, address)
+  let web3 = store.state.web3.web3Instance()
+  let contract = await new web3.eth.Contract(abi, address)
 
-    const payload = () => {
-        return contract
-    }
+  const payload = () => {
+    return contract
+  }
 
-    return payload
+  return payload
 }
 
 export const initializeProposalManagement = async () => {
-    store.dispatch(INIT_PROPOSALMANAGEMENT)
+  store.dispatch(INIT_PROPOSALMANAGEMENT)
 }

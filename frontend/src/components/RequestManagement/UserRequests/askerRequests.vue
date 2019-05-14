@@ -71,7 +71,7 @@ import { mapState } from 'vuex'
 
 export default {
   computed: mapState({
-    allRequests: state => state.allRequests
+    allRequests: (state) => state.allRequests,
   }),
   props: ['contract'],
   data() {
@@ -79,7 +79,7 @@ export default {
       askerRequests: [],
       requestGrantedListenerInstance: null,
       withdrawListenerInstance: null,
-      debtPaidListenerInstance: null
+      debtPaidListenerInstance: null,
     }
   },
   methods: {
@@ -104,27 +104,27 @@ export default {
     getAskerRequests() {
       this.askerRequests = []
       const account = this.$store.state.web3.coinbase
-      this.allRequests.forEach(element => {
+      this.allRequests.forEach((element) => {
         if (
           String(account).toUpperCase() === String(element.asker).toUpperCase()
         ) {
           this.askerRequests.push(element)
         }
       })
-    }
+    },
   },
   watch: {
     allRequests: {
       handler: function() {
         this.getAskerRequests()
-      }
-    }
+      },
+    },
   },
   mounted() {
     if (this.allRequests.length !== 0 && this.contract !== null) {
       this.getAskerRequests()
     }
-  }
+  },
 }
 </script>
 

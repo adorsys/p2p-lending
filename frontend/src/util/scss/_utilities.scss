@@ -24,32 +24,41 @@
 .x-large {
   color: scale-color($secondary-dark-color, $lightness: -10%);
   font-size: 4rem;
-  font-weight: 700;
   line-height: 1.2;
-  margin: 1rem 0;
+  font-weight: 700;
+  padding: 1rem 0;
 }
 
 .large {
-  font-size: 2rem;
+  color: scale-color($secondary-dark-color, $lightness: -10%);
+  font-size: 3rem;
   line-height: 1.4;
-  margin: 1rem 0;
+  font-weight: 700;
+  padding: 1rem 0;
 }
 
 .lead {
   font-size: 1.8rem;
-  margin: 1rem 0;
+  padding: 1rem 0;
 }
 
 .bulletpoint {
   font-size: 1.4rem;
-  margin: 0.2rem 0;
+  padding: 0.2rem 0;
 }
+
+// error messages
 
 .error {
   font-size: 2rem;
   text-transform: uppercase;
-  margin: 1rem 0;
   color: darkred;
+  opacity: 0;
+  transition: opacity 0.2s ease-out;
+
+  &.displayError {
+    opacity: 100;
+  }
 }
 
 // buttons

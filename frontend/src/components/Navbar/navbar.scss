@@ -11,7 +11,7 @@
   justify-content: space-between;
   padding: 0 1.8rem;
   z-index: 1;
-  border-bottom: solid 2px $primary-dark-color;
+  border-bottom: solid 2px $border-color-light;
   opacity: 0.9;
 
   &__link-container {
@@ -19,14 +19,14 @@
   }
 
   &__link {
-    color: $secondary-dark-color;
+    color: $navigation-color;
     font-size: 1.5rem;
     font-weight: 700;
     transition: color 0.2s ease-in-out;
     cursor: pointer;
 
     &:hover {
-      color: scale-color($secondary-dark-color, $lightness: 10%);
+      color: $navigation-color-hover;
     }
 
     &--title {

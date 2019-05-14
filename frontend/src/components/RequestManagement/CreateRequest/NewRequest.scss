@@ -2,14 +2,9 @@
 @import '../../../util/scss/variables';
 
 .newRequest {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-
   &__input-group {
     position: relative;
-    margin: 3rem auto;
+    margin: 2.5rem auto;
     width: 100%;
   }
 
@@ -20,17 +15,18 @@
     font-size: 1.6rem;
     color: $secondary-dark-color;
     border: none;
-    border-bottom: 1px solid $primary-dark-color;
+    border-bottom: 1px solid $border-color;
     background-color: transparent;
-    transition: all 0.3s ease-out;
+    transition: all 0.2s ease-out;
 
     & + label {
       position: absolute;
       top: 7px;
       left: 30%;
       font-size: 1.6rem;
-      color: scale-color($color: $primary-dark-color, $lightness: -45%);
+      color: scale-color($primary-dark-color, $lightness: -25%);
       transition: all 0.2s ease-out;
+      cursor: text;
     }
 
     &:focus {
@@ -42,7 +38,7 @@
     &:focus + label,
     &.hasContent + label {
       top: -25px;
-      color: $secondary-color;
+      color: $navigation-color-hover;
       font-size: 1.2rem;
     }
   }

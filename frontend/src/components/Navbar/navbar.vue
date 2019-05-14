@@ -7,22 +7,22 @@
         >p2pLending</router-link
       >
     </div>
-    <ul class="navbar__link-container">
-      <li
-        class="navbar__link"
-        @click="logIn"
-        v-if="!icoActive && !boardMember && !tokenHolder"
-      >
-        LogIn
-      </li>
-      <li
-        class="navbar__link"
-        @click="logOut"
-        v-if="!icoActive && (boardMember || tokenHolder)"
-      >
-        LogOut
-      </li>
-    </ul>
+    <!-- <ul class="navbar__link-container"> -->
+    <div
+      class="navbar__link"
+      @click="logIn"
+      v-if="!icoActive && !boardMember && !tokenHolder"
+    >
+      LogIn
+    </div>
+    <div
+      class="navbar__link"
+      @click="logOut"
+      v-if="!icoActive && (boardMember || tokenHolder)"
+    >
+      LogOut
+    </div>
+    <!-- </ul> -->
   </nav>
 </template>
 
@@ -32,13 +32,13 @@ import { AUTHENTICATE, LOGOUT } from '@/util/constants/types'
 
 export default {
   computed: mapState({
-    tokenHolder: state => state.tokenHolder,
-    boardMember: state => state.boardMember,
-    icoActive: state => state.icoState.isIcoActive
+    tokenHolder: (state) => state.tokenHolder,
+    boardMember: (state) => state.boardMember,
+    icoActive: (state) => state.icoState.isIcoActive,
   }),
   data() {
     return {
-      loggedIn: false
+      loggedIn: false,
     }
   },
   methods: {
@@ -49,7 +49,7 @@ export default {
       this.$router.push({ name: 'home' })
       this.$store.dispatch(LOGOUT)
       this.loggedIn = false
-    }
+    },
   },
   watch: {
     tokenHolder: {
@@ -57,16 +57,16 @@ export default {
         if (tHolder && !this.loggedIn) {
           this.loggedIn = true
         }
-      }
+      },
     },
     boardMember: {
       handler: function(bMember) {
         if (bMember && !this.loggedIn) {
           this.loggedIn = true
         }
-      }
-    }
-  }
+      },
+    },
+  },
 }
 </script>
 

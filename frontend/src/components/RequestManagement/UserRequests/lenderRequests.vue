@@ -54,19 +54,19 @@ import { mapState } from 'vuex'
 
 export default {
   computed: mapState({
-    allRequests: state => state.allRequests
+    allRequests: (state) => state.allRequests,
   }),
   props: ['contract'],
   data() {
     return {
-      lenderRequests: []
+      lenderRequests: [],
     }
   },
   methods: {
     getLenderRequests() {
       this.lenderRequests = []
       const account = this.$store.state.web3.coinbase
-      this.allRequests.forEach(element => {
+      this.allRequests.forEach((element) => {
         if (
           String(account).toUpperCase() === String(element.lender).toUpperCase()
         ) {
@@ -78,20 +78,20 @@ export default {
       await this.contract()
         .methods.withdraw(address)
         .send({ from: this.$store.state.web3.coinbase })
-    }
+    },
   },
   watch: {
     allRequests: {
       handler: function() {
         this.getLenderRequests()
-      }
-    }
+      },
+    },
   },
   mounted() {
     if (this.allRequests.length !== 0 && this.contract !== null) {
       this.getLenderRequests()
     }
-  }
+  },
 }
 </script>
 

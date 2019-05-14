@@ -29,7 +29,7 @@ export default {
   props: ['contract'],
   data() {
     return {
-      proposedFee: null
+      proposedFee: null,
     }
   },
   methods: {
@@ -47,8 +47,8 @@ export default {
         }
       }
       this.proposedFee = null
-    }
-  }
+    },
+  },
 }
 </script>
 

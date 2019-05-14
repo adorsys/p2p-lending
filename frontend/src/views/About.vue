@@ -12,8 +12,8 @@ export default {
   methods: {
     async test() {
       console.log('test')
-    }
-  }
+    },
+  },
 }
 </script>
 

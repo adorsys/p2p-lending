@@ -18,11 +18,11 @@ import { UPDATE_REQUESTS } from '@/util/constants/types'
 
 export default {
   computed: mapState({
-    requestManagementContract: state => state.requestManagementInstance
+    requestManagementContract: (state) => state.requestManagementInstance,
   }),
   components: {
     AskerRequests,
-    LenderRequests
+    LenderRequests,
   },
   watch: {
     requestManagementContract: {
@@ -30,9 +30,9 @@ export default {
         if (contractInstance !== null && contractInstance !== undefined) {
           this.$store.dispatch(UPDATE_REQUESTS, contractInstance)
         }
-      }
-    }
-  }
+      },
+    },
+  },
 }
 </script>
 

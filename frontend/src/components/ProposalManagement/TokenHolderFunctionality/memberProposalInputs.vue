@@ -28,7 +28,7 @@
 export default {
   data() {
     return {
-      memberAddress: null
+      memberAddress: null,
     }
   },
   props: ['contract'],
@@ -43,8 +43,8 @@ export default {
         alert('no address provided')
       }
       this.memberAddress = null
-    }
-  }
+    },
+  },
 }
 </script>
 

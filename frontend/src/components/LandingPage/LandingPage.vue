@@ -50,8 +50,8 @@ import { mapState } from 'vuex'
 export default {
   name: 'LandingPage',
   computed: mapState({
-    icoActive: state => state.icoState.isIcoActive
-  })
+    icoActive: (state) => state.icoState.isIcoActive,
+  }),
 }
 </script>
 

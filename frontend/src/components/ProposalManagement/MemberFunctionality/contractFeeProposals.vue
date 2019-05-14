@@ -51,26 +51,26 @@
 import { mapState } from 'vuex'
 export default {
   computed: mapState({
-    proposals: state => state.proposals
+    proposals: (state) => state.proposals,
   }),
   props: ['contract'],
   data() {
     return {
-      feeProposals: []
+      feeProposals: [],
     }
   },
   methods: {
     filterFeeProposals(proposals) {
       if (proposals) {
         this.feeProposals = []
-        proposals.forEach(element => {
+        proposals.forEach((element) => {
           if (parseInt(element.propType, 10) === 1) {
             const fee = element.proposalFee / 10 ** 18
             const description = 'Change Contract Fee to ' + fee + ' ETH'
 
             const proposal = {
               address: element.proposalAddress,
-              description: description
+              description: description,
             }
 
             this.feeProposals.push(proposal)
@@ -82,15 +82,15 @@ export default {
       await this.contract()
         .methods.vote(stance, proposalAddress)
         .send({ from: this.$store.state.web3.coinbase })
-    }
+    },
   },
   watch: {
     proposals: {
       handler: function(contractFeeProposals) {
         this.filterFeeProposals(contractFeeProposals)
-      }
-    }
-  }
+      },
+    },
+  },
 }
 </script>
 

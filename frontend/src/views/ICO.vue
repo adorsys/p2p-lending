@@ -28,15 +28,15 @@ import IcoManagement from '@/components/ICO/IcoManagement/icoManagement'
 
 export default {
   computed: mapState({
-    icoContract: state => state.icoContractInstance,
-    icoActive: state => state.icoState.isIcoActive
+    icoContract: (state) => state.icoContractInstance,
+    icoActive: (state) => state.icoState.isIcoActive,
   }),
   components: {
     BuyToken,
     TokenSaleInfo,
     ChartDoughnut,
     IcoInfo,
-    IcoManagement
-  }
+    IcoManagement,
+  },
 }
 </script>

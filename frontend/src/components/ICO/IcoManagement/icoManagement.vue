@@ -148,7 +148,7 @@
 import { mapState } from 'vuex'
 export default {
   computed: mapState({
-    tokenSymbol: state => state.icoState.tokenSymbol
+    tokenSymbol: (state) => state.icoState.tokenSymbol,
   }),
   data() {
     return {
@@ -160,7 +160,7 @@ export default {
       transferTo: null,
       transferAmount: null,
       tokenAllowanceAddress: null,
-      tokenAllowance: null
+      tokenAllowance: null,
     }
   },
   props: ['contract'],
@@ -239,8 +239,8 @@ export default {
         alert('specify the address you want to check')
       }
       this.tokenAllowanceAddress = null
-    }
-  }
+    },
+  },
 }
 </script>
 

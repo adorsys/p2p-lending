@@ -19,15 +19,15 @@ import { mapState } from 'vuex'
 
 export default {
   computed: mapState({
-    icoActive: state => state.icoState.isIcoActive
+    icoActive: (state) => state.icoState.isIcoActive,
   }),
   components: {
     Navbar,
-    Sidebar
+    Sidebar,
   },
   beforeCreate() {
     this.$store.dispatch(INIT_CONNECTION)
-  }
+  },
 }
 </script>
 

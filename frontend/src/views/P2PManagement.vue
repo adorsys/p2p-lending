@@ -33,18 +33,18 @@ import MemberProposals from '@/components/ProposalManagement/TokenHolderFunction
 
 export default {
   computed: mapState({
-    contractFee: state => state.contractFee,
-    proposalManagementContract: state => state.proposalManagementInstance,
-    boardMember: state => state.boardMember,
-    tokenHolder: state => state.tokenHolder,
-    icoEtherBalance: state => state.icoState.icoEtherBalance,
-    icoContract: state => state.icoContractInstance
+    contractFee: (state) => state.contractFee,
+    proposalManagementContract: (state) => state.proposalManagementInstance,
+    boardMember: (state) => state.boardMember,
+    tokenHolder: (state) => state.tokenHolder,
+    icoEtherBalance: (state) => state.icoState.icoEtherBalance,
+    icoContract: (state) => state.icoContractInstance,
   }),
   components: {
     ContractFeeInputs,
     ContractFeeProposals,
     MemberProposalInputs,
-    MemberProposals
+    MemberProposals,
   },
   watch: {
     proposalManagementContract: {
@@ -52,14 +52,14 @@ export default {
         if (managementContract) {
           this.$store.dispatch(UPDATE_PROPOSALS, managementContract)
         }
-      }
-    }
+      },
+    },
   },
   mounted() {
     if (this.proposalManagementContract) {
       this.$store.dispatch(UPDATE_PROPOSALS, this.proposalManagementContract)
     }
-  }
+  },
 }
 </script>
 

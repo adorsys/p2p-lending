@@ -23,13 +23,13 @@
 import { mapState } from 'vuex'
 export default {
   computed: mapState({
-    tokenHolders: state => state.icoState.tokenHolders,
-    tokenBalance: state => state.icoState.totalTokenSupply,
-    etherBalanceUser: state => state.icoState.etherBalanceUser,
-    tokenBalanceUser: state => state.icoState.tokenBalanceUser,
-    tokenSymbol: state => state.icoState.tokenSymbol,
-    contractEtherBalance: state => state.icoState.icoEtherBalance
-  })
+    tokenHolders: (state) => state.icoState.tokenHolders,
+    tokenBalance: (state) => state.icoState.totalTokenSupply,
+    etherBalanceUser: (state) => state.icoState.etherBalanceUser,
+    tokenBalanceUser: (state) => state.icoState.tokenBalanceUser,
+    tokenSymbol: (state) => state.icoState.tokenSymbol,
+    contractEtherBalance: (state) => state.icoState.icoEtherBalance,
+  }),
 }
 </script>
 
