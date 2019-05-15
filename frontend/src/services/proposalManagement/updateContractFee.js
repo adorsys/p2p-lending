@@ -1,4 +1,4 @@
-import store from '@/store/'
+import store from '@/state'
 import { UPDATE_FEE } from '@/util/constants/types'
 
 export const updateContractFeeHelper = async (contract) => {

@@ -1,42 +1,54 @@
 <template>
-  <div class="ICO">
-    <div class="title">ICO Management</div>
-    <hr class="separator" />
-    <hr class="separator" />
-    <div class="ICO__tokenSale" v-if="icoActive">
-      <TokenSaleInfo />
-      <hr class="separator" />
-      <BuyToken :contract="icoContract" />
-      <hr class="separator" />
-      <ChartDoughnut />
+  <div class="ico" v-if="active">
+    <div class="x-large">Trust Token</div>
+    <div class="ico__content">
+      <InvestStatus class="ico__status" />
+      <Invest class="ico__invest" />
+      <IcoStats class="ico__stats" />
     </div>
-    <div class="ICO__management" v-if="!icoActive">
-      <IcoInfo />
-      <hr class="separator" />
-      <IcoManagement :contract="icoContract" />
+  </div>
+  <div class="ico" v-else>
+    <div class="x-large">Token Management</div>
+    <div class="ico__content">
+      <InvestStatus class="ico__status" />
+      <IcoStats class="ico__stats" />
+      <TokenControl />
     </div>
   </div>
 </template>
 
 <script>
-import { mapState } from 'vuex'
-import BuyToken from '@/components/ICO/TokenSale/buyToken'
-import TokenSaleInfo from '@/components/ICO/TokenSale/tokenSaleInfo'
-import ChartDoughnut from '@/components/ICO/TokenSale/chartDoughnut'
-import IcoInfo from '@/components/ICO/IcoManagement/icoInfo'
-import IcoManagement from '@/components/ICO/IcoManagement/icoManagement'
+import Invest from '@/components/ICO/Active/Invest'
+import InvestStatus from '@/components/ICO/Active/InvestStatus'
+import IcoStats from '@/components/ICO/IcoStats'
+import TokenControl from '@/components/ICO/Finished/TokenControl'
+
+import { createNamespacedHelpers } from 'vuex'
+const { mapState } = createNamespacedHelpers('ico')
 
 export default {
-  computed: mapState({
-    icoContract: (state) => state.icoContractInstance,
-    icoActive: (state) => state.icoState.isIcoActive,
-  }),
+  computed: {
+    ...mapState(['active', 'contractBalance', 'goal']),
+  },
   components: {
-    BuyToken,
-    TokenSaleInfo,
-    ChartDoughnut,
-    IcoInfo,
-    IcoManagement,
+    Invest,
+    InvestStatus,
+    IcoStats,
+    TokenControl,
   },
 }
 </script>
+
+<style lang="scss">
+.ico__status {
+  padding: 1rem 0;
+}
+
+.ico__invest {
+  padding: 1rem 0;
+}
+
+.ico__stats {
+  padding: 1rem 0;
+}
+</style>

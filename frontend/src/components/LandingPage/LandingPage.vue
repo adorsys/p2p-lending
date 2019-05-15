@@ -7,16 +7,16 @@
     </p>
     <ul class="landingPage__problems">
       <li class="landingPage__problem bulletpoint">Proof of Identity</li>
-      <li class="landingPage__problem bulletpoint">
-        Decentralized Management (DAO)
-      </li>
+      <li class="landingPage__problem bulletpoint"
+        >Decentralized Management (DAO)</li
+      >
       <li class="landingPage__problem bulletpoint">
         <p class="bulletpoint">Incentivization and continous use of a</p>
         <p class="bulletpoint">DAO ecosystem</p>
       </li>
-      <li class="landingPage__problem bulletpoint">
-        Provide a dezentralized lending platform
-      </li>
+      <li class="landingPage__problem bulletpoint"
+        >Provide a dezentralized lending platform</li
+      >
     </ul>
     <p class="lead">
       Invest and participate in the ecosystem
@@ -50,7 +50,7 @@ import { mapState } from 'vuex'
 export default {
   name: 'LandingPage',
   computed: mapState({
-    icoActive: (state) => state.icoState.isIcoActive,
+    icoActive: (state) => state.ico.active,
   }),
 }
 </script>

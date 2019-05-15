@@ -20,21 +20,23 @@
 </template>
 
 <script>
+import { web3Instance } from '@/services/web3/getWeb3'
+import { icoInstance } from '@/services/icoContract/initializeICO'
+
 export default {
   data() {
     return {
       amountToSpend: null,
     }
   },
-  props: ['contract'],
   methods: {
     async buy() {
+      const web3 = web3Instance.getInstance()
+      const contract = await icoInstance.getInstance()
       if (this.amountToSpend > 0) {
-        const buyAmount = this.$store.state.web3
-          .web3Instance()
-          .utils.toWei(this.amountToSpend, 'ether')
-        await this.contract()
-          .methods.participate()
+        const buyAmount = web3.utils.toWei(this.amountToSpend, 'ether')
+        await contract.methods
+          .participate()
           .send({ value: buyAmount, from: this.$store.state.web3.coinbase })
       } else {
         alert('Please enter the amount you want to spend')

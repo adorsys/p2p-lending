@@ -1,7 +1,9 @@
 <template>
   <div class="createRequest">
-    <div class="x-large createRequest__title">Create Request</div>
-    <NewRequest :contract="requestManagement" />
+    <div class="x-large">Create Request</div>
+    <div class="createRequest__content">
+      <NewRequest :contract="requestManagement" />
+    </div>
   </div>
 </template>
 
@@ -25,6 +27,15 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  width: 100%;
+}
+
+.createRequest__content {
+  padding: 2rem 0;
+  display: grid;
+  grid-template-columns: auto minmax(calc(60vw - 300px), calc(70vw - 300px)) auto;
+
+  .newRequest {
+    grid-column: 2;
+  }
 }
 </style>

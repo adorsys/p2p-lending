@@ -1,27 +1,23 @@
-import store from '@/store/'
+import { web3Instance } from '@/services/web3/getWeb3'
 
 export const updateIcoParameters = async (contract) => {
+  const web3 = web3Instance.getInstance()
+  const parameters = await contract.methods.getICOParameters().call()
+
   const payload = {
-    balance: null,
-    participants: null,
-    etherBalanceUser: null,
-    tokenBalanceUser: null,
-    icoActive: null,
-    tokenHolders: null,
+    contractBalance: parseFloat(
+      web3.utils.fromWei(parameters.icoEtherBalance, 'ether')
+    ),
+    participants: parseInt(parameters.icoParticipantCount, 10),
+    userEtherBalance: parseFloat(
+      web3.utils.fromWei(parameters.etherBalanceUser, 'ether')
+    ),
+    userTokenBalance: parseFloat(
+      web3.utils.fromWei(parameters.tokenBalanceUser, 'ether')
+    ),
+    active: parameters.isActive,
+    tokenHolders: parseInt(parameters.numTrustees, 10),
   }
-
-  const user = await store.state.web3.web3Instance().eth.getCoinbase()
-
-  const parameters = await contract()
-    .methods.getICOParameters()
-    .call({ from: user })
-
-  payload.balance = parameters.icoEtherBalance / 10 ** 18
-  payload.participants = parseInt(parameters.icoParticipantCount, 10)
-  payload.etherBalanceUser = parameters.etherBalanceUser / 10 ** 18
-  payload.tokenBalanceUser = parameters.tokenBalanceUser / 10 ** 18
-  payload.icoActive = parameters.isActive
-  payload.tokenHolders = parseInt(parameters.numTrustees, 10)
 
   return payload
 }

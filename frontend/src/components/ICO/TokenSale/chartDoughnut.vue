@@ -22,8 +22,8 @@ import { mapState } from 'vuex'
 export default {
   computed: mapState({
     //get data from TrustToken contract
-    icoGoal: (state) => state.icoState.icoGoal,
-    icoEtherBalance: (state) => state.icoState.icoEtherBalance,
+    goal: (state) => state.ico.goal,
+    contractBalance: (state) => state.ico.contractBalance,
   }),
 
   data() {
@@ -44,32 +44,32 @@ export default {
     }
   },
   methods: {
-    getData(etherBalance) {
+    getData(balance) {
       this.datasets[0].data = []
-      this.datasets[0].data.push(etherBalance, this.icoGoal - etherBalance)
+      this.datasets[0].data.push(balance, this.goal - balance)
 
       this.labels = [
-        'Total ICO Balance: ' + etherBalance + ' ETH',
-        (this.icoGoal - etherBalance).toFixed(2) +
+        'Total ICO Balance: ' + balance + ' ETH',
+        (this.goal - balance).toFixed(2) +
           ' ETH needed to reach goal of ' +
-          this.icoGoal +
+          this.goal +
           ' ETH',
       ]
       this.loaded = true //data from TrustToken had been loaded
     },
   },
   watch: {
-    icoEtherBalance: {
-      handler: function(etherBalance) {
-        if (etherBalance !== null) {
-          this.getData(etherBalance)
+    contractBalance: {
+      handler: function(balance) {
+        if (balance !== null) {
+          this.getData(balance)
         }
       },
     },
   },
   mounted() {
-    if (this.icoEtherBalance !== null) {
-      this.getData(this.icoEtherBalance)
+    if (this.contractBalance !== null) {
+      this.getData(this.contractBalance)
     }
   },
 }

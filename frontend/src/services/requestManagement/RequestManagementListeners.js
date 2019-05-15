@@ -1,4 +1,4 @@
-import store from '@/store/'
+import store from '@/state'
 
 import { UPDATE_REQUESTS } from '@/util/constants/types'
 

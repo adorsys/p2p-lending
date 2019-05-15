@@ -19,7 +19,7 @@ import { mapState } from 'vuex'
 
 export default {
   computed: mapState({
-    icoActive: (state) => state.icoState.isIcoActive,
+    icoActive: (state) => state.ico.active,
   }),
   components: {
     Navbar,

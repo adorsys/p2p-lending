@@ -2,48 +2,26 @@
 @import '../../../util/scss/variables';
 
 .newRequest {
-  &__input-group {
-    position: relative;
-    margin: 2.5rem auto;
-    width: 100%;
+  display: grid;
+  grid-template-rows: repeat(4, minmax(80px, 10vh));
+  align-items: center;
+
+  &__asked {
+    grid-row: 1;
   }
 
-  &__form-control {
-    z-index: 1;
-    width: 40%;
-    height: 50px;
-    font-size: 1.6rem;
-    color: $secondary-dark-color;
-    border: none;
-    border-bottom: 1px solid $border-color;
-    background-color: transparent;
-    transition: all 0.2s ease-out;
+  &__payback {
+    grid-row: 2;
+  }
 
-    & + label {
-      position: absolute;
-      top: 7px;
-      left: 30%;
-      font-size: 1.6rem;
-      color: scale-color($primary-dark-color, $lightness: -25%);
-      transition: all 0.2s ease-out;
-      cursor: text;
-    }
-
-    &:focus {
-      outline: none;
-      border-width: 2px;
-      border-color: $secondary-color;
-    }
-
-    &:focus + label,
-    &.hasContent + label {
-      top: -25px;
-      color: $navigation-color-hover;
-      font-size: 1.2rem;
-    }
+  &__description {
+    grid-row: 3;
   }
 
   &__buttons {
-    margin-top: 1rem;
+    grid-row: 4;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    justify-items: center;
   }
 }

@@ -27,8 +27,9 @@ a {
 
 .content {
   height: 100vh;
+  width: 100vw;
   display: grid;
-  grid-template-columns: 300px 1fr;
+  grid-template-columns: $sidebar-width auto;
   grid-template-rows: 6vh 1fr;
 
   &--icoActive {

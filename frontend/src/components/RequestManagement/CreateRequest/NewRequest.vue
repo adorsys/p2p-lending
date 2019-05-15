@@ -1,46 +1,47 @@
 <template>
   <div class="newRequest">
-    <div class="newRequest__input-group">
+    <div class="input-group newRequest__asked">
       <input
         type="text"
         id="newRequest__asked"
-        class="newRequest__form-control"
+        class="form-control"
         v-model="credit"
-        v-bind:class="{ hasContent: credit.length > 0 }"
-      />
+        v-bind:class="{ hasContent: credit.length > 0, invalidInput: error }"
+      >
       <label for="newRequest__asked">Credit</label>
     </div>
-    <div class="newRequest__input-group">
+    <div class="input-group newRequest__payback">
       <input
         type="text"
         id="newRequest__payback"
-        class="newRequest__form-control"
+        class="form-control"
         v-model="payback"
-        v-bind:class="{ hasContent: payback.length > 0 }"
-      />
+        v-bind:class="{ hasContent: payback.length > 0, invalidInput: error }"
+      >
       <label for="newRequest__payback">Payback</label>
     </div>
-    <div class="newRequest__input-group">
+    <div class="input-group newRequest__description">
       <input
         type="text"
         id="newRequest__description"
-        class="newRequest__form-control"
+        class="form-control"
         v-model="description"
-        v-bind:class="{ hasContent: description.length > 0 }"
-      />
+        v-bind:class="{
+          hasContent: description.length > 0,
+          invalidInput: error,
+        }"
+      >
       <label for="newRequest__description">Description</label>
     </div>
-    <div class="error" v-bind:class="{ displayError: error }">
-      {{ errorMsg }}
-    </div>
     <div class="newRequest__buttons">
-      <div class="btn btn--light" @click="submit">Submit</div>
       <div class="btn btn--light" @click="reset">Reset</div>
+      <div class="btn btn--light" @click="submit">Submit</div>
     </div>
   </div>
 </template>
 
 <script>
+import { web3Instance } from '@/services/web3/getWeb3'
 export default {
   props: ['contract'],
   data() {
@@ -48,13 +49,13 @@ export default {
       credit: '',
       payback: '',
       description: '',
-      errorMsg: 'Invalid Input',
       error: false,
     }
   },
   methods: {
     async submit() {
       this.error = false
+      const web3 = web3Instance.getInstance()
       const paybackAmount = parseFloat(this.payback)
       const askAmount = parseFloat(this.credit)
 
@@ -65,16 +66,17 @@ export default {
         paybackAmount > askAmount &&
         askAmount > 0
       ) {
-        const creditInWei = this.$store.state.web3
-          .web3Instance()
-          .utils.toWei(this.credit, 'Ether')
-        const paybackInWei = this.$store.state.web3
-          .web3Instance()
-          .utils.toWei(this.payback, 'Ether')
-        await this.contract()
-          .methods.ask(creditInWei, paybackInWei, this.description)
-          .send({ from: this.$store.state.web3.coinbase })
-        this.reset()
+        try {
+          const creditInWei = web3.utils.toWei(this.credit, 'ether')
+          const paybackInWei = web3.utils.toWei(this.payback, 'ether')
+          const user = await web3.eth.getCoinbase()
+          await this.contract()
+            .methods.ask(creditInWei, paybackInWei, this.description)
+            .send({ from: user })
+          this.reset()
+        } catch (err) {
+          this.error = true
+        }
       } else {
         this.error = true
       }
@@ -83,6 +85,17 @@ export default {
       this.credit = ''
       this.payback = ''
       this.description = ''
+      this.error = false
+    },
+  },
+  watch: {
+    credit() {
+      this.error = false
+    },
+    payback() {
+      this.error = false
+    },
+    description() {
       this.error = false
     },
   },

@@ -1,21 +1,24 @@
 import Web3 from 'web3'
 
-let getWeb3 = async () => {
-  let web3 = null
+export const web3Instance = (function() {
+  let instance
 
-  if (window.ethereum) {
-    // eslint-disable-next-line no-undef
-    web3 = new Web3(ethereum)
-  } else if (typeof window.web3 !== 'undefined') {
-    web3 = new Web3(window.web3.currentProvider)
-  } else {
-    throw new Error('No web3 support detected')
+  function createInstance() {
+    const provider =
+      'ethereum' in window ? window.ethereum : window.web3.currentProvider
+    if (provider) {
+      return new Web3(provider)
+    } else {
+      return null
+    }
   }
 
-  // eslint-disable-next-line no-undef
-  await ethereum.enable()
-
-  return web3
-}
-
-export default getWeb3
+  return {
+    getInstance: function() {
+      if (!instance) {
+        instance = createInstance()
+      }
+      return instance
+    },
+  }
+})()

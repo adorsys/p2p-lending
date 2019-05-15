@@ -43,22 +43,14 @@
 }
 
 .bulletpoint {
-  font-size: 1.4rem;
+  font-size: 1.5rem;
   padding: 0.2rem 0;
 }
 
-// error messages
-
-.error {
-  font-size: 2rem;
-  text-transform: uppercase;
-  color: darkred;
-  opacity: 0;
-  transition: opacity 0.2s ease-out;
-
-  &.displayError {
-    opacity: 100;
-  }
+.company {
+  color: #054f72;
+  font-size: 2.4rem;
+  padding: 0;
 }
 
 // buttons
@@ -66,7 +58,8 @@
 .btn {
   all: unset;
   display: inline-block;
-  width: 175px;
+  width: 10rem;
+  height: 2rem;
   padding: 0.25rem 0;
   cursor: pointer;
   border-radius: 2px;
@@ -142,5 +135,51 @@
   &-white {
     @include set-background(#f3f3f3);
     border: #ccc 1px solid;
+  }
+}
+
+// form layout
+.input-group {
+  position: relative;
+  width: 100%;
+}
+
+.form-control {
+  z-index: 1;
+  width: 100%;
+  height: 50px;
+  font-size: 1.6rem;
+  color: $secondary-dark-color;
+  border: none;
+  border-bottom: 1px solid $border-color;
+  background-color: transparent;
+  transition: all 0.2s ease-out;
+
+  & + label {
+    position: absolute;
+    top: 7px;
+    left: 0;
+    font-size: 1.6rem;
+    color: scale-color($primary-dark-color, $lightness: -25%);
+    transition: all 0.2s ease-out;
+    cursor: text;
+  }
+
+  &.invalidInput,
+  &.invalidInput + label {
+    color: rgba($color: darkred, $alpha: 0.7);
+  }
+
+  &:focus {
+    outline: none;
+    border-width: 2px;
+    border-color: $secondary-color;
+  }
+
+  &:focus + label,
+  &.hasContent + label {
+    top: -25px;
+    color: $navigation-color-hover;
+    font-size: 1.2rem;
   }
 }

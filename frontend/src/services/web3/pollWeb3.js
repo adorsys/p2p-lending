@@ -2,22 +2,15 @@ import store from '@/store/'
 import router from '@/router'
 
 import * as types from '@/util/constants/types'
+import { web3Instance } from '@/services/web3/getWeb3'
 
-let pollHelper = async () => {
-  let web3 = store.state.web3.web3Instance()
-
-  let payload = {
-    networkID: null,
-    coinbase: null,
-  }
-
-  payload.networkID = await web3.eth.net.getId()
-  payload.coinbase = await web3.eth.getCoinbase()
-
-  return payload
+const pollHelper = async () => {
+  const web3 = web3Instance.getInstance()
+  const coinbase = await web3.eth.getCoinbase()
+  return coinbase
 }
 
-let pollWeb3 = (proposalManagement, requestManagement, icoContract) => {
+const pollWeb3 = (proposalManagement, requestManagement) => {
   // eslint-disable-next-line no-undef
   ethereum.on('accountsChanged', () => {
     // force authentification if currently on p2pManagement
@@ -31,7 +24,7 @@ let pollWeb3 = (proposalManagement, requestManagement, icoContract) => {
     store.dispatch(types.POLL_WEB3)
     store.dispatch(types.UPDATE_PROPOSALS, proposalManagement)
     store.dispatch(types.UPDATE_REQUESTS, requestManagement)
-    store.dispatch(types.UPDATE_ICO, icoContract)
+    store.dispatch('ico/updateIco')
   })
   // eslint-disable-next-line no-undef
   ethereum.on('networkChanged', () => {
@@ -43,7 +36,7 @@ let pollWeb3 = (proposalManagement, requestManagement, icoContract) => {
     store.dispatch(types.POLL_WEB3)
     store.dispatch(types.UPDATE_PROPOSALS, proposalManagement)
     store.dispatch(types.UPDATE_REQUESTS, store.state.web3.requestManagement)
-    store.dispatch(types.UPDATE_ICO, icoContract)
+    store.dispatch('ico/updateIco')
   })
 }
 

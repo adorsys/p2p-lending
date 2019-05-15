@@ -1,26 +1,32 @@
 import data from '@/../../build/contracts/TrustToken.json'
-import { INIT_ICO, INIT_ICO_CONTRACT } from '@/util/constants/types'
-import store from '@/store/'
+import { web3Instance } from '@/services/web3/getWeb3'
 
 const abi = data.abi
 const address = data.networks[Object.keys(data.networks)[0]].address
 
-export const initializeTokenContract = async () => {
-  const web3 = store.state.web3.web3Instance()
-  const contract = await new web3.eth.Contract(abi, address)
-  const payload = () => {
-    return contract
+export const icoInstance = (function() {
+  let instance
+
+  async function createInstance() {
+    const web3 = web3Instance.getInstance()
+    if (web3) {
+      return await new web3.eth.Contract(abi, address)
+    }
   }
-  return payload
-}
 
-const initializeIcoContractHelper = async () => {
-  const web3 = store.state.web3.web3Instance()
-  const contract = store.state.icoContractInstance()
+  return {
+    getInstance: function() {
+      if (!instance) {
+        instance = createInstance()
+      }
+      return instance
+    },
+  }
+})()
 
-  const parameters = await contract.methods
-    .getICOParameters()
-    .call({ from: store.state.web3.coinbase })
+export const initializeIco = async (contract) => {
+  const web3 = web3Instance.getInstance()
+  const parameters = await contract.methods.getICOParameters().call()
 
   let payload = {
     icoGoal: null,
@@ -56,18 +62,7 @@ const initializeIcoContractHelper = async () => {
   payload.etherBalanceUser = parseFloat(
     web3.utils.fromWei(parameters.etherBalanceUser)
   )
-
   payload.tokenHolders = parseInt(parameters.numTrustees, 10)
 
   return payload
 }
-
-const initializeIcoContract = async () => {
-  store.dispatch(INIT_ICO)
-}
-
-export const getTokenContractData = async () => {
-  store.dispatch(INIT_ICO_CONTRACT)
-}
-
-export { initializeIcoContractHelper, initializeIcoContract }

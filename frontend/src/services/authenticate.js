@@ -1,7 +1,10 @@
-import store from '@/store/'
+import store from '@/state'
+import { web3Instance } from '@/services/web3/getWeb3'
+import { icoInstance } from '@/services/icoContract/getIco'
 
 export const authenticate = async () => {
-  const account = await store.state.web3.web3Instance().eth.getCoinbase()
+  const account = await web3Instance.getInstance().eth.getCoinbase()
+  const icoContract = await icoInstance.getInstance()
 
   const authenticated = {
     tokenHolder: false,
@@ -9,10 +12,7 @@ export const authenticate = async () => {
   }
 
   const tokenBalance = parseInt(
-    await store.state
-      .icoContractInstance()
-      .methods.balanceOf(account)
-      .call(),
+    await icoContract.methods.balanceOf(account).call(),
     10
   )
 

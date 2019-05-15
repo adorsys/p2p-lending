@@ -28,9 +28,11 @@ $secondary-font-color: #000000;
 $navigation-color: $secondary-dark-color;
 $navigation-color-grouping: scale-color(
   $color: $secondary-dark-color,
-  $lightness: -30%
+  $lightness: -30%,
 );
 $navigation-color-hover: scale-color($secondary-dark-color, $lightness: 10%);
+
+$sidebar-width: 300px;
 
 $border-color: $primary-dark-color;
 $border-color-light: scale-color($primary-dark-color, $lightness: 30%);

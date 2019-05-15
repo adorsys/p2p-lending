@@ -1,4 +1,4 @@
-import store from '@/store/'
+import store from '@/state'
 import router from '@/router'
 import {
   UPDATE_PROPOSALS,

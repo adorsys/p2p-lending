@@ -1,8 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Home from './views/Home.vue'
-
-import store from './store/'
+import store from './state'
 
 Vue.use(Router)
 
@@ -44,12 +43,9 @@ export default new Router({
       name: 'ico',
       component: () => import(/* webpackChunkName: "ICO" */ './views/ICO.vue'),
       beforeEnter: (to, from, next) => {
-        if (store.state.icoState.isIcoActive) {
+        if (store.state.ico.active) {
           next()
-        } else if (
-          store.state.tokenHolder &&
-          !store.state.icoState.isIcoActive
-        ) {
+        } else if (store.state.tokenHolder && !store.state.ico.active) {
           next()
         } else {
           next({ name: 'home' })
