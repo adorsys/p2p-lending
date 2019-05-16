@@ -20,6 +20,13 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+// remove number input spinner for input type='number'
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
 a {
   text-decoration: none;
   color: $navigation-color;

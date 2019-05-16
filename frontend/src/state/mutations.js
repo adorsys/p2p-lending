@@ -1,4 +1,5 @@
 import * as types from '@/util/constants/types'
+import router from '@/router'
 import { initializeRequestManagementContract } from '../services/requestManagement/initializeRmContract'
 import { pollRequestManagement } from '../services/requestManagement/RequestManagementListeners'
 import { initializeProposalManagement } from '../services/proposalManagement/initializeProposalManagement'
@@ -33,6 +34,11 @@ export default {
     state.boardMember = payload.boardMember
   },
   [types.LOGOUT](state) {
+    // no longer logged in -> prevent access to management
+    const routeName = router.currentRoute.name
+    if (routeName === 'p2pManagement' || routeName === 'ico') {
+      router.push({ name: 'home' })
+    }
     state.tokenHolder = false
     state.boardMember = false
   },

@@ -2,22 +2,32 @@
   <div class="newRequest">
     <div class="input-group newRequest__asked">
       <input
-        type="text"
+        type="number"
+        min="0"
+        oninput="validity.valid||(value='');"
         id="newRequest__asked"
         class="form-control"
         v-model="credit"
-        v-bind:class="{ hasContent: credit.length > 0, invalidInput: error }"
-      >
+        v-bind:class="{
+          hasContent: credit,
+          invalidInput: error,
+        }"
+      />
       <label for="newRequest__asked">Credit</label>
     </div>
     <div class="input-group newRequest__payback">
       <input
-        type="text"
+        type="number"
+        min="0"
+        oninput="validity.valid||(value='');"
         id="newRequest__payback"
         class="form-control"
         v-model="payback"
-        v-bind:class="{ hasContent: payback.length > 0, invalidInput: error }"
-      >
+        v-bind:class="{
+          hasContent: payback,
+          invalidInput: error,
+        }"
+      />
       <label for="newRequest__payback">Payback</label>
     </div>
     <div class="input-group newRequest__description">
@@ -30,7 +40,7 @@
           hasContent: description.length > 0,
           invalidInput: error,
         }"
-      >
+      />
       <label for="newRequest__description">Description</label>
     </div>
     <div class="newRequest__buttons">
@@ -46,8 +56,8 @@ export default {
   props: ['contract'],
   data() {
     return {
-      credit: '',
-      payback: '',
+      credit: null,
+      payback: null,
       description: '',
       error: false,
     }
@@ -56,15 +66,12 @@ export default {
     async submit() {
       this.error = false
       const web3 = web3Instance.getInstance()
-      const paybackAmount = parseFloat(this.payback)
-      const askAmount = parseFloat(this.credit)
 
       if (
-        this.credit.length > 0 &&
-        this.payback.length > 0 &&
-        this.description.length > 0 &&
-        paybackAmount > askAmount &&
-        askAmount > 0
+        web3 &&
+        this.credit > 0 &&
+        this.payback > 0 &&
+        this.description.length > 0
       ) {
         try {
           const creditInWei = web3.utils.toWei(this.credit, 'ether')
@@ -78,12 +85,13 @@ export default {
           this.error = true
         }
       } else {
+        this.reset()
         this.error = true
       }
     },
     reset() {
-      this.credit = ''
-      this.payback = ''
+      this.credit = null
+      this.payback = null
       this.description = ''
       this.error = false
     },

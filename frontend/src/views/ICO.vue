@@ -3,14 +3,13 @@
     <div class="x-large">Trust Token</div>
     <div class="ico__content">
       <InvestStatus class="ico__status" />
-      <Invest class="ico__invest" />
       <IcoStats class="ico__stats" />
+      <Invest class="ico__invest" />
     </div>
   </div>
   <div class="ico" v-else>
     <div class="x-large">Token Management</div>
     <div class="ico__content">
-      <InvestStatus class="ico__status" />
       <IcoStats class="ico__stats" />
       <TokenControl />
     </div>
@@ -41,14 +40,10 @@ export default {
 
 <style lang="scss">
 .ico__status {
-  padding: 1rem 0;
+  padding: 1rem 0 0;
 }
 
 .ico__invest {
-  padding: 1rem 0;
-}
-
-.ico__stats {
   padding: 1rem 0;
 }
 </style>

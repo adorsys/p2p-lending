@@ -1,7 +1,8 @@
 <template>
   <div class="icoStats">
-    <p class="bulletpoint">You have invested: {{ userEtherBalance }} ETH</p>
-    <p class="bulletpoint">You own: {{ userTokenBalance }} TT</p>
+    <p class="lead" v-if="!active">ICO collected: {{ contractBalance }} ETH</p>
+    <p class="lead">You have invested: {{ userEtherBalance }} ETH</p>
+    <p class="lead" v-if="!active">You own: {{ userTokenBalance }} TT</p>
   </div>
 </template>
 
@@ -13,10 +14,9 @@ export default {
   computed: {
     ...mapState([
       'active',
-      'participants',
       'userEtherBalance',
-      'tokenSupply',
       'userTokenBalance',
+      'contractBalance',
     ]),
   },
 }
@@ -24,8 +24,10 @@ export default {
 
 <style lang="scss">
 @import '../../util/scss/variables';
-.lead--icoInfo {
-  color: $secondary-dark-color;
-  font-weight: 700;
+.icoStats {
+  > .lead {
+    color: $navigation-color-grouping;
+    padding: 0.25rem 0;
+  }
 }
 </style>

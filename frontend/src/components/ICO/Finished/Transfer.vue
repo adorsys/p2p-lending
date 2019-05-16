@@ -12,7 +12,7 @@
     </div>
     <div class="input-group transfer__amount">
       <input
-        type="text"
+        type="number"
         id="transfer__amount"
         class="form-control"
         v-model="amount"
@@ -43,9 +43,10 @@ export default {
       this.error = false
       const web3 = web3Instance.getInstance()
 
-      if (this.amount.length > 0 && this.recipient.length > 0 && web3) {
+      if (web3 && this.amount !== 0 && this.recipient.length > 0) {
         try {
-          const amountInWei = web3.utils.toWei(this.amount, 'ether')
+          const amountInWei = web3.utils.toWei(String(this.amount), 'ether')
+          console.log(amountInWei)
         } catch (err) {
           this.error = true
         }

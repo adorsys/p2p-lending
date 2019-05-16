@@ -1,18 +1,16 @@
 <template>
   <div class="investStatus">
-    <div class="investStatus__stats">
-      <p class="investStatus__tokenSupply lead"
-        >{{ tokenText }}: {{ tokenSupply }} {{ symbol }}</p
-      >
-      <p class="investStatus__current lead"
-        >{{ balanceText }}: {{ contractBalance }} ETH</p
-      >
-    </div>
+    <p class="investStatus__tokenSupply lead"
+      >{{ tokenText }}: {{ tokenSupply }} {{ symbol }}</p
+    >
     <div class="investStatus__start bulletpoint">0 ETH</div>
     <div class="investStatus__goal bulletpoint">{{ goal }} ETH</div>
     <div class="investStatus__progress">
       <ProgressBar />
     </div>
+    <p class="investStatus__current lead"
+      >{{ balanceText }}: {{ contractBalance }} ETH</p
+    >
   </div>
 </template>
 

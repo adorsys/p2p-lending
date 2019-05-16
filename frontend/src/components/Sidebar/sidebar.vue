@@ -71,10 +71,9 @@
 <script>
 import { mapState } from 'vuex'
 export default {
-  computed: mapState({
-    boardMember: (state) => state.boardMember,
-    tokenHolder: (state) => state.tokenHolder,
-  }),
+  computed: {
+    ...mapState('web3', ['boardMember', 'tokenHolder']),
+  },
 }
 </script>
 

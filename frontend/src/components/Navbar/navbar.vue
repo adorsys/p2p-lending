@@ -7,64 +7,35 @@
         >p2pLending</router-link
       >
     </div>
-    <!-- <ul class="navbar__link-container"> -->
     <div
       class="navbar__link"
       @click="logIn"
-      v-if="!icoActive && !boardMember && !tokenHolder"
+      v-if="!active && !boardMember && !tokenHolder"
+      >LogIn</div
     >
-      LogIn
-    </div>
     <div
       class="navbar__link"
       @click="logOut"
-      v-if="!icoActive && (boardMember || tokenHolder)"
+      v-if="!active && (boardMember || tokenHolder)"
+      >LogOut</div
     >
-      LogOut
-    </div>
-    <!-- </ul> -->
   </nav>
 </template>
 
 <script>
-import { mapState } from 'vuex'
-import { AUTHENTICATE, LOGOUT } from '@/util/constants/types'
-
+import { mapState, mapActions } from 'vuex'
 export default {
-  computed: mapState({
-    tokenHolder: (state) => state.tokenHolder,
-    boardMember: (state) => state.boardMember,
-    icoActive: (state) => state.icoState.isIcoActive,
-  }),
-  data() {
-    return {
-      loggedIn: false,
-    }
+  computed: {
+    ...mapState('web3', ['tokenHolder', 'boardMember']),
+    ...mapState('ico', ['active']),
   },
   methods: {
+    ...mapActions('web3', ['login', 'logout']),
     logIn() {
-      this.$store.dispatch(AUTHENTICATE)
+      this.login()
     },
     logOut() {
-      this.$router.push({ name: 'home' })
-      this.$store.dispatch(LOGOUT)
-      this.loggedIn = false
-    },
-  },
-  watch: {
-    tokenHolder: {
-      handler: function(tHolder) {
-        if (tHolder && !this.loggedIn) {
-          this.loggedIn = true
-        }
-      },
-    },
-    boardMember: {
-      handler: function(bMember) {
-        if (bMember && !this.loggedIn) {
-          this.loggedIn = true
-        }
-      },
+      this.logout()
     },
   },
 }

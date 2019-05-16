@@ -6,59 +6,41 @@
     <div class="managementData">
       <div class="subtitle">Management Data</div>
       <div class="subsubtitle">Contract Fee: {{ contractFee }} ETH</div>
-      <div class="subsubtitle">ICO holds: {{ icoEtherBalance }} ETH</div>
+      <div class="subsubtitle">ICO holds: {{ contractBalance }} ETH</div>
     </div>
     <hr class="separator" />
     <div class="memberFunctionality" v-if="boardMember">
-      <ContractFeeInputs :contract="proposalManagementContract" />
+      <ContractFeeInputs />
       <hr class="separator" />
-      <ContractFeeProposals :contract="proposalManagementContract" />
+      <ContractFeeProposals />
     </div>
     <hr class="separator" />
     <div class="tokenHolderFunctionality" v-if="tokenHolder">
-      <MemberProposalInputs :contract="proposalManagementContract" />
+      <MemberProposalInputs />
       <hr class="separator" />
-      <MemberProposals :contract="proposalManagementContract" />
+      <MemberProposals />
     </div>
   </div>
 </template>
 
 <script>
 import { mapState } from 'vuex'
-import { UPDATE_PROPOSALS } from '@/util/constants/types'
 import ContractFeeInputs from '@/components/ProposalManagement/MemberFunctionality/contractFeeInputs'
 import ContractFeeProposals from '@/components/ProposalManagement/MemberFunctionality/contractFeeProposals'
 import MemberProposalInputs from '@/components/ProposalManagement/TokenHolderFunctionality/memberProposalInputs'
 import MemberProposals from '@/components/ProposalManagement/TokenHolderFunctionality/memberProposals'
 
 export default {
-  computed: mapState({
-    contractFee: (state) => state.contractFee,
-    proposalManagementContract: (state) => state.proposalManagementInstance,
-    boardMember: (state) => state.boardMember,
-    tokenHolder: (state) => state.tokenHolder,
-    icoEtherBalance: (state) => state.icoState.icoEtherBalance,
-    icoContract: (state) => state.icoContractInstance,
-  }),
+  computed: {
+    ...mapState('web3', ['boardMember', 'tokenHolder']),
+    ...mapState('ico', ['contractBalance']),
+    ...mapState('proposalManagement', ['contractFee']),
+  },
   components: {
     ContractFeeInputs,
     ContractFeeProposals,
     MemberProposalInputs,
     MemberProposals,
-  },
-  watch: {
-    proposalManagementContract: {
-      handler: function(managementContract) {
-        if (managementContract) {
-          this.$store.dispatch(UPDATE_PROPOSALS, managementContract)
-        }
-      },
-    },
-  },
-  mounted() {
-    if (this.proposalManagementContract) {
-      this.$store.dispatch(UPDATE_PROPOSALS, this.proposalManagementContract)
-    }
   },
 }
 </script>

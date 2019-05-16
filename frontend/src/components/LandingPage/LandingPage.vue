@@ -2,8 +2,8 @@
   <div class="landingPage" v-if="icoActive">
     <div class="x-large">p2p-Lending</div>
     <p class="lead">
-      p2p-Lending is a decentralized ecosystem that tries to solve the following
-      problems in the blockchain space:
+      p2p-Lending is a decentralized lending platform that tries to solve the
+      following problems in the blockchain space:
     </p>
     <ul class="landingPage__problems">
       <li class="landingPage__problem bulletpoint">Proof of Identity</li>
@@ -14,9 +14,6 @@
         <p class="bulletpoint">Incentivization and continous use of a</p>
         <p class="bulletpoint">DAO ecosystem</p>
       </li>
-      <li class="landingPage__problem bulletpoint"
-        >Provide a dezentralized lending platform</li
-      >
     </ul>
     <p class="lead">
       Invest and participate in the ecosystem

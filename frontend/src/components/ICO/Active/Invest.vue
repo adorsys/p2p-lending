@@ -2,11 +2,13 @@
   <div class="invest">
     <div class="input-group invest__input">
       <input
-        type="text"
+        type="number"
+        min="0"
+        onkeydown="return event.keyCode !== 69"
         id="invest__amount"
         class="form-control"
         v-model="amount"
-        v-bind:class="{ hasContent: amount.length > 0, invalidInput: error }"
+        v-bind:class="{ hasContent: amount, invalidInput: error }"
       />
       <label for="invest__amount">Investment (ETH)</label>
     </div>
@@ -21,24 +23,29 @@ import { web3Instance } from '@/services/web3/getWeb3'
 export default {
   data() {
     return {
-      amount: '',
+      amount: null,
       error: false,
     }
   },
   methods: {
     async invest() {
       this.error = false
-      if (this.amount.length > 0) {
-        const web3 = await web3Instance.getInstance()
-        const contract = await icoInstance.getInstance()
+      const web3 = await web3Instance.getInstance()
+      const contract = await icoInstance.getInstance()
+
+      if (web3 && contract) {
         const user = await web3.eth.getCoinbase()
-        try {
-          const buyAmount = web3.utils.toWei(this.amount, 'ether')
-          await contract.methods
-            .participate()
-            .send({ value: buyAmount, from: user })
-          this.amount = ''
-        } catch (err) {
+        if (user && this.amount > 0) {
+          try {
+            const buyAmount = web3.utils.toWei(String(this.amount), 'ether')
+            await contract.methods
+              .participate()
+              .send({ value: buyAmount, from: user })
+            this.amount = null
+          } catch (err) {
+            this.error = true
+          }
+        } else {
           this.error = true
         }
       } else {

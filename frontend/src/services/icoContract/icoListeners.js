@@ -1,4 +1,5 @@
 import store from '@/state'
+import router from '@/router'
 
 export const pollICO = (contract) => {
   participatedListener(contract)
@@ -21,6 +22,7 @@ const icoFinishedListener = (contract) => {
   contract.events.ICOFinished().on('data', (event) => {
     if (txHash !== event.transactionHash) {
       txHash = event.transactionHash
+      router.push({ name: 'home' })
       store.dispatch('ico/updateIco', contract)
     }
   })

@@ -1,35 +1,34 @@
-import store from '@/state'
 import { web3Instance } from '@/services/web3/getWeb3'
 import { icoInstance } from '@/services/icoContract/getIco'
+import { proposalManagementInstance } from '@/services/proposalManagement/getProposalManagement'
 
 export const authenticate = async () => {
-  const account = await web3Instance.getInstance().eth.getCoinbase()
-  const icoContract = await icoInstance.getInstance()
+  const web3 = web3Instance.getInstance()
+  if (web3) {
+    const user = await web3.eth.getCoinbase()
+    const icoContract = await icoInstance.getInstance()
+    const proposalManagementContract = await proposalManagementInstance.getInstance()
 
-  const authenticated = {
-    tokenHolder: false,
-    boardMember: false,
+    const authenticated = {
+      tokenHolder: false,
+      boardMember: false,
+    }
+
+    if (icoContract) {
+      const tokenBalance = parseFloat(
+        await icoContract.methods.balanceOf(user).call()
+      )
+      authenticated.tokenHolder = tokenBalance !== 0
+    }
+
+    if (proposalManagementContract) {
+      const memberId = await proposalManagementContract.methods
+        .memberId(user)
+        .call()
+      authenticated.boardMember = memberId !== 0
+    }
+    return authenticated
+  } else {
+    return null
   }
-
-  const tokenBalance = parseInt(
-    await icoContract.methods.balanceOf(account).call(),
-    10
-  )
-
-  if (tokenBalance !== 0) {
-    authenticated.tokenHolder = true
-  }
-  const memberId = parseInt(
-    await store.state
-      .proposalManagementInstance()
-      .methods.memberId(account)
-      .call(),
-    10
-  )
-
-  if (memberId !== 0) {
-    authenticated.boardMember = true
-  }
-
-  return authenticated
 }
