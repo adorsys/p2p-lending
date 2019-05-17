@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import { Web3Service } from '@/services/web3/Web3Service'
+import { getUser, convertToWei } from '@/services/web3/Web3Service'
 import { proposalManagementInstance } from '@/services/proposalManagement/getProposalManagement'
 export default {
   data() {
@@ -32,11 +32,11 @@ export default {
   },
   methods: {
     async createContractFeeProposal() {
-      const user = await Web3Service.getUser()
+      const user = await getUser()
       const contract = await proposalManagementInstance.getInstance()
       if (contract) {
         if (this.proposedFee !== null) {
-          const newFee = Web3Service.convertToWei(this.proposedFee, 'ether')
+          const newFee = convertToWei(this.proposedFee, 'ether')
           await contract.methods
             .createContractFeeProposal(newFee)
             .send({ from: user })

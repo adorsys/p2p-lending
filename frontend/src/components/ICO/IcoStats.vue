@@ -1,7 +1,7 @@
 <template>
   <div class="icoStats">
-    <p class="lead" v-if="!active">ICO collected: {{ contractBalance }} ETH</p>
-    <p class="lead">You have invested: {{ userEtherBalance }} ETH</p>
+    <p class="lead">ICO collected: {{ contractBalance }} ETH</p>
+    <p class="lead">You have invested: {{ userInvestment }} ETH</p>
     <p class="lead" v-if="!active">You own: {{ userTokenBalance }} TT</p>
   </div>
 </template>
@@ -14,7 +14,7 @@ export default {
   computed: {
     ...mapState([
       'active',
-      'userEtherBalance',
+      'userInvestment',
       'userTokenBalance',
       'contractBalance',
     ]),

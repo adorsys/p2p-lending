@@ -8,9 +8,6 @@
     <div class="investStatus__progress">
       <ProgressBar />
     </div>
-    <p class="investStatus__current lead"
-      >{{ balanceText }}: {{ contractBalance }} ETH</p
-    >
   </div>
 </template>
 
@@ -28,29 +25,16 @@ export default {
   },
   data() {
     return {
-      balanceText: 'Investment so far',
       tokenText: 'Token available',
     }
   },
   watch: {
     active() {
-      if (this.active) {
-        this.balanceText = 'Investment so far'
-        this.tokenText = 'Token available'
-      } else {
-        this.balanceText = 'ICO collected'
-        this.tokenText = 'Token Minted'
-      }
+      this.tokenText = this.active ? 'Token available' : 'Token Minted'
     },
   },
   created() {
-    if (this.active) {
-      this.balanceText = 'Investment so far'
-      this.tokenText = 'Token available'
-    } else {
-      this.balanceText = 'ICO collected'
-      this.tokenText = 'Token Minted'
-    }
+    this.tokenText = this.active ? 'Token available' : 'Token Minted'
   },
 }
 </script>

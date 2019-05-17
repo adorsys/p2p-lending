@@ -3,7 +3,8 @@
 .investStatus {
   display: grid;
   grid-template-columns: 10% 40% 40% 10%;
-  grid-template-rows: 8vh 85px 8vh;
+  grid-template-rows: 8vh 85px;
+  padding: 1rem 0;
 
   &__start {
     grid-column: 2;
@@ -31,13 +32,6 @@
     grid-column: 2 / 4;
     grid-row: 1;
     align-self: end;
-    padding: 0;
-  }
-
-  &__current {
-    grid-column: 2 / 4;
-    grid-row: 3;
-    align-self: center;
     padding: 0;
   }
 }

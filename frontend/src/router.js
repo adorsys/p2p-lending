@@ -31,7 +31,7 @@ export default new Router({
           /* webpackChunkName: "lendingBoard" */ './views/P2PManagement.vue'
         ),
       beforeEnter: (to, from, next) => {
-        if (store.state.web3.tokenHolder || store.state.web3.boardMember) {
+        if (store.state.auth.tokenHolder || store.state.auth.boardMember) {
           next()
         } else {
           next({ name: 'home' })
@@ -45,7 +45,7 @@ export default new Router({
       beforeEnter: (to, from, next) => {
         if (store.state.ico.active) {
           next()
-        } else if (store.state.web3.tokenHolder && !store.state.ico.active) {
+        } else if (store.state.auth.tokenHolder && !store.state.ico.active) {
           next()
         } else {
           next({ name: 'home' })

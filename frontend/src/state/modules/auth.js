@@ -1,5 +1,5 @@
 import router from '@/router'
-import { Web3Service } from '@/services/web3/Web3Service'
+import { web3Active } from '@/services/web3/Web3Service'
 import { authenticate } from '@/services/authenticate'
 // import { accountListener, networkListener } from '@/services/web3/web3Listeners'
 
@@ -13,7 +13,7 @@ export default {
   actions: {
     async initialize({ commit }) {
       // check if web3 was found
-      const injected = await Web3Service.web3Active()
+      const injected = await web3Active()
       commit('INITIALIZE', injected)
       // update on account (or network) change
       // -> start ethereum.on event listeners

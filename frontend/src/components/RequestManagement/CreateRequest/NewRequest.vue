@@ -51,7 +51,7 @@
 </template>
 
 <script>
-import { Web3Service } from '@/services/web3/Web3Service'
+import { getUser, convertToWei } from '@/services/web3/Web3Service'
 export default {
   data() {
     return {
@@ -67,9 +67,9 @@ export default {
 
       if (this.credit > 0 && this.payback > 0 && this.description.length > 0) {
         try {
-          const creditInWei = Web3Service.convertToWei(this.credit, 'ether')
-          const paybackInWei = Web3Service.convertToWei(this.payback, 'ether')
-          const user = await Web3Service.getUser()
+          const creditInWei = convertToWei(this.credit, 'ether')
+          const paybackInWei = convertToWei(this.payback, 'ether')
+          const user = await getUser()
           await this.contract()
             .methods.ask(creditInWei, paybackInWei, this.description)
             .send({ from: user })

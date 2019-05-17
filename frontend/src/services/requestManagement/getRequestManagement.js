@@ -1,5 +1,5 @@
 import data from '@/../../build/contracts/RequestManagement.json'
-import { web3Instance } from '../web3/getWeb3'
+import { web3Instance } from '../web3/Web3Service'
 
 const abi = data.abi
 const address = data.networks[Object.keys(data.networks)[0]].address

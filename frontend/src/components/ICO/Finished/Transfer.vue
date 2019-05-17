@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import { ICOService } from '@/services/icoContract/ICO'
+import { ICOService } from '@/services/icoContract/ICOService'
 
 export default {
   data() {

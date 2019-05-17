@@ -1,9 +1,9 @@
 // import { IcoService } from '@/services/icoContract/IcoService'
-import { Web3Service } from './web3/Web3Service'
+import { getUser } from './web3/Web3Service'
 import { proposalManagementInstance } from '@/services/proposalManagement/getProposalManagement'
 
 export const authenticate = async () => {
-  const user = await Web3Service.getUser()
+  const user = await getUser()
   const proposalManagementContract = await proposalManagementInstance.getInstance()
 
   const authenticated = {

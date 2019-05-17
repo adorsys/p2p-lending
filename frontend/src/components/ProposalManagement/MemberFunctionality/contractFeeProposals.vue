@@ -11,9 +11,9 @@
         </thead>
         <tbody>
           <tr class="table__row" v-for="p in feeProposals" :key="p.idx">
-            <td class="table__data table__data--feeProposals">{{
-              p.description
-            }}</td>
+            <td class="table__data table__data--feeProposals">
+              {{ p.description }}
+            </td>
             <td
               class="table__data table__data--feeProposals table__data--buttons"
             >
@@ -48,7 +48,7 @@
 <script>
 import { mapState } from 'vuex'
 import { proposalManagementInstance } from '@/services/proposalManagement/getProposalManagement'
-import { Web3Service } from '@/services/web3/Web3Service'
+import { getUser } from '@/services/web3/Web3Service'
 export default {
   computed: {
     ...mapState('proposalManagement', ['proposals']),
@@ -78,7 +78,7 @@ export default {
       }
     },
     async vote(stance, proposalAddress) {
-      const user = await Web3Service.getUser()
+      const user = await getUser()
       const contract = await proposalManagementInstance.getInstance()
       await contract.methods.vote(stance, proposalAddress).send({ from: user })
     },

@@ -1,5 +1,5 @@
 import data from '@/../../build/contracts/ProposalManagement.json'
-import { Web3Service } from '@/services/web3/Web3Service'
+import { initializeContract, convertFromWei } from '@/services/web3/Web3Service'
 
 const abi = data.abi
 const address = data.networks[Object.keys(data.networks)[0]].address
@@ -8,7 +8,7 @@ export const proposalManagementInstance = (function() {
   let instance
 
   async function createInstance() {
-    return await Web3Service.initializeContract(abi, address)
+    return await initializeContract(abi, address)
   }
 
   return {
@@ -38,8 +38,5 @@ export const updateProposals = async (contract) => {
 }
 
 export const updateFee = async (contract) => {
-  return Web3Service.convertFromWei(
-    await contract.methods.contractFee().call(),
-    'ether'
-  )
+  return convertFromWei(await contract.methods.contractFee().call(), 'ether')
 }

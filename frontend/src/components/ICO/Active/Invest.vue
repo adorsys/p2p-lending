@@ -17,6 +17,7 @@
 </template>
 
 <script>
+import { ICOService } from '@/services/icoContract/ICOService'
 export default {
   data() {
     return {
@@ -27,6 +28,8 @@ export default {
   methods: {
     async invest() {
       this.error = false
+      if (!(await ICOService.invest(this.amount))) this.error = true
+      this.amount = null
     },
   },
   watch: {

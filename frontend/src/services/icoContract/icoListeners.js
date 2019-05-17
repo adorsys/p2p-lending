@@ -1,7 +1,7 @@
 import store from '@/state'
 import router from '@/router'
 
-export const pollICO = (contract) => {
+export const ICOListeners = (contract) => {
   participatedListener(contract)
   icoFinishedListener(contract)
   transferListener(contract)
@@ -12,7 +12,7 @@ const participatedListener = (contract) => {
   contract.events.Participated().on('data', (event) => {
     if (txHash !== event.transactionHash) {
       txHash = event.transactionHash
-      store.dispatch('ico/updateIco', contract)
+      store.dispatch('ico/updateIco')
     }
   })
 }
@@ -23,7 +23,7 @@ const icoFinishedListener = (contract) => {
     if (txHash !== event.transactionHash) {
       txHash = event.transactionHash
       router.push({ name: 'home' })
-      store.dispatch('ico/updateIco', contract)
+      store.dispatch('ico/updateIco')
     }
   })
 }
@@ -33,7 +33,7 @@ const transferListener = (contract) => {
   contract.events.Transfer().on('data', (event) => {
     if (txHash !== event.transactionHash) {
       txHash = event.transactionHash
-      store.dispatch('ico/updateIco', contract)
+      store.dispatch('ico/updateIco')
     }
   })
 }
