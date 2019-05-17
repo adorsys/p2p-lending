@@ -1,7 +1,7 @@
 import router from '@/router'
-import { web3Instance } from '@/services/web3/getWeb3'
+import { Web3Service } from '@/services/web3/Web3Service'
 import { authenticate } from '@/services/authenticate'
-import { accountListener, networkListener } from '@/services/web3/web3Listeners'
+// import { accountListener, networkListener } from '@/services/web3/web3Listeners'
 
 export default {
   namespaced: true,
@@ -12,19 +12,11 @@ export default {
   },
   actions: {
     async initialize({ commit }) {
-      const web3 = await web3Instance.getInstance()
-      if (web3) {
-        try {
-          // eslint-disable-next-line no-undef
-          await ethereum.enable()
-          accountListener()
-          networkListener()
-          const isInjected = await web3.eth.net.isListening()
-          commit('INITIALIZE', isInjected)
-        } catch (error) {
-          console.error(error)
-        }
-      }
+      // check if web3 was found
+      const injected = await Web3Service.web3Active()
+      commit('INITIALIZE', injected)
+      // update on account (or network) change
+      // -> start ethereum.on event listeners
     },
     async login({ commit }) {
       const payload = await authenticate()

@@ -39,16 +39,12 @@ a {
   grid-template-columns: $sidebar-width auto;
   grid-template-rows: 6vh 1fr;
 
-  &--icoActive {
-    grid-template-columns: 1fr;
-  }
-
   .view {
     grid-column: 2;
     grid-row: 2;
 
     &--icoActive {
-      grid-column: 1;
+      grid-column: 1 / 3;
     }
   }
 }

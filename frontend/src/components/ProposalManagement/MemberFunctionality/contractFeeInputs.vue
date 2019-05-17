@@ -14,19 +14,17 @@
         placeholder="Fee in ETH"
         v-model="proposedFee"
       />
-      <div
-        class="button button--contractFee"
-        @click="createContractFeeProposal"
+      <div class="button button--contractFee" @click="createContractFeeProposal"
+        >Change Fee</div
       >
-        Change Fee
-      </div>
     </div>
   </div>
 </template>
 
 <script>
+import { Web3Service } from '@/services/web3/Web3Service'
+import { proposalManagementInstance } from '@/services/proposalManagement/getProposalManagement'
 export default {
-  props: ['contract'],
   data() {
     return {
       proposedFee: null,
@@ -34,14 +32,14 @@ export default {
   },
   methods: {
     async createContractFeeProposal() {
-      if (this.contract) {
+      const user = await Web3Service.getUser()
+      const contract = await proposalManagementInstance.getInstance()
+      if (contract) {
         if (this.proposedFee !== null) {
-          const newFee = this.$store.state.web3
-            .web3Instance()
-            .utils.toWei(this.proposedFee, 'ether')
-          await this.contract()
-            .methods.createContractFeeProposal(newFee)
-            .send({ from: this.$store.state.web3.coinbase })
+          const newFee = Web3Service.convertToWei(this.proposedFee, 'ether')
+          await contract.methods
+            .createContractFeeProposal(newFee)
+            .send({ from: user })
         } else {
           alert('provide a fee')
         }

@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <Navbar />
-    <div class="content content--icoActive" v-if="icoActive">
+    <div class="content" v-if="active">
       <router-view class="view view--icoActive" />
     </div>
     <div class="content" v-else>
@@ -14,19 +14,15 @@
 <script>
 import Navbar from '@/components/Navbar/navbar'
 import Sidebar from '@/components/Sidebar/Sidebar'
-import { INIT_CONNECTION } from '@/util/constants/types'
 import { mapState } from 'vuex'
 
 export default {
-  computed: mapState({
-    icoActive: (state) => state.ico.active,
-  }),
+  computed: {
+    ...mapState('ico', ['active']),
+  },
   components: {
     Navbar,
     Sidebar,
-  },
-  beforeCreate() {
-    this.$store.dispatch(INIT_CONNECTION)
   },
 }
 </script>

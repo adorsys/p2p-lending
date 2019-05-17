@@ -1,5 +1,5 @@
 <template>
-  <div class="landingPage" v-if="icoActive">
+  <div class="landingPage" v-if="active">
     <div class="x-large">p2p-Lending</div>
     <p class="lead">
       p2p-Lending is a decentralized lending platform that tries to solve the
@@ -46,9 +46,9 @@
 import { mapState } from 'vuex'
 export default {
   name: 'LandingPage',
-  computed: mapState({
-    icoActive: (state) => state.ico.active,
-  }),
+  computed: {
+    ...mapState('ico', ['active']),
+  },
 }
 </script>
 

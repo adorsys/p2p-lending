@@ -51,9 +51,8 @@
 </template>
 
 <script>
-import { web3Instance } from '@/services/web3/getWeb3'
+import { Web3Service } from '@/services/web3/Web3Service'
 export default {
-  props: ['contract'],
   data() {
     return {
       credit: null,
@@ -65,18 +64,12 @@ export default {
   methods: {
     async submit() {
       this.error = false
-      const web3 = web3Instance.getInstance()
 
-      if (
-        web3 &&
-        this.credit > 0 &&
-        this.payback > 0 &&
-        this.description.length > 0
-      ) {
+      if (this.credit > 0 && this.payback > 0 && this.description.length > 0) {
         try {
-          const creditInWei = web3.utils.toWei(this.credit, 'ether')
-          const paybackInWei = web3.utils.toWei(this.payback, 'ether')
-          const user = await web3.eth.getCoinbase()
+          const creditInWei = Web3Service.convertToWei(this.credit, 'ether')
+          const paybackInWei = Web3Service.convertToWei(this.payback, 'ether')
+          const user = await Web3Service.getUser()
           await this.contract()
             .methods.ask(creditInWei, paybackInWei, this.description)
             .send({ from: user })

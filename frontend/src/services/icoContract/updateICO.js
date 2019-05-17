@@ -1,19 +1,18 @@
-import { web3Instance } from '@/services/web3/getWeb3'
+import { Web3Service } from '@/services/web3/Web3Service'
 
 export const updateIcoParameters = async (contract) => {
-  const web3 = web3Instance.getInstance()
   const parameters = await contract.methods.getICOParameters().call()
 
   const payload = {
     contractBalance: parseFloat(
-      web3.utils.fromWei(parameters.icoEtherBalance, 'ether')
+      Web3Service.convertFromWei(parameters.icoEtherBalance, 'ether')
     ),
     participants: parseInt(parameters.icoParticipantCount, 10),
     userEtherBalance: parseFloat(
-      web3.utils.fromWei(parameters.etherBalanceUser, 'ether')
+      Web3Service.convertFromWei(parameters.etherBalanceUser, 'ether')
     ),
     userTokenBalance: parseFloat(
-      web3.utils.fromWei(parameters.tokenBalanceUser, 'ether')
+      Web3Service.convertFromWei(parameters.tokenBalanceUser, 'ether')
     ),
     active: parameters.isActive,
     tokenHolders: parseInt(parameters.numTrustees, 10),

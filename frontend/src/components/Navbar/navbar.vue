@@ -26,11 +26,11 @@
 import { mapState, mapActions } from 'vuex'
 export default {
   computed: {
-    ...mapState('web3', ['tokenHolder', 'boardMember']),
+    ...mapState('auth', ['tokenHolder', 'boardMember']),
     ...mapState('ico', ['active']),
   },
   methods: {
-    ...mapActions('web3', ['login', 'logout']),
+    ...mapActions('auth', ['login', 'logout']),
     logIn() {
       this.login()
     },

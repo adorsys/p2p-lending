@@ -1,5 +1,3 @@
-import { proposalManagementInstance } from '@/services/proposalManagement/getProposalManagement'
-
 export default {
   namespaced: true,
   state: {
@@ -7,10 +5,19 @@ export default {
     proposals: [],
   },
   actions: {
-    async initialize({ commit }) {
-      const contract = proposalManagementInstance.getInstance()
-      //   const contractFee = await contract.methods
+    // async initialize({ commit }) {
+    //   const contract = await proposalManagementInstance.getInstance()
+    //   const payload = {
+    //     proposals: await updateProposals(contract),
+    //     contractFee: await updateFee(contract),
+    //   }
+    //   commit('INITIALIZE', payload)
+    // },
+  },
+  mutations: {
+    INITIALIZE(state, payload) {
+      state.contractFee = payload.contractFee
+      state.proposals = payload.proposals
     },
   },
-  mutations: {},
 }

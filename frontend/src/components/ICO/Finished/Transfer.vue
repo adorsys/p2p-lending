@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import { web3Instance } from '@/services/web3/getWeb3'
+import { ICOService } from '@/services/icoContract/ICO'
 
 export default {
   data() {
@@ -41,16 +41,7 @@ export default {
   methods: {
     async transfer() {
       this.error = false
-      const web3 = web3Instance.getInstance()
-
-      if (web3 && this.amount !== 0 && this.recipient.length > 0) {
-        try {
-          const amountInWei = web3.utils.toWei(String(this.amount), 'ether')
-          console.log(amountInWei)
-        } catch (err) {
-          this.error = true
-        }
-      }
+      ICOService.transfer(this.amount, this.recipient)
     },
     reset() {
       this.recipient = ''

@@ -1,9 +1,9 @@
 import Web3 from 'web3'
 
-export const web3Instance = (function() {
+export const getWeb3 = function() {
   let instance
 
-  function createInstance() {
+  function initialize() {
     const provider =
       'ethereum' in window ? window.ethereum : window.web3.currentProvider
     if (provider) {
@@ -13,12 +13,9 @@ export const web3Instance = (function() {
     }
   }
 
-  return {
-    getInstance: function() {
-      if (!instance) {
-        instance = createInstance()
-      }
-      return instance
-    },
+  if (!instance) {
+    instance = initialize()
   }
-})()
+
+  return instance
+}

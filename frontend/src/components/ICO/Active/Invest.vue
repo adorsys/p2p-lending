@@ -17,9 +17,6 @@
 </template>
 
 <script>
-import { icoInstance } from '@/services/icoContract/getIco'
-import { web3Instance } from '@/services/web3/getWeb3'
-
 export default {
   data() {
     return {
@@ -30,27 +27,6 @@ export default {
   methods: {
     async invest() {
       this.error = false
-      const web3 = await web3Instance.getInstance()
-      const contract = await icoInstance.getInstance()
-
-      if (web3 && contract) {
-        const user = await web3.eth.getCoinbase()
-        if (user && this.amount > 0) {
-          try {
-            const buyAmount = web3.utils.toWei(String(this.amount), 'ether')
-            await contract.methods
-              .participate()
-              .send({ value: buyAmount, from: user })
-            this.amount = null
-          } catch (err) {
-            this.error = true
-          }
-        } else {
-          this.error = true
-        }
-      } else {
-        this.error = true
-      }
     },
   },
   watch: {

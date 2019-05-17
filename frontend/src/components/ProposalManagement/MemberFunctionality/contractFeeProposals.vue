@@ -11,24 +11,22 @@
         </thead>
         <tbody>
           <tr class="table__row" v-for="p in feeProposals" :key="p.idx">
-            <td class="table__data table__data--feeProposals">
-              {{ p.description }}
-            </td>
+            <td class="table__data table__data--feeProposals">{{
+              p.description
+            }}</td>
             <td
               class="table__data table__data--feeProposals table__data--buttons"
             >
               <div
                 v-on:click="vote(true, p.address)"
                 class="button button--table button--vote"
+                >Agree</div
               >
-                Agree
-              </div>
               <div
                 v-on:click="vote(false, p.address)"
                 class="button button--table button--vote"
+                >Disagree</div
               >
-                Disagree
-              </div>
             </td>
           </tr>
         </tbody>
@@ -49,11 +47,12 @@
 
 <script>
 import { mapState } from 'vuex'
+import { proposalManagementInstance } from '@/services/proposalManagement/getProposalManagement'
+import { Web3Service } from '@/services/web3/Web3Service'
 export default {
-  computed: mapState({
-    proposals: (state) => state.proposals,
-  }),
-  props: ['contract'],
+  computed: {
+    ...mapState('proposalManagement', ['proposals']),
+  },
   data() {
     return {
       feeProposals: [],
@@ -79,17 +78,18 @@ export default {
       }
     },
     async vote(stance, proposalAddress) {
-      await this.contract()
-        .methods.vote(stance, proposalAddress)
-        .send({ from: this.$store.state.web3.coinbase })
+      const user = await Web3Service.getUser()
+      const contract = await proposalManagementInstance.getInstance()
+      await contract.methods.vote(stance, proposalAddress).send({ from: user })
     },
   },
   watch: {
-    proposals: {
-      handler: function(contractFeeProposals) {
-        this.filterFeeProposals(contractFeeProposals)
-      },
+    proposals() {
+      this.filterFeeProposals(this.proposals)
     },
+  },
+  created() {
+    this.filterFeeProposals(this.proposals)
   },
 }
 </script>

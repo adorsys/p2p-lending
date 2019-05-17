@@ -72,7 +72,7 @@
 import { mapState } from 'vuex'
 export default {
   computed: {
-    ...mapState('web3', ['boardMember', 'tokenHolder']),
+    ...mapState('auth', ['boardMember', 'tokenHolder']),
   },
 }
 </script>
