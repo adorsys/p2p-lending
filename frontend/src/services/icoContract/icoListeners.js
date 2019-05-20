@@ -1,7 +1,9 @@
-import store from '@/state'
 import router from '@/router'
+import { ICO } from './ICO'
+import { ICOService } from './IcoService'
 
-export const ICOListeners = (contract) => {
+export const icoListeners = async () => {
+  const contract = await ICO.get()
   participatedListener(contract)
   icoFinishedListener(contract)
   transferListener(contract)
@@ -12,7 +14,7 @@ const participatedListener = (contract) => {
   contract.events.Participated().on('data', (event) => {
     if (txHash !== event.transactionHash) {
       txHash = event.transactionHash
-      store.dispatch('ico/updateIco')
+      ICOService.updateICO()
     }
   })
 }
@@ -23,7 +25,7 @@ const icoFinishedListener = (contract) => {
     if (txHash !== event.transactionHash) {
       txHash = event.transactionHash
       router.push({ name: 'home' })
-      store.dispatch('ico/updateIco')
+      ICOService.updateICO()
     }
   })
 }
@@ -33,7 +35,7 @@ const transferListener = (contract) => {
   contract.events.Transfer().on('data', (event) => {
     if (txHash !== event.transactionHash) {
       txHash = event.transactionHash
-      store.dispatch('ico/updateIco')
+      ICOService.updateICO()
     }
   })
 }

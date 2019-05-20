@@ -1,4 +1,5 @@
-import { ICOService } from '@/services/icoContract/ICOService'
+import { ICOService } from '@/services/icoContract/IcoService'
+import { icoListeners } from '@/services/icoContract/icoListeners'
 
 export default {
   namespaced: true,
@@ -12,20 +13,19 @@ export default {
     contractBalance: null,
     participants: null,
     tokenHolders: null,
-    userTokenBalance: null,
+    userTokenBalance: 0,
     userInvestment: null,
   },
   actions: {
     async initialize({ commit }) {
+      // start ICO event listeners
+      icoListeners()
+      // initialize ICO state
       const payload = await ICOService.initializeICO()
-      // ICO event listeners
       commit('INITIALIZE', payload)
     },
-    async updateIco({ commit }) {
-      // get updated ICO Parameters
-      const payload = await ICOService.updateICO()
-      console.log(payload)
-      //   commit('UPDATE_ICO', payload)
+    async updateIco({ commit }, payload) {
+      commit('UPDATE_ICO', payload)
     },
   },
   mutations: {
@@ -45,7 +45,7 @@ export default {
     UPDATE_ICO(state, payload) {
       state.contractBalance = payload.contractBalance
       state.participants = payload.participants
-      state.userEtherBalance = payload.userEtherBalance
+      state.userInvestment = payload.userInvestment
       state.userTokenBalance = payload.userTokenBalance
       state.active = payload.active
       state.tokenHolders = payload.tokenHolders

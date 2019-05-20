@@ -28,7 +28,7 @@
     </div>
     <div class="tokenControl__selectionContent">
       <Transfer v-if="active === 0" />
-      <div v-if="active === 1">test1</div>
+      <TransferFrom v-if="active === 1" />
       <div v-if="active === 2">test2</div>
       <div v-if="active === 3">test3</div>
     </div>
@@ -37,10 +37,12 @@
 
 <script>
 import Transfer from './Transfer'
+import TransferFrom from './TransferFrom'
 
 export default {
   components: {
     Transfer,
+    TransferFrom,
   },
   data() {
     return {
@@ -79,11 +81,14 @@ export default {
   }
 
   &__selectionContent {
-    padding-top: 2rem;
+    padding-top: 3rem;
     display: grid;
     grid-template-columns: 20% auto 20%;
 
     .transfer {
+      grid-column: 2;
+    }
+    .transferFrom {
       grid-column: 2;
     }
   }

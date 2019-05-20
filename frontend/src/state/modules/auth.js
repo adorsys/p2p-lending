@@ -1,7 +1,8 @@
 import router from '@/router'
-import { web3Active } from '@/services/web3/Web3Service'
+import store from '@/state'
+import Web3Service from '@/services/web3/Web3Service'
+import { accountListener } from '@/services/web3/web3Listeners'
 import { authenticate } from '@/services/authenticate'
-// import { accountListener, networkListener } from '@/services/web3/web3Listeners'
 
 export default {
   namespaced: true,
@@ -12,17 +13,17 @@ export default {
   },
   actions: {
     async initialize({ commit }) {
-      // check if web3 was found
-      const injected = await web3Active()
+      // start account changed listener
+      accountListener()
+      // check if web3 is available
+      const injected = await Web3Service.web3Active()
       commit('INITIALIZE', injected)
-      // update on account (or network) change
-      // -> start ethereum.on event listeners
     },
-    async login({ commit }) {
+    async logIn({ commit }) {
       const payload = await authenticate()
       commit('LOGIN', payload)
     },
-    logout({ commit }) {
+    logOut({ commit }) {
       commit('LOGOUT')
     },
   },
@@ -36,7 +37,10 @@ export default {
     },
     LOGOUT(state) {
       const routeName = router.currentRoute.name
-      if (routeName === 'p2pManagement' || routeName === 'ico') {
+      if (
+        routeName === 'p2pManagement' ||
+        (routeName === 'ico' && !store.state.ico.active)
+      ) {
         router.push({ name: 'home' })
       }
       state.tokenHolder = false

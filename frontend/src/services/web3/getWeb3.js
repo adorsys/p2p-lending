@@ -1,6 +1,6 @@
 import Web3 from 'web3'
 
-export const getWeb3 = function() {
+export const getWeb3 = (function() {
   let instance
 
   function initialize() {
@@ -13,9 +13,14 @@ export const getWeb3 = function() {
     }
   }
 
-  if (!instance) {
-    instance = initialize()
+  return {
+    get: async function() {
+      if (!instance) {
+        instance = initialize()
+      }
+      // eslint-disable-next-line no-undef
+      await ethereum.enable()
+      return instance
+    },
   }
-
-  return instance
-}
+})()

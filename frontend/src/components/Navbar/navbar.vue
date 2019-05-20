@@ -9,13 +9,13 @@
     </div>
     <div
       class="navbar__link"
-      @click="logIn"
+      @click="login"
       v-if="!active && !boardMember && !tokenHolder"
       >LogIn</div
     >
     <div
       class="navbar__link"
-      @click="logOut"
+      @click="logout"
       v-if="!active && (boardMember || tokenHolder)"
       >LogOut</div
     >
@@ -30,12 +30,12 @@ export default {
     ...mapState('ico', ['active']),
   },
   methods: {
-    ...mapActions('auth', ['login', 'logout']),
-    logIn() {
-      this.login()
+    ...mapActions('auth', ['logIn', 'logOut']),
+    login() {
+      this.logIn()
     },
-    logOut() {
-      this.logout()
+    logout() {
+      this.logOut()
     },
   },
 }

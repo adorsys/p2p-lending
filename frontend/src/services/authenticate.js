@@ -1,28 +1,10 @@
-// import { IcoService } from '@/services/icoContract/IcoService'
-import { getUser } from './web3/Web3Service'
-import { proposalManagementInstance } from '@/services/proposalManagement/getProposalManagement'
+import { ICOService } from './icoContract/IcoService'
 
 export const authenticate = async () => {
-  const user = await getUser()
-  const proposalManagementContract = await proposalManagementInstance.getInstance()
-
   const authenticated = {
-    tokenHolder: false,
+    tokenHolder: (await ICOService.getTokenBalance()) !== 0,
     boardMember: false,
   }
 
-  //   if (icoContract) {
-  //     const tokenBalance = parseFloat(
-  //       await icoContract.methods.balanceOf(user).call()
-  //     )
-  //     authenticated.tokenHolder = tokenBalance !== 0
-  //   }
-
-  if (proposalManagementContract) {
-    const memberId = await proposalManagementContract.methods
-      .memberId(user)
-      .call()
-    authenticated.boardMember = memberId !== 0
-  }
   return authenticated
 }

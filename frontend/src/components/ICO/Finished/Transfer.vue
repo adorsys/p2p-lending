@@ -6,19 +6,24 @@
         id="transfer__recipient"
         class="form-control"
         v-model="recipient"
-        v-bind:class="{ hasContent: recipient.length > 0, invalidInput: error }"
+        v-bind:class="{
+          hasContent: recipient.length > 0,
+          invalidInput: invalidRecipient,
+        }"
       />
       <label for="transfer__recipient">Recipientaddress</label>
     </div>
     <div class="input-group transfer__amount">
       <input
         type="number"
+        min="1"
+        onkeydown="return event.keyCode !== 69"
         id="transfer__amount"
         class="form-control"
         v-model="amount"
-        v-bind:class="{ hasContent: amount.length > 0, invalidInput: error }"
+        v-bind:class="{ hasContent: amount, invalidInput: invalidAmount }"
       />
-      <label for="transfer__amount">Transferamount</label>
+      <label for="transfer__amount">Transfer Amount</label>
     </div>
     <div class="transfer__buttons">
       <div class="btn btn--light" @click="reset">Reset</div>
@@ -28,24 +33,42 @@
 </template>
 
 <script>
-import { ICOService } from '@/services/icoContract/ICOService'
+import { ICOService } from '@/services/icoContract/IcoService'
 
 export default {
   data() {
     return {
       recipient: '',
-      amount: '',
-      error: false,
+      amount: null,
+      invalidRecipient: false,
+      invalidAmount: false,
     }
   },
   methods: {
     async transfer() {
-      this.error = false
-      ICOService.transfer(this.amount, this.recipient)
+      const transferReturn = await ICOService.transfer(
+        this.amount,
+        this.recipient
+      )
+      // update error states
+      this.invalidAmount = transferReturn.invalidAmount
+      this.invalidRecipient = transferReturn.invalidRecipient
+      // reset input on successful transfer
+      if (!(this.invalidRecipient && this.invalidAmount)) {
+        this.reset()
+      }
     },
     reset() {
       this.recipient = ''
-      this.amount = ''
+      this.amount = null
+    },
+  },
+  watch: {
+    amount() {
+      this.invalidAmount = false
+    },
+    recipient() {
+      this.invalidRecipient = false
     },
   },
 }

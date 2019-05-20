@@ -48,7 +48,7 @@
 <script>
 import { mapState } from 'vuex'
 import { proposalManagementInstance } from '@/services/proposalManagement/getProposalManagement'
-import { getUser } from '@/services/web3/Web3Service'
+import Web3Service from '@/services/web3/Web3Service'
 export default {
   computed: {
     ...mapState('proposalManagement', ['proposals']),
@@ -78,7 +78,7 @@ export default {
       }
     },
     async vote(stance, proposalAddress) {
-      const user = await getUser()
+      const user = await Web3Service.getUser()
       const contract = await proposalManagementInstance.getInstance()
       await contract.methods.vote(stance, proposalAddress).send({ from: user })
     },
