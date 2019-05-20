@@ -22,7 +22,9 @@ export default {
       icoListeners()
       // initialize ICO state
       const payload = await ICOService.initializeICO()
-      commit('INITIALIZE', payload)
+      if (payload) {
+        commit('INITIALIZE', payload)
+      }
     },
     async updateIco({ commit }, payload) {
       commit('UPDATE_ICO', payload)

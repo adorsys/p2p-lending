@@ -14,7 +14,6 @@ import AskerRequests from '@/components/RequestManagement/UserRequests/askerRequ
 import LenderRequests from '@/components/RequestManagement/UserRequests/lenderRequests'
 
 import { mapState } from 'vuex'
-import { UPDATE_REQUESTS } from '@/util/constants/types'
 
 export default {
   computed: mapState({
@@ -24,15 +23,15 @@ export default {
     AskerRequests,
     LenderRequests,
   },
-  watch: {
-    requestManagementContract: {
-      handler: function(contractInstance) {
-        if (contractInstance !== null && contractInstance !== undefined) {
-          this.$store.dispatch(UPDATE_REQUESTS, contractInstance)
-        }
-      },
-    },
-  },
+  // watch: {
+  //   requestManagementContract: {
+  //     handler: function(contractInstance) {
+  //       if (contractInstance !== null && contractInstance !== undefined) {
+  //         this.$store.dispatch(UPDATE_REQUESTS, contractInstance)
+  //       }
+  //     },
+  //   },
+  // },
 }
 </script>
 

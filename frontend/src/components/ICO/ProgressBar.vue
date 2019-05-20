@@ -53,7 +53,7 @@ export default {
 
   &__status {
     width: 0;
-    background: $secondary-dark-color;
+    background: $adorsys-color;
     border-top-left-radius: 10px;
     border-bottom-left-radius: 10px;
     padding: 24px 0;

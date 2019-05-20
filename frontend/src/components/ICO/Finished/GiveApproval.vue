@@ -1,85 +1,84 @@
 <template>
-  <div class="transfer">
-    <div class="input-group transfer__recipient">
+  <div class="giveApproval">
+    <div class="input-group giveApproval__target">
       <input
         type="text"
-        id="transfer__recipient"
+        id="giveApproval__target"
         class="form-control"
-        v-model="recipient"
+        v-model="target"
         v-bind:class="{
-          hasContent: recipient.length > 0,
-          invalidInput: invalidRecipient,
+          hasContent: target.length > 0,
+          invalidInput: invalidTarget,
         }"
       />
-      <label for="transfer__recipient">Recipient Address</label>
+      <label for="giveApproval__target">Target Address</label>
     </div>
-    <div class="input-group transfer__amount">
+    <div class="input-group giveApproval__amount">
       <input
         type="number"
         min="1"
         onkeydown="return event.keyCode !== 69"
-        id="transfer__amount"
+        id="giveApproval__amount"
         class="form-control"
         v-model="amount"
         v-bind:class="{ hasContent: amount, invalidInput: invalidAmount }"
       />
-      <label for="transfer__amount">Transfer Amount</label>
+      <label for="giveApproval__amount">Allowance</label>
     </div>
-    <div class="transfer__buttons">
+    <div class="giveApproval__buttons">
       <div class="btn btn--light" @click="reset">Reset</div>
-      <div class="btn btn--light" @click="transfer">Transfer</div>
+      <div class="btn btn--light" @click="giveApproval">Approve</div>
     </div>
   </div>
 </template>
 
 <script>
 import { ICOService } from '@/services/icoContract/IcoService'
-
 export default {
   data() {
     return {
-      recipient: '',
+      target: '',
       amount: null,
-      invalidRecipient: false,
+      invalidTarget: false,
       invalidAmount: false,
     }
   },
   methods: {
-    async transfer() {
-      const transferReturn = await ICOService.transfer(
+    async giveApproval() {
+      const giveApprovalReturn = await ICOService.giveApproval(
         this.amount,
-        this.recipient
+        this.target
       )
       // update error states
-      this.invalidAmount = transferReturn.invalidAmount
-      this.invalidRecipient = transferReturn.invalidRecipient
+      this.invalidTarget = giveApprovalReturn.invalidTarget
+      this.invalidAmount = giveApprovalReturn.invalidAmount
       // reset input on success
-      if (!this.invalidRecipient && !this.invalidAmount) {
+      if (!this.invalidTarget && !this.invalidAmount) {
         this.reset()
       }
     },
     reset() {
-      this.recipient = ''
+      this.target = ''
       this.amount = null
     },
   },
   watch: {
+    target() {
+      this.invalidTarget = false
+    },
     amount() {
       this.invalidAmount = false
-    },
-    recipient() {
-      this.invalidRecipient = false
     },
   },
 }
 </script>
 
 <style lang="scss">
-.transfer {
+.giveApproval {
   display: grid;
   grid-template-rows: repeat(3, minmax(80px, 10vh));
 
-  &__recipient {
+  &__target {
     grid-row: 1;
   }
 

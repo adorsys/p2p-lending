@@ -11,7 +11,7 @@
 import OpenRequests from '@/components/RequestManagement/LendingRequests/openLendingRequests'
 
 import { mapState } from 'vuex'
-import { UPDATE_REQUESTS } from '@/util/constants/types'
+// import { UPDATE_REQUESTS } from '@/util/constants/types'
 
 export default {
   computed: mapState({
@@ -20,15 +20,15 @@ export default {
   components: {
     OpenRequests,
   },
-  watch: {
-    requestManagementContract: {
-      handler: function(contractInstance) {
-        if (contractInstance) {
-          this.$store.dispatch(UPDATE_REQUESTS, contractInstance)
-        }
-      },
-    },
-  },
+  // watch: {
+  //   requestManagementContract: {
+  //     handler: function(contractInstance) {
+  //       if (contractInstance) {
+  //         this.$store.dispatch(UPDATE_REQUESTS, contractInstance)
+  //       }
+  //     },
+  //   },
+  // },
 }
 </script>
 

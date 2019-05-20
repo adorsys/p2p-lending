@@ -29,8 +29,8 @@
     <div class="tokenControl__selectionContent">
       <Transfer v-if="active === 0" />
       <TransferFrom v-if="active === 1" />
-      <div v-if="active === 2">test2</div>
-      <div v-if="active === 3">test3</div>
+      <GiveApproval v-if="active === 2" />
+      <CheckAllowance v-if="active === 3" />
     </div>
   </div>
 </template>
@@ -38,11 +38,15 @@
 <script>
 import Transfer from './Transfer'
 import TransferFrom from './TransferFrom'
+import GiveApproval from './GiveApproval'
+import CheckAllowance from './CheckAllowance'
 
 export default {
   components: {
     Transfer,
     TransferFrom,
+    GiveApproval,
+    CheckAllowance,
   },
   data() {
     return {
@@ -68,6 +72,7 @@ export default {
   flex-direction: column;
 
   &__selections {
+    padding-top: 2rem;
     display: flex;
     justify-content: center;
 
@@ -85,10 +90,7 @@ export default {
     display: grid;
     grid-template-columns: 20% auto 20%;
 
-    .transfer {
-      grid-column: 2;
-    }
-    .transferFrom {
+    > div {
       grid-column: 2;
     }
   }

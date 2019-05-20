@@ -11,7 +11,7 @@
           invalidInput: invalidOrigin,
         }"
       />
-      <label for="transferFrom__origin">Originaddress</label>
+      <label for="transferFrom__origin">Origin Address</label>
     </div>
     <div class="input-group transferFrom__recipient">
       <input
@@ -24,7 +24,7 @@
           invalidInput: invalidRecipient,
         }"
       />
-      <label for="transferFrom__recipient">Recipientaddress</label>
+      <label for="transferFrom__recipient">Recipient Address</label>
     </div>
     <div class="input-group transferFrom__amount">
       <input
@@ -69,9 +69,11 @@ export default {
       this.invalidAmount = transferFromReturn.invalidAmount
       this.invalidOrigin = transferFromReturn.invalidOrigin
       this.invalidRecipient = transferFromReturn.invalidRecipient
-      // reset input on successful transfer
+      // reset input on success
       if (
-        !(this.invalidOrigin && this.invalidRecipient && this.invalidAmount)
+        !this.invalidOrigin &&
+        !this.invalidRecipient &&
+        !this.invalidAmount
       ) {
         this.reset()
       }

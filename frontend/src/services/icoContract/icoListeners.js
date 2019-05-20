@@ -24,8 +24,8 @@ const icoFinishedListener = (contract) => {
   contract.events.ICOFinished().on('data', (event) => {
     if (txHash !== event.transactionHash) {
       txHash = event.transactionHash
-      router.push({ name: 'home' })
       ICOService.updateICO()
+      router.push({ name: 'home' })
     }
   })
 }

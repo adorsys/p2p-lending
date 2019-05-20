@@ -5,63 +5,81 @@ import store from '@/state'
 
 export const ICOService = {
   initializeICO: async () => {
-    // get ICO parameters
     const contract = await ICO.get()
     if (contract) {
-      const parameters = await contract.methods.getICOParameters().call()
-      const payload = {
-        active: parameters.isActive,
-        name: parameters.icoName,
-        symbol: parameters.tokenSymbol,
-        decimals: parseFloat(parameters.numDecimals),
-        goal: await Web3Service.convertFromWei(parameters.icoGoal, 'ether'),
-        contractBalance: await Web3Service.convertFromWei(
-          parameters.icoEtherBalance,
-          'ether'
-        ),
-        tokenSupply: await Web3Service.convertFromWei(
-          parameters.totalTokenSupply,
-          'ether'
-        ),
-        participants: parseFloat(parameters.icoParticipantCount),
-        tokenHolders: parseFloat(parameters.numTrustees),
-        userInvestment: await Web3Service.convertFromWei(
-          parameters.etherBalanceUser,
-          'ether'
-        ),
-        userTokenBalance: await Web3Service.convertFromWei(
-          parameters.tokenBalanceUser,
-          'ether'
-        ),
+      try {
+        const user = await Web3Service.getUser()
+        const parameters = await contract.methods
+          .getICOParameters()
+          .call({ from: user })
+
+        const payload = {
+          active: parameters.isActive,
+          name: parameters.icoName,
+          symbol: parameters.tokenSymbol,
+          decimals: parseFloat(parameters.numDecimals),
+          goal: await Web3Service.convertFromWei(parameters.icoGoal, 'ether'),
+          contractBalance: await Web3Service.convertFromWei(
+            parameters.icoEtherBalance,
+            'ether'
+          ),
+          tokenSupply: await Web3Service.convertFromWei(
+            parameters.totalTokenSupply,
+            'ether'
+          ),
+          participants: parseFloat(parameters.icoParticipantCount),
+          tokenHolders: parseFloat(parameters.numTrustees),
+          userInvestment: await Web3Service.convertFromWei(
+            parameters.etherBalanceUser,
+            'ether'
+          ),
+          userTokenBalance: await Web3Service.convertFromWei(
+            parameters.tokenBalanceUser,
+            'ether'
+          ),
+        }
+
+        // start event listeners
+        await icoListeners()
+
+        return payload
+      } catch (error) {
+        console.error(error)
+        return null
       }
-      // start event listeners
-      await icoListeners()
-      return payload
     }
   },
   updateICO: async () => {
     const contract = await ICO.get()
     if (contract) {
-      const parameters = await contract.methods.getICOParameters().call()
+      try {
+        const user = await Web3Service.getUser()
+        const parameters = await contract.methods
+          .getICOParameters()
+          .call({ from: user })
 
-      const payload = {
-        contractBalance: await Web3Service.convertFromWei(
-          parameters.icoEtherBalance,
-          'ether'
-        ),
-        participants: parseFloat(parameters.icoParticipantCount),
-        userInvestment: await Web3Service.convertFromWei(
-          parameters.etherBalanceUser,
-          'ether'
-        ),
-        userTokenBalance: await Web3Service.convertFromWei(
-          parameters.tokenBalanceUser,
-          'ether'
-        ),
-        active: parameters.isActive,
-        tokenHolders: parseFloat(parameters.numTrustees),
+        const payload = {
+          contractBalance: await Web3Service.convertFromWei(
+            parameters.icoEtherBalance,
+            'ether'
+          ),
+          participants: parseFloat(parameters.icoParticipantCount),
+          userInvestment: await Web3Service.convertFromWei(
+            parameters.etherBalanceUser,
+            'ether'
+          ),
+          userTokenBalance: await Web3Service.convertFromWei(
+            parameters.tokenBalanceUser,
+            'ether'
+          ),
+          active: parameters.isActive,
+          tokenHolders: parseFloat(parameters.numTrustees),
+        }
+
+        store.dispatch('ico/updateIco', payload)
+      } catch (error) {
+        console.error(error)
       }
-      store.dispatch('ico/updateIco', payload)
     }
   },
   getTokenBalance: () => {
@@ -77,9 +95,11 @@ export const ICOService = {
             String(amount),
             'ether'
           )
+
           await contract.methods
             .participate()
             .send({ from: user, value: amountInWei })
+
           return true
         } catch (error) {
           console.error(error)
@@ -105,6 +125,7 @@ export const ICOService = {
             String(amount),
             'ether'
           )
+
           await contract.methods
             .transfer(recipient, amountInWei)
             .send({ from: user })
@@ -115,11 +136,46 @@ export const ICOService = {
     }
     return transferReturn
   },
+  giveApproval: async (amount, target) => {
+    const giveApprovalReturn = {
+      invalidTarget: !(await Web3Service.isValidAddress(target)),
+      invalidAmount: !(amount > 0),
+    }
+
+    if (
+      !giveApprovalReturn.invalidTarget &&
+      !giveApprovalReturn.invalidAmount
+    ) {
+      const contract = await ICO.get()
+      if (contract) {
+        try {
+          const user = await Web3Service.getUser()
+          const userBalanceInWei = await contract.methods.balanceOf(user).call()
+          const amountInWei = await Web3Service.convertToWei(
+            String(amount),
+            'ether'
+          )
+
+          if (userBalanceInWei >= amountInWei) {
+            await contract.methods
+              .approve(target, amountInWei)
+              .send({ from: user })
+          } else {
+            giveApprovalReturn.invalidAmount = true
+          }
+        } catch (error) {
+          console.error(error)
+        }
+      }
+    }
+    return giveApprovalReturn
+  },
   checkAllowance: async (owner) => {
     const checkAllowanceReturn = {
       invalidOwner: !(await Web3Service.isValidAddress(owner)),
       allowance: 0,
     }
+
     if (!checkAllowanceReturn.invalidOwner) {
       const contract = await ICO.get()
       if (contract) {
@@ -139,22 +195,22 @@ export const ICOService = {
   },
   transferFrom: async (amount, origin, recipient) => {
     const transferFromReturn = {
-      invalidAmount: true,
-      invalidOrigin: true,
+      invalidAmount:
+        (await ICOService.checkAllowance(origin)).allowance < amount,
+      invalidOrigin: !(await Web3Service.isValidAddress(origin)),
       invalidRecipient: !(await Web3Service.isValidAddress(recipient)),
     }
+
     if (
       !transferFromReturn.invalidOrigin &&
       !transferFromReturn.invalidRecipient
     ) {
-      if ((await ICOService.checkAllowance(origin)).allowance >= amount) {
-        transferFromReturn.invalidAmount = false
-        transferFromReturn.invalidOrigin =
-          !(await Web3Service.isValidAddress(origin)) && false
+      if (!transferFromReturn.invalidAmount) {
         const contract = await ICO.get()
         if (contract) {
           const amountInWei = await Web3Service.convertToWei(amount, 'ether')
           const user = await Web3Service.getUser()
+
           await contract.methods
             .transferFrom(origin, recipient, amountInWei)
             .send({ from: user })
