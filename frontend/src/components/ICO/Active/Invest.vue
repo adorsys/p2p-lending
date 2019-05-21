@@ -12,12 +12,12 @@
       />
       <label for="invest__amount">Investment (ETH)</label>
     </div>
-    <div class="btn btn--light invest__button" @click="invest">Invest</div>
+    <div class="btn btn--light invest__button" @click="submit">Invest</div>
   </div>
 </template>
 
 <script>
-import { ICOService } from '@/services/icoContract/IcoService'
+import { ICOService } from '../../../services/icoContract/IcoService'
 export default {
   data() {
     return {
@@ -26,7 +26,7 @@ export default {
     }
   },
   methods: {
-    async invest() {
+    async submit() {
       this.error = false
       if (!(await ICOService.invest(this.amount))) this.error = true
       this.amount = null

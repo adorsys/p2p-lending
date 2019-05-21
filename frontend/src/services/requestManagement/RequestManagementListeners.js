@@ -1,6 +1,6 @@
-import store from '@/state'
+// import store from '../../state'
 
-import { UPDATE_REQUESTS } from '@/util/constants/types'
+// import { UPDATE_REQUESTS } from '@/util/constants/types'
 
 export const pollRequestManagement = (contract) => {
   requestCreatedListener(contract)
@@ -16,7 +16,7 @@ const requestCreatedListener = (contract) => {
     .on('data', (event) => {
       if (txHash !== event.transactionHash) {
         txHash = event.transactionHash
-        store.dispatch(UPDATE_REQUESTS, contract)
+        // store.dispatch(UPDATE_REQUESTS, contract)
       }
     })
 }
@@ -28,7 +28,7 @@ const requestGrantedListener = (contract) => {
     .on('data', (event) => {
       if (txHash !== event.transactionHash) {
         txHash = event.transactionHash
-        store.dispatch(UPDATE_REQUESTS, contract)
+        // store.dispatch(UPDATE_REQUESTS, contract)
       }
     })
 }
@@ -40,7 +40,7 @@ const withdrawListener = (contract) => {
     .on('data', (event) => {
       if (txHash !== event.transactionHash) {
         txHash = event.transactionHash
-        store.dispatch(UPDATE_REQUESTS, contract)
+        // store.dispatch(UPDATE_REQUESTS, contract)
       }
     })
 }
@@ -52,7 +52,7 @@ const debtPaidListener = (contract) => {
     .on('data', (event) => {
       if (txHash !== event.transactionHash) {
         txHash = event.transactionHash
-        store.dispatch(UPDATE_REQUESTS, contract)
+        // store.dispatch(UPDATE_REQUESTS, contract)
       }
     })
 }

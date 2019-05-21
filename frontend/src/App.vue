@@ -12,8 +12,8 @@
 </template>
 
 <script>
-import Navbar from '@/components/Navbar/navbar'
-import Sidebar from '@/components/Sidebar/sidebar'
+import Navbar from './components/Navbar/navbar'
+import Sidebar from './components/Sidebar/sidebar'
 import { mapState } from 'vuex'
 
 export default {

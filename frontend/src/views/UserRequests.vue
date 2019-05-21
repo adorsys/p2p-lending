@@ -10,8 +10,8 @@
 </template>
 
 <script>
-import AskerRequests from '@/components/RequestManagement/UserRequests/askerRequests'
-import LenderRequests from '@/components/RequestManagement/UserRequests/lenderRequests'
+import AskerRequests from '../components/RequestManagement/UserRequests/askerRequests'
+import LenderRequests from '../components/RequestManagement/UserRequests/lenderRequests'
 
 import { mapState } from 'vuex'
 

@@ -27,13 +27,13 @@
     </div>
     <div class="transfer__buttons">
       <div class="btn btn--light" @click="reset">Reset</div>
-      <div class="btn btn--light" @click="transfer">Transfer</div>
+      <div class="btn btn--light" @click="submit">Transfer</div>
     </div>
   </div>
 </template>
 
 <script>
-import { ICOService } from '@/services/icoContract/IcoService'
+import { ICOService } from '../../../services/icoContract/IcoService'
 
 export default {
   data() {
@@ -45,7 +45,7 @@ export default {
     }
   },
   methods: {
-    async transfer() {
+    async submit() {
       const transferReturn = await ICOService.transfer(
         this.amount,
         this.recipient

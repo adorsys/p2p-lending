@@ -27,13 +27,13 @@
     </div>
     <div class="giveApproval__buttons">
       <div class="btn btn--light" @click="reset">Reset</div>
-      <div class="btn btn--light" @click="giveApproval">Approve</div>
+      <div class="btn btn--light" @click="approve">Approve</div>
     </div>
   </div>
 </template>
 
 <script>
-import { ICOService } from '@/services/icoContract/IcoService'
+import { ICOService } from '../../../services/icoContract/IcoService'
 export default {
   data() {
     return {
@@ -44,7 +44,7 @@ export default {
     }
   },
   methods: {
-    async giveApproval() {
+    async approve() {
       const giveApprovalReturn = await ICOService.giveApproval(
         this.amount,
         this.target

@@ -1,4 +1,4 @@
-import data from '@/../../build/contracts/RequestManagement.json'
+import data from '../../../../build/contracts/RequestManagement.json'
 import { web3Instance } from '../web3/Web3Service'
 
 const abi = data.abi

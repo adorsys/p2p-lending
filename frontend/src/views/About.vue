@@ -4,14 +4,13 @@
     <div class="about__content">
       <div>
         <p class="lead">
-          p2p-lending is a decentralized platform that uses the results of
+          p2p-Lending is a decentralized platform that uses the results of
           several bachelor and master theses by students working at
         </p>
         <p class="lead company">adorsys GmbH & Co. KG</p>
-        <p class="lead"
-          >in order to illustrate the possibilities of blockchain
-          technologies</p
-        >
+        <p class="lead">
+          in order to illustrate the possibilities of blockchain technologies
+        </p>
       </div>
     </div>
   </div>

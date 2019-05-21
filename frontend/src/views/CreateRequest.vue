@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import NewRequest from '@/components/RequestManagement/CreateRequest/NewRequest'
+import NewRequest from '../components/RequestManagement/CreateRequest/NewRequest'
 import { mapState } from 'vuex'
 export default {
   name: 'CreateRequest',

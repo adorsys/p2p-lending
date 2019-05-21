@@ -1,7 +1,6 @@
 import { ICO } from './ICO'
-import { icoListeners } from './icoListeners'
-import Web3Service from '../web3/Web3Service'
-import store from '@/state'
+import { Web3Service } from '../web3/Web3Service'
+import store from '../../state'
 
 export const ICOService = {
   initializeICO: async () => {
@@ -39,9 +38,6 @@ export const ICOService = {
           ),
         }
 
-        // start event listeners
-        await icoListeners()
-
         return payload
       } catch (error) {
         console.error(error)
@@ -75,12 +71,12 @@ export const ICOService = {
           active: parameters.isActive,
           tokenHolders: parseFloat(parameters.numTrustees),
         }
-
-        store.dispatch('ico/updateIco', payload)
+        return payload
       } catch (error) {
         console.error(error)
       }
     }
+    return null
   },
   getTokenBalance: () => {
     return store.state.ico.userTokenBalance
@@ -200,7 +196,6 @@ export const ICOService = {
       invalidOrigin: !(await Web3Service.isValidAddress(origin)),
       invalidRecipient: !(await Web3Service.isValidAddress(recipient)),
     }
-
     if (
       !transferFromReturn.invalidOrigin &&
       !transferFromReturn.invalidRecipient

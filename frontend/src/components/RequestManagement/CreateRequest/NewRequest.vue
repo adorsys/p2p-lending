@@ -51,7 +51,7 @@
 </template>
 
 <script>
-import Web3Service from '@/services/web3/Web3Service'
+import { Web3Service } from '../../../services/web3/Web3Service'
 export default {
   data() {
     return {

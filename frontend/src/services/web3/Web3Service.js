@@ -1,6 +1,6 @@
 import { getWeb3 } from './getWeb3'
 
-const Web3Service = {
+export const Web3Service = {
   web3Active: async () => {
     const web3 = await getWeb3.get()
     return await web3.eth.net.isListening()
@@ -52,5 +52,3 @@ const validUnits = [
   'finney',
   'ether',
 ]
-
-export default Web3Service

@@ -1,5 +1,5 @@
-import { ICOService } from '@/services/icoContract/IcoService'
-import { icoListeners } from '@/services/icoContract/icoListeners'
+import { ICOService } from '../../services/icoContract/IcoService'
+import { icoListeners } from '../../services/icoContract/icoListeners'
 
 export default {
   namespaced: true,
@@ -17,21 +17,20 @@ export default {
     userInvestment: null,
   },
   actions: {
-    async initialize({ commit }) {
-      // start ICO event listeners
-      icoListeners()
-      // initialize ICO state
+    async initializeIco({ commit }) {
       const payload = await ICOService.initializeICO()
       if (payload) {
-        commit('INITIALIZE', payload)
+        icoListeners()
+        commit('INITIALIZE_ICO', payload)
       }
     },
-    async updateIco({ commit }, payload) {
-      commit('UPDATE_ICO', payload)
+    async updateIco({ commit }) {
+      const payload = await ICOService.updateICO()
+      if (payload) commit('UPDATE_ICO', payload)
     },
   },
   mutations: {
-    INITIALIZE(state, payload) {
+    INITIALIZE_ICO(state, payload) {
       state.active = payload.active
       state.goal = payload.goal
       state.decimals = payload.decimals

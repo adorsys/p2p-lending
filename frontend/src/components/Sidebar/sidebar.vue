@@ -46,7 +46,10 @@
                   >Token Management</router-link
                 >
               </li>
-              <li class="sidebar__request-item" v-if="boardMember">
+              <li
+                class="sidebar__request-item"
+                v-if="boardMember || tokenHolder"
+              >
                 <router-link
                   :to="{ name: 'p2pManagement' }"
                   class="sidebar__link"

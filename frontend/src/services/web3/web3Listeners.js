@@ -1,4 +1,4 @@
-import store from '@/state'
+import store from '../../state'
 import { ICOService } from '../icoContract/IcoService'
 
 export const accountListener = () => {

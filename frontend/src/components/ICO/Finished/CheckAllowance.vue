@@ -25,7 +25,7 @@
 </template>
 
 <script>
-import { ICOService } from '@/services/icoContract/IcoService'
+import { ICOService } from '../../../services/icoContract/IcoService'
 import { mapState } from 'vuex'
 
 export default {

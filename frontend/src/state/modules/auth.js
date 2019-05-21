@@ -1,8 +1,8 @@
-import router from '@/router'
-import store from '@/state'
-import Web3Service from '@/services/web3/Web3Service'
-import { accountListener } from '@/services/web3/web3Listeners'
-import { authenticate } from '@/services/authenticate'
+import router from '../../router'
+import store from '../../state'
+import { Web3Service } from '../../services/web3/Web3Service'
+import { accountListener } from '../../services/web3/web3Listeners'
+import { authenticate } from '../../services/authenticate'
 
 export default {
   namespaced: true,
@@ -12,12 +12,19 @@ export default {
     boardMember: false,
   },
   actions: {
-    async initialize({ commit }) {
-      // start account changed listener
-      accountListener()
+    async initialize({ commit, dispatch }) {
       // check if web3 is available
       const injected = await Web3Service.web3Active()
-      commit('INITIALIZE', injected)
+      if (injected) {
+        dispatch('ico/initializeIco', null, {
+          root: true,
+        })
+        dispatch('proposalManagement/initializeProposalManagement', null, {
+          root: true,
+        })
+        accountListener()
+        commit('INITIALIZE', injected)
+      }
     },
     async logIn({ commit }) {
       const payload = await authenticate()

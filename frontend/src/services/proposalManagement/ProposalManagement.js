@@ -1,8 +1,8 @@
-import data from '../../../../build/contracts/TrustToken.json'
+import data from '../../../../build/contracts/ProposalManagement.json'
 import { Web3Service } from '../web3/Web3Service'
 
-// ICO Singleton
-export const ICO = (function() {
+// ProposalManagement Singleton
+export const ProposalManagement = (function() {
   let instance
 
   async function initialize() {
@@ -16,7 +16,7 @@ export const ICO = (function() {
       if (!instance) {
         instance = await initialize()
       }
-      return instance
+      return await instance
     },
   }
 })()

@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import OpenRequests from '@/components/RequestManagement/LendingRequests/openLendingRequests'
+import OpenRequests from '../components/RequestManagement/LendingRequests/openLendingRequests'
 
 import { mapState } from 'vuex'
 // import { UPDATE_REQUESTS } from '@/util/constants/types'
