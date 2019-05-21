@@ -14,6 +14,7 @@
     </div>
     <div class="proposalControl__memberProposals">
       <CreateMemberProposal class="proposalControl__createMemberProposal" />
+      <MemberProposals />
     </div>
   </div>
 </template>
@@ -22,6 +23,7 @@
 import CreateContractFeeProposal from './MemberFunctionality/CreateContractFeeProposal'
 import FeeProposals from './MemberFunctionality/FeeProposals'
 import CreateMemberProposal from './TokenHolderFunctionality/CreateMemberProposal'
+import MemberProposals from './TokenHolderFunctionality/MemberProposals'
 import { mapState } from 'vuex'
 
 export default {
@@ -34,6 +36,7 @@ export default {
     CreateContractFeeProposal,
     FeeProposals,
     CreateMemberProposal,
+    MemberProposals,
   },
 }
 </script>
