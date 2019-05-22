@@ -40,8 +40,10 @@ export const ProposalManagementService = {
         if (address == null) {
           address = await Web3Service.getUser()
         }
-        const memberId = await contract.methods.memberId(address).call()
-        return memberId > 0
+        if (address) {
+          const memberId = await contract.methods.memberId(address).call()
+          return memberId > 0
+        }
       } catch (error) {
         console.error(error)
       }
@@ -52,25 +54,25 @@ export const ProposalManagementService = {
     if (!(proposedFee > 0) || !proposedFee) {
       return false
     }
-
     // prevent non member call
     const isMember = await ProposalManagementService.getMemberStatus()
     if (!isMember) {
       return false
     }
-
     const contract = await ProposalManagement.get()
     if (contract) {
       try {
         const user = await Web3Service.getUser()
-        const feeInWei = await Web3Service.convertToWei(
-          String(proposedFee),
-          'ether'
-        )
-        await contract.methods
-          .createContractFeeProposal(feeInWei)
-          .send({ from: user })
-        return true
+        if (user) {
+          const feeInWei = await Web3Service.convertToWei(
+            String(proposedFee),
+            'ether'
+          )
+          await contract.methods
+            .createContractFeeProposal(feeInWei)
+            .send({ from: user })
+          return true
+        }
       } catch (error) {
         console.error(error)
       }
@@ -82,32 +84,31 @@ export const ProposalManagementService = {
       invalidAddress: !(await Web3Service.isValidAddress(memberAddress)),
       invalidAction: true,
     }
-
     // check if proposal for memberAddress exists already
-    store.state.proposalManagement.proposals.forEach((element) => {
-      if (
-        String(element.memberAddress).toLowerCase() ===
-        String(memberAddress).toLowerCase()
-      ) {
-        memberProposalReturn.invalidAddress = true
-        return memberProposalReturn
+    // Array.propotype.some() returns when first truthy element was found
+    memberProposalReturn.invalidAddress = store.state.proposalManagement.proposals.some(
+      (element) => {
+        return (
+          String(element.memberAddress).toLowerCase() ===
+          String(memberAddress).toLowerCase()
+        )
       }
-    })
-
+    )
+    // return on invalid address found
+    if (memberProposalReturn.invalidAddress) {
+      return memberProposalReturn
+    }
     if (memberAddress.length > 0) {
       const memberStatus = await ProposalManagementService.getMemberStatus(
         memberAddress
       )
       /**
        * action is valid for memberAddress
-       * action === true -> addMember
-       * action === false -> removeMember
-       * memberStatus === true -> action has to be removeMember
-       * meberStatus === false -> action has to be addMember
+       * action === true -> addMember -> memberStatus === false
+       * action === false -> removeMember -> memberStatus === true
        */
       memberProposalReturn.invalidAction = memberStatus ? action : !action
     }
-
     if (
       !memberProposalReturn.invalidAddress &&
       !memberProposalReturn.invalidAction
@@ -121,9 +122,11 @@ export const ProposalManagementService = {
       if (contract) {
         try {
           const user = await Web3Service.getUser()
-          await contract.methods
-            .createMemberProposal(memberAddress, action)
-            .send({ from: user })
+          if (user) {
+            await contract.methods
+              .createMemberProposal(memberAddress, action)
+              .send({ from: user })
+          }
         } catch (error) {
           console.error(error)
         }
@@ -135,19 +138,19 @@ export const ProposalManagementService = {
     if (!(await Web3Service.isValidAddress(address))) {
       return false
     }
-
     // prevent call from non member
     const calleeIsMember = await ProposalManagementService.getMemberStatus()
     if (!calleeIsMember) {
       return false
     }
-
     const contract = await ProposalManagement.get()
     if (contract) {
-      const user = await Web3Service.getUser()
       try {
-        await contract.methods.vote(stance, address).send({ from: user })
-        return true
+        const user = await Web3Service.getUser()
+        if (user) {
+          await contract.methods.vote(stance, address).send({ from: user })
+          return true
+        }
       } catch (error) {
         console.error(error)
       }
