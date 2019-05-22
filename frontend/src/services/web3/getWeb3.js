@@ -4,10 +4,11 @@ export const getWeb3 = (function() {
   let instance
 
   function initialize() {
-    const provider =
-      'ethereum' in window ? window.ethereum : window.web3.currentProvider
-    if (provider) {
-      return new Web3(provider)
+    if (window.ethereum) {
+      // eslint-disable-next-line no-undef
+      return new Web3(ethereum)
+    } else if (typeof window.web3 !== 'undefined') {
+      return new Web3(window.web3.currentProvider)
     } else {
       return null
     }
@@ -17,9 +18,11 @@ export const getWeb3 = (function() {
     get: async function() {
       if (!instance) {
         instance = initialize()
+        if (instance) {
+          // eslint-disable-next-line no-undef
+          await ethereum.enable()
+        }
       }
-      // eslint-disable-next-line no-undef
-      await ethereum.enable()
       return instance
     },
   }

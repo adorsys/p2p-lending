@@ -42,15 +42,6 @@ export default new Router({
       path: '/ico',
       name: 'ico',
       component: () => import(/* webpackChunkName: "ICO" */ './views/ICO.vue'),
-      beforeEnter: (to, from, next) => {
-        if (store.state.ico.active) {
-          next()
-        } else if (store.state.auth.tokenHolder && !store.state.ico.active) {
-          next()
-        } else {
-          next({ name: 'home' })
-        }
-      },
     },
     {
       path: '/lendingRequests',

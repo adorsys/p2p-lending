@@ -27,9 +27,10 @@ export default {
   },
   methods: {
     async submit() {
-      this.error = false
-      if (!(await ICOService.invest(this.amount))) this.error = true
-      this.amount = null
+      this.error = !(await ICOService.invest(this.amount))
+      if (!this.error) {
+        this.amount = null
+      }
     },
   },
   watch: {

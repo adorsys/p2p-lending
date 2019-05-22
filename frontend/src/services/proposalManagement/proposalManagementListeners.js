@@ -1,10 +1,16 @@
+import { ProposalManagement } from './ProposalManagement'
 import store from '../../state'
 
-export const proposalManagementListeners = async (contract) => {
-  proposalCreatedListener(contract)
-  proposalExecutedListener(contract)
-  contractFeeListener(contract)
-  membershipChangedListener(contract)
+export const proposalManagementListeners = async () => {
+  const contract = await ProposalManagement.get()
+  if (contract) {
+    proposalCreatedListener(contract)
+    proposalExecutedListener(contract)
+    contractFeeListener(contract)
+    membershipChangedListener(contract)
+  } else {
+    throw new Error('ProposalMangementListeners failed')
+  }
 }
 
 const proposalCreatedListener = (contract) => {

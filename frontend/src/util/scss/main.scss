@@ -18,6 +18,36 @@ body {
 #app {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  height: 100vh;
+  width: 100vw;
+  display: grid;
+  grid-template-rows: 6vh 1fr;
+
+  > .content {
+    grid-row: 2;
+    height: 100%;
+    width: 100%;
+    display: grid;
+    align-items: center;
+
+    &--hasWeb3 {
+      grid-template-columns: $sidebar-width auto;
+
+      > .sidebar {
+        align-self: stretch;
+      }
+    }
+
+    &.tokenSale {
+      grid-template-columns: auto;
+    }
+
+    &--noWeb3 {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+  }
 }
 
 // remove number input spinner for input type='number'
@@ -30,23 +60,6 @@ input[type='number']::-webkit-outer-spin-button {
 a {
   text-decoration: none;
   color: $navigation-color;
-}
-
-.content {
-  height: 100vh;
-  width: 100vw;
-  display: grid;
-  grid-template-columns: $sidebar-width auto;
-  grid-template-rows: 6vh 1fr;
-
-  .view {
-    grid-column: 2;
-    grid-row: 2;
-
-    &--icoActive {
-      grid-column: 1 / 3;
-    }
-  }
 }
 
 .button {

@@ -1,5 +1,4 @@
 import { ProposalManagement } from './ProposalManagement'
-import { proposalManagementListeners } from './proposalManagementListeners'
 import { Web3Service } from '../web3/Web3Service'
 import store from '../../state'
 
@@ -8,7 +7,6 @@ export const ProposalManagementService = {
     const proposalParameters = []
     const contract = await ProposalManagement.get()
     if (contract) {
-      proposalManagementListeners(contract)
       try {
         const proposals = await contract.methods.getProposals().call()
         if (proposals.length > 0) {

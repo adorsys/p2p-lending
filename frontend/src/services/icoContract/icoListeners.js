@@ -4,9 +4,13 @@ import { ICO } from './ICO'
 
 export const icoListeners = async () => {
   const contract = await ICO.get()
-  participatedListener(contract)
-  icoFinishedListener(contract)
-  transferListener(contract)
+  if (contract) {
+    participatedListener(contract)
+    icoFinishedListener(contract)
+    transferListener(contract)
+  } else {
+    throw new Error('ICOListeners failed')
+  }
 }
 
 const participatedListener = (contract) => {

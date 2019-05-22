@@ -1,9 +1,6 @@
 @import '../../util/scss/variables';
 
 .sidebar {
-  grid-column: 1;
-  grid-row: 2;
-  opacity: 0.9;
   border-right: solid 2px $border-color-light;
 
   &__container {

@@ -1,4 +1,5 @@
 import { ProposalManagementService } from '../../services/proposalManagement/ProposalManagementService'
+import { proposalManagementListeners } from '../../services/proposalManagement/proposalManagementListeners'
 
 export default {
   namespaced: true,
@@ -12,7 +13,14 @@ export default {
         proposals: await ProposalManagementService.getProposals(),
         contractFee: await ProposalManagementService.getContractFee(),
       }
-      commit('INITIALIZE_PROPOSAL_MANAGEMENT', payload)
+      if (payload.contractFee) {
+        commit('INITIALIZE_PROPOSAL_MANAGEMENT', payload)
+        try {
+          proposalManagementListeners()
+        } catch (error) {
+          console.error(error)
+        }
+      }
     },
     async updateFee({ commit }) {
       const newFee = await ProposalManagementService.getContractFee()

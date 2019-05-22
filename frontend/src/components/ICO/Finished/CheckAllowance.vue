@@ -18,8 +18,7 @@
       <div class="btn btn--light" @click="checkAllowance">Check</div>
     </div>
     <div class="checkAllowance__allowance" v-if="allowance !== null">
-      <p class="lead">Current Allowance for checked Account:</p>
-      <p class="large">{{ allowance }} {{ symbol }}</p>
+      <div class="lead">Current Allowance: {{ allowance }} {{ symbol }}</div>
     </div>
   </div>
 </template>

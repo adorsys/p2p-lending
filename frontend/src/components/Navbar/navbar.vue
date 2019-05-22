@@ -10,13 +10,13 @@
     <div
       class="navbar__link"
       @click="login"
-      v-if="!active && !boardMember && !tokenHolder"
+      v-if="isInjected && !active && !boardMember && !tokenHolder"
       >LogIn</div
     >
     <div
       class="navbar__link"
       @click="logout"
-      v-if="!active && (boardMember || tokenHolder)"
+      v-if="isInjected && !active && (boardMember || tokenHolder)"
       >LogOut</div
     >
   </nav>
@@ -26,7 +26,7 @@
 import { mapState, mapActions } from 'vuex'
 export default {
   computed: {
-    ...mapState('auth', ['tokenHolder', 'boardMember']),
+    ...mapState('auth', ['tokenHolder', 'boardMember', 'isInjected']),
     ...mapState('ico', ['active']),
   },
   methods: {

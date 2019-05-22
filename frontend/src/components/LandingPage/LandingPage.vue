@@ -17,9 +17,7 @@
     </ul>
     <p class="lead">
       Invest and participate in the ecosystem
-      <router-link :to="{ name: 'ico' }" class="landingPage__invest"
-        >here</router-link
-      >
+      <router-link :to="{ name: 'ico' }" class="link">here</router-link>
     </p>
   </div>
   <div class="landingPage" v-else>
@@ -39,24 +37,16 @@
         >Your Request</router-link
       >
     </div>
-    <div class="btn btn--light" @click="test">Test</div>
   </div>
 </template>
 
 <script>
 import { mapState } from 'vuex'
-import { ProposalManagementService } from '../../services/proposalManagement/ProposalManagementService'
 export default {
   name: 'LandingPage',
   computed: {
     ...mapState('ico', ['active']),
     ...mapState('proposalManagement', ['proposals']),
-  },
-  methods: {
-    async test() {
-      console.log(await ProposalManagementService.getProposals())
-      console.log(this.proposals[0])
-    },
   },
 }
 </script>

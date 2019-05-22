@@ -36,12 +36,12 @@
           </li>
         </ul>
       </li>
-      <li class="sidebar__items" v-if="boardMember || tokenHolder">
+      <li class="sidebar__items">
         <ul class="sidebar__container">
           <li class="sidebar__request sidebar__title">Management</li>
           <li class="sidebar__request">
             <ul class="sidebar__request-items">
-              <li class="sidebar__request-item" v-if="tokenHolder">
+              <li class="sidebar__request-item">
                 <router-link :to="{ name: 'ico' }" class="sidebar__link"
                   >Token Management</router-link
                 >

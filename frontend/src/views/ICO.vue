@@ -22,12 +22,11 @@ import InvestStatus from '../components/ICO/Active/InvestStatus'
 import IcoStats from '../components/ICO/IcoStats'
 import TokenControl from '../components/ICO/Finished/TokenControl'
 
-import { createNamespacedHelpers } from 'vuex'
-const { mapState } = createNamespacedHelpers('ico')
+import { mapState } from 'vuex'
 
 export default {
   computed: {
-    ...mapState(['active', 'contractBalance', 'goal']),
+    ...mapState('ico', ['active', 'contractBalance', 'goal']),
   },
   components: {
     Invest,
