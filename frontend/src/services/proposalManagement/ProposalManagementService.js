@@ -4,27 +4,26 @@ import store from '../../state'
 
 export const ProposalManagementService = {
   getProposals: async () => {
-    const proposalParameters = []
+    const proposals = []
     const contract = await ProposalManagement.get()
     if (contract) {
       try {
-        const proposals = await contract.methods.getProposals().call()
-        if (proposals.length > 0) {
+        const props = await contract.methods.getProposals().call()
+        if (props.length > 0) {
           await Promise.all(
-            proposals.map(async (element) => {
+            props.map(async (element) => {
               const prop = await contract.methods
                 .getProposalParameters(element)
                 .call()
-              proposalParameters.push(prop)
+              proposals.push(prop)
             })
           )
         }
-        return proposalParameters
       } catch (error) {
         console.error(error)
       }
     }
-    return proposalParameters
+    return proposals
   },
   getContractFee: async () => {
     const contract = await ProposalManagement.get()

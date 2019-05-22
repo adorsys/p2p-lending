@@ -1,12 +1,17 @@
+import { RequestManagement } from './RequestManagement'
+
 // import store from '../../state'
 
-// import { UPDATE_REQUESTS } from '@/util/constants/types'
-
-export const pollRequestManagement = (contract) => {
-  requestCreatedListener(contract)
-  requestGrantedListener(contract)
-  withdrawListener(contract)
-  debtPaidListener(contract)
+export const requestManagementListeners = async () => {
+  const contract = await RequestManagement.get()
+  if (contract) {
+    requestCreatedListener(contract)
+    requestGrantedListener(contract)
+    withdrawListener(contract)
+    debtPaidListener(contract)
+  } else {
+    throw new Error('requestManagementListeners failed')
+  }
 }
 
 const requestCreatedListener = (contract) => {

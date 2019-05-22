@@ -6,8 +6,9 @@ export const ICO = (function() {
   let instance
 
   async function initialize() {
+    const network = await Web3Service.getCurrentNetwork()
     const abi = data.abi
-    const address = data.networks[Object.keys(data.networks)[0]].address
+    const address = data.networks[network].address
     return await Web3Service.initializeContract(abi, address)
   }
 

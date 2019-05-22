@@ -11,8 +11,8 @@ interface LendingRequestInterface {
     function cancelRequest() external;
     function asker() external view returns(address payable);
     function withdrawnByLender() external view returns(bool);
-    function getProposalParameters() external view returns(address payable, address payable, uint256, uint256, uint256, string memory);
-    function getProposalState() external view returns(bool, bool, bool, bool);
+    function getRequestParameters() external view returns(address payable, address payable, uint256, uint256, uint256, string memory);
+    function getRequestState() external view returns(bool, bool, bool, bool);
 }
 
 contract RequestManagement {
@@ -139,18 +139,18 @@ contract RequestManagement {
      * @return lent wheather the money was lent or not
      * @return debtSettled wheather the debt was settled by the asker
      */
-    function getProposalParameters(address payable _lendingRequest)
+    function getRequestParameters(address payable _lendingRequest)
         public
         view
         returns (address asker, address lender, uint256 askAmount, uint256 paybackAmount, uint256 contractFee, string memory purpose) {
-        (asker, lender, askAmount, paybackAmount, contractFee, purpose) = LendingRequestInterface(_lendingRequest).getProposalParameters();
+        (asker, lender, askAmount, paybackAmount, contractFee, purpose) = LendingRequestInterface(_lendingRequest).getRequestParameters();
     }
 
-    function getProposalState(address payable _lendingRequest)
+    function getRequestState(address payable _lendingRequest)
         public
         view
         returns (bool verifiedAsker, bool lent, bool withdrawnByAsker, bool debtSettled) {
-        return LendingRequestInterface(_lendingRequest).getProposalState();
+        return LendingRequestInterface(_lendingRequest).getRequestState();
     }
 
     /**

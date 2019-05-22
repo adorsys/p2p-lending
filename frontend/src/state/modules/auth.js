@@ -40,9 +40,7 @@ export default {
       commit('INITIALIZE', payload)
     },
     async logIn({ commit }) {
-      console.log('login')
       const payload = await authenticate()
-      console.log(payload)
       commit('LOGIN', payload)
     },
     logOut({ commit }) {

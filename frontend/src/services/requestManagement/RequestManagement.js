@@ -1,8 +1,8 @@
-import data from '../../../../build/contracts/ProposalManagement.json'
+import data from '../../../../build/contracts/RequestManagement.json'
 import { Web3Service } from '../web3/Web3Service'
 
-// ProposalManagement Singleton
-export const ProposalManagement = (function() {
+// RequestManagement Singleton
+export const RequestManagement = (function() {
   let instance
 
   async function initialize() {
@@ -13,7 +13,7 @@ export const ProposalManagement = (function() {
   }
 
   return {
-    get: async function() {
+    get: async () => {
       if (!instance) {
         instance = await initialize()
       }

@@ -137,7 +137,7 @@ contract LendingRequest {
     /**
      * @notice getter for all relevant information of the lending request
      */
-    function getProposalParameters() external view
+    function getRequestParameters() external view
         returns (address payable, address payable, uint256, uint256, uint256, string memory) {
         return (asker, lender, amountAsked, paybackAmount, contractFee, purpose);
     }
@@ -145,7 +145,7 @@ contract LendingRequest {
     /**
      * @notice getter for proposal state
      */
-    function getProposalState() external view returns (bool, bool, bool, bool) {
+    function getRequestState() external view returns (bool, bool, bool, bool) {
         return (verifiedAsker, moneyLent, withdrawnByAsker, debtSettled);
     }
 }
