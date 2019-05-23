@@ -2,6 +2,9 @@
 
 .sidebar {
   border-right: solid 2px $border-color-light;
+  position: fixed;
+  height: 100%;
+  width: 320px;
 
   &__container {
     display: flex;

@@ -34,6 +34,12 @@ export default {
           dispatch('proposalManagement/initializeProposalManagement', null, {
             root: true,
           })
+          dispatch('requestManagement/initializeRequestManagement', null, {
+            root: true,
+          })
+          dispatch('requestManagement/getRequests', null, {
+            root: true,
+          })
           accountListener()
         }
       }

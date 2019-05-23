@@ -14,12 +14,8 @@ export default {
         contractFee: await ProposalManagementService.getContractFee(),
       }
       if (payload.contractFee) {
+        proposalManagementListeners()
         commit('INITIALIZE_PROPOSAL_MANAGEMENT', payload)
-        try {
-          proposalManagementListeners()
-        } catch (error) {
-          console.error(error)
-        }
       }
     },
     async updateFee({ commit }) {

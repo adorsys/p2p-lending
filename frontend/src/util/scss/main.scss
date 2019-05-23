@@ -13,39 +13,35 @@ body {
   text-align: center;
   background-color: $primary-light-color;
   height: 100vh;
+  width: 100vw;
 }
 
 #app {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  height: 100vh;
-  width: 100vw;
+  height: 100%;
+  width: 100%;
   display: grid;
-  grid-template-rows: 6vh 1fr;
+  grid-template-rows: 50px calc(100vh - 50px);
 
   > .content {
     grid-row: 2;
     height: 100%;
     width: 100%;
     display: grid;
-    align-items: center;
 
     &--hasWeb3 {
-      grid-template-columns: $sidebar-width auto;
+      grid-template-columns: $sidebar-width calc(100vw - 320px);
 
-      > .sidebar {
-        align-self: stretch;
+      > section {
+        grid-column: 2;
       }
     }
 
     &.tokenSale {
-      grid-template-columns: auto;
-    }
-
-    &--noWeb3 {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
+      > section {
+        grid-column: 1 / 3;
+      }
     }
   }
 }
@@ -60,104 +56,4 @@ input[type='number']::-webkit-outer-spin-button {
 a {
   text-decoration: none;
   color: $navigation-color;
-}
-
-.button {
-  all: unset;
-  display: inline-block;
-  margin-top: 25px;
-  margin-right: 0.5em;
-  margin-bottom: 25px;
-  margin-left: 0.5em;
-  padding: 0.5em 1.25em;
-  width: 70px;
-  cursor: pointer;
-  background: $background-color-inactive;
-  color: $link-text-color-darkened;
-  border: 1px solid rgba($color: $border-color, $alpha: 0.3);
-  border-radius: 4px;
-  box-shadow: 0 0px 12px -6px rgba($color: #000000, $alpha: 0.3);
-  font-weight: 600;
-}
-
-.button--table {
-  margin: 7px;
-  margin-left: 7%;
-  margin-right: 7%;
-  padding: 5px;
-  background: $background-color-inactive;
-  border: 1px solid rgba($color: $text-color-dark, $alpha: 0.4);
-  color: $text-color-dark;
-}
-
-.table {
-  text-align: center;
-  margin-left: auto;
-  margin-right: auto;
-  padding-top: 1em;
-  margin-bottom: 20px;
-  border-collapse: collapse;
-  border: 1px solid $text-color-dark;
-  width: 90%;
-}
-
-.table__head {
-  text-transform: uppercase;
-  text-align: center;
-  background: $background-color-inactive;
-  color: $text-color-dark;
-  padding: 8px;
-  min-width: 15%;
-  height: 30px;
-  border-right: 1px solid $text-color-dark;
-}
-
-.table__head:last-of-type {
-  border-right: none;
-}
-
-.table__data {
-  text-align: center;
-  padding: 12px;
-  border: 1px solid $text-color-dark;
-  background-color: $background-color;
-  color: $text-color-dark;
-}
-
-.table__data--asker {
-  width: 400px;
-}
-
-.table__data--payback {
-  width: 180px;
-}
-
-.table__data--buttons {
-  padding: 0;
-  width: 135px;
-  justify-self: center;
-}
-
-.table__data--status {
-  width: 100px;
-}
-
-.table__data:first-of-type {
-  border-left: none;
-}
-
-.table__data:last-of-type {
-  border-right: none;
-}
-
-.table__row:last-of-type .table__data {
-  border-bottom: none;
-}
-
-.table__row:nth-child(2n) .table__data {
-  background: $background-color-inactive;
-}
-
-.table__row:nth-child(2n) .button--table {
-  background: $navbar-hover-color;
 }

@@ -7,7 +7,9 @@
       v-bind:class="{ tokenSale: active }"
     >
       <Sidebar v-if="!active" />
-      <router-view />
+      <section>
+        <router-view />
+      </section>
     </div>
     <div class="content" v-else>
       <ErrorContent />

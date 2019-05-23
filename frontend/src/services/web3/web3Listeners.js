@@ -7,9 +7,9 @@ export const accountListener = () => {
     store.dispatch('ico/updateIco')
 
     if (!store.state.ico.active) {
-      // Token were distributed
-      console.log('icoInactive account change')
-      // update requests
+      store.dispatch('requestManagement/getRequests')
+      store.dispatch('proposalManagement/refreshProposals')
+      store.dispatch('proposalManagement/updateFee')
     }
   })
 }

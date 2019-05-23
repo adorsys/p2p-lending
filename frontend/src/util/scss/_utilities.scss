@@ -59,18 +59,36 @@
 }
 
 // buttons
-
 .btn {
   all: unset;
   display: inline-block;
-  width: 10rem;
-  height: 2rem;
-  padding: 0.25rem 0;
+  width: 160px;
+  height: 32px;
+  padding: 4px 0;
   cursor: pointer;
   border-radius: 2px;
   margin: 0.5rem;
   font-size: 1.2rem;
   font-weight: 700;
+
+  &--table {
+    @include set-background($primary-light-color);
+    @include set-shadow-and-border($primary-light-color);
+    transition: all 0.2s ease-in-out;
+
+    &:hover {
+      @include set-background(
+        scale-color($primary-light-color, $lightness: -5%)
+      );
+      @include set-shadow-and-border(
+        scale-color($primary-light-color, $lightness: -20%)
+      );
+    }
+    width: 125px;
+    height: 24px;
+    padding-top: 0;
+    padding-bottom: 6px;
+  }
 
   &--primary {
     @include set-background($primary-color);
@@ -114,16 +132,6 @@
       );
     }
   }
-}
-
-// overlay(s)
-.dark-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: 100%;
-  background-color: rgba($color: #000000, $alpha: 0.8);
 }
 
 // background(s)
@@ -186,5 +194,52 @@
     top: -25px;
     color: $navigation-color-hover;
     font-size: 1.2rem;
+  }
+}
+
+// table layout
+.table__wrapper {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 10% auto 10%;
+}
+.table {
+  grid-column: 2;
+  border-collapse: collapse;
+  box-shadow: 0 0 12px -6px rgba($color: $primary-font-color, $alpha: 0.3);
+  border: 1px solid rgba($color: $primary-dark-color, $alpha: 0.3);
+
+  &__head {
+    height: 65px;
+    width: 150px;
+    border-bottom: 1px solid $primary-dark-color;
+    font-size: 1.4rem;
+    font-weight: 400;
+    color: $adorsys-color;
+    text-transform: uppercase;
+    padding-left: 0.25rem;
+    padding-right: 0.25rem;
+  }
+
+  &__row {
+    height: 55px;
+    font-size: 0.9rem;
+
+    &:last-of-type {
+      border-bottom: none;
+    }
+
+    &:hover {
+      background-color: rgba($color: $primary-color, $alpha: 0.7);
+    }
+  }
+
+  &__data {
+    padding-left: 0.25rem;
+    padding-right: 0.25rem;
+
+    &.trusted {
+      color: green;
+    }
   }
 }

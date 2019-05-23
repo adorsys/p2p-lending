@@ -8,11 +8,11 @@
         >Current Fee: {{ contractFee }} ETH</p
       >
     </div>
-    <div class="proposalControl__feeProposals">
+    <div class="proposalControl__feeProposals" v-if="boardMember">
       <CreateContractFeeProposal class="proposalControl__createFeeProposal" />
       <FeeProposals />
     </div>
-    <div class="proposalControl__memberProposals">
+    <div class="proposalControl__memberProposals" v-if="tokenHolder">
       <CreateMemberProposal class="proposalControl__createMemberProposal" />
       <MemberProposals />
     </div>

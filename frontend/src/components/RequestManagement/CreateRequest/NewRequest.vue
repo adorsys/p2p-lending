@@ -4,13 +4,13 @@
       <input
         type="number"
         min="0"
-        oninput="validity.valid||(value='');"
+        onkeydown="return event.keyCode !== 69"
         id="newRequest__asked"
         class="form-control"
         v-model="credit"
         v-bind:class="{
           hasContent: credit,
-          invalidInput: error,
+          invalidInput: invalidCredit,
         }"
       />
       <label for="newRequest__asked">Credit</label>
@@ -19,13 +19,13 @@
       <input
         type="number"
         min="0"
-        oninput="validity.valid||(value='');"
+        onkeydown="return event.keyCode !== 69"
         id="newRequest__payback"
         class="form-control"
         v-model="payback"
         v-bind:class="{
           hasContent: payback,
-          invalidInput: error,
+          invalidInput: invalidPayback,
         }"
       />
       <label for="newRequest__payback">Payback</label>
@@ -38,7 +38,7 @@
         v-model="description"
         v-bind:class="{
           hasContent: description.length > 0,
-          invalidInput: error,
+          invalidInput: invalidDescription,
         }"
       />
       <label for="newRequest__description">Description</label>
@@ -51,53 +51,55 @@
 </template>
 
 <script>
-import { Web3Service } from '../../../services/web3/Web3Service'
+import { RequestManagementService } from '../../../services/requestManagement/RequestManagementService'
 export default {
   data() {
     return {
       credit: null,
       payback: null,
       description: '',
-      error: false,
+      invalidCredit: false,
+      invalidPayback: false,
+      invalidDescription: false,
     }
   },
   methods: {
     async submit() {
       this.error = false
-
-      if (this.credit > 0 && this.payback > 0 && this.description.length > 0) {
-        try {
-          const creditInWei = Web3Service.convertToWei(this.credit, 'ether')
-          const paybackInWei = Web3Service.convertToWei(this.payback, 'ether')
-          const user = await Web3Service.getUser()
-          await this.contract()
-            .methods.ask(creditInWei, paybackInWei, this.description)
-            .send({ from: user })
-          this.reset()
-        } catch (err) {
-          this.error = true
-        }
-      } else {
+      const createRequestReturn = await RequestManagementService.createRequest(
+        this.credit,
+        this.payback,
+        this.description
+      )
+      // update error states
+      this.invalidCredit = createRequestReturn.invalidCredit
+      this.invalidPayback = createRequestReturn.invalidPayback
+      this.invalidDescription = createRequestReturn.invalidDescription
+      // reset input on success
+      if (
+        !(this.invalidCredit || this.invalidPayback || this.invalidDescription)
+      ) {
         this.reset()
-        this.error = true
       }
     },
     reset() {
       this.credit = null
       this.payback = null
       this.description = ''
-      this.error = false
+      this.invalidCredit = false
+      this.invalidPayback = false
+      this.invalidDescription = false
     },
   },
   watch: {
     credit() {
-      this.error = false
+      this.invalidCredit = false
     },
     payback() {
-      this.error = false
+      this.invalidPayback = false
     },
     description() {
-      this.error = false
+      this.invalidDescription = false
     },
   },
 }

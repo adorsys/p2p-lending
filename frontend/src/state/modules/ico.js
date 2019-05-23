@@ -20,12 +20,8 @@ export default {
     async initializeIco({ commit }) {
       const payload = await ICOService.initializeICO()
       if (payload) {
+        icoListeners()
         commit('INITIALIZE_ICO', payload)
-        try {
-          icoListeners()
-        } catch (error) {
-          console.error(error)
-        }
       }
     },
     async updateIco({ commit }) {

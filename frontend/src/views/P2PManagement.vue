@@ -1,9 +1,9 @@
 <template>
   <div class="boardManagement">
     <div class="x-large">Board Management</div>
-    <div class="boardManagement__content">
-      <ProposalControl class="boardManagement__control" />
-    </div>
+    <section class="boardManagement__content">
+      <ProposalControl />
+    </section>
   </div>
 </template>
 

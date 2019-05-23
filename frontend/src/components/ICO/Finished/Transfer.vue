@@ -54,7 +54,7 @@ export default {
       this.invalidAmount = transferReturn.invalidAmount
       this.invalidRecipient = transferReturn.invalidRecipient
       // reset input on success
-      if (!this.invalidRecipient && !this.invalidAmount) {
+      if (!(this.invalidRecipient || this.invalidAmount)) {
         this.reset()
       }
     },

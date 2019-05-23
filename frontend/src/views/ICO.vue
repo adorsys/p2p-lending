@@ -1,16 +1,18 @@
 <template>
   <div class="ico" v-if="active">
-    <div class="x-large">Trust Token</div>
-    <div class="ico__content">
-      <InvestStatus class="ico__status" />
-      <IcoStats class="ico__stats" />
-      <Invest class="ico__invest" />
-    </div>
+    <section>
+      <div class="x-large">Trust Token</div>
+      <div class="ico__content">
+        <InvestStatus />
+        <IcoStats />
+        <Invest class="ico__invest" />
+      </div>
+    </section>
   </div>
   <div class="ico" v-else>
     <div class="x-large">Token Management</div>
     <div class="ico__content">
-      <IcoStats class="ico__stats" />
+      <IcoStats />
       <TokenControl />
     </div>
   </div>
@@ -39,9 +41,20 @@ export default {
 
 <style lang="scss">
 .ico {
-  &__status {
-    padding: 1rem 0 0;
+  height: 100%;
+  display: grid;
+  grid-template-rows: 150px auto;
+  align-items: center;
+
+  &__content {
+    grid-row: 2;
+    height: 100%;
   }
+
+  > section {
+    grid-row: 1 / 3;
+  }
+
   &__invest {
     padding: 1rem 0;
   }

@@ -34,3 +34,11 @@ export default {
   },
 }
 </script>
+
+<style lang="scss">
+.errorContent {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+</style>

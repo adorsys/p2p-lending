@@ -1,5 +1,5 @@
 <template>
-  <div class="lenderRequest">
+  <div class="openRequests">
     <div class="table__wrapper">
       <table class="table" v-if="filteredRequests.length > 0">
         <thead>
@@ -7,27 +7,23 @@
             <th class="table__head">Debitor</th>
             <th class="table__head">Amount</th>
             <th class="table__head">Payback</th>
-            <th class="table__head">Description</th>
-            <th class="table__head">Status</th>
-            <th class="table__head">Action</th>
+            <th class="table__head">Purpose</th>
+            <th class="table__head"></th>
           </tr>
         </thead>
         <tbody>
           <tr class="table__row" v-for="r in filteredRequests" :key="r.idx">
-            <td class="table__data">{{ r.asker }}</td>
+            <td
+              class="table__data"
+              v-bind:class="{ trusted: r.verifiedAsker }"
+              >{{ r.asker }}</td
+            >
             <td class="table__data">{{ r.askAmount }} ETH</td>
             <td class="table__data">{{ r.paybackAmount }} ETH</td>
             <td class="table__data">{{ r.purpose }}</td>
-            <td class="table__data">{{ r.status }}</td>
             <td class="table__data">
-              <div
-                v-on:click="withdraw(r.address)"
-                class="btn btn--table"
-                v-if="r.status === 'PaidBack' || r.status === 'Ether Lent'"
-                >Withdraw</div
-              >
-              <span v-if="r.status !== 'PaidBack' && r.status !== 'Ether Lent'"
-                >n/a</span
+              <div v-on:click="lend(r.address)" class="btn btn--table"
+                >Lend</div
               >
             </td>
           </tr>
@@ -36,11 +32,11 @@
       <table class="table" v-else>
         <thead>
           <tr class="table__row">
-            <th class="table__head">Lender</th>
+            <th class="table__head">Lending Requests</th>
           </tr>
         </thead>
         <tbody>
-          <td class="table__data">No Requests Found</td>
+          <td class="table__data">No Lending Requests Found</td>
         </tbody>
       </table>
     </div>
@@ -49,9 +45,8 @@
 
 <script>
 import { mapState } from 'vuex'
-import { RequestManagementService } from '../../../services/requestManagement/RequestManagementService'
 import { Web3Service } from '../../../services/web3/Web3Service'
-
+import { RequestManagementService } from '../../../services/requestManagement/RequestManagementService'
 export default {
   computed: {
     ...mapState('requestManagement', ['requests']),
@@ -62,6 +57,9 @@ export default {
     }
   },
   methods: {
+    lend(address) {
+      RequestManagementService.lend(address)
+    },
     async getRequests() {
       this.filteredRequests = []
       const user = await Web3Service.getUser()
@@ -69,16 +67,14 @@ export default {
         const locale = navigator.userLanguage || navigator.language
         this.requests.forEach((element) => {
           if (
-            String(user).toLocaleUpperCase(locale) ===
-            String(element.lender).toLocaleUpperCase(locale)
+            element.lent === false &&
+            String(user).toLocaleUpperCase(locale) !==
+              String(element.asker).toLocaleUpperCase(locale)
           ) {
             this.filteredRequests.push(element)
           }
         })
       }
-    },
-    withdraw(address) {
-      RequestManagementService.withdraw(address)
     },
   },
   watch: {

@@ -71,9 +71,7 @@ export default {
       this.invalidRecipient = transferFromReturn.invalidRecipient
       // reset input on success
       if (
-        !this.invalidOrigin &&
-        !this.invalidRecipient &&
-        !this.invalidAmount
+        !(this.invalidOrigin || this.invalidRecipient || this.invalidAmount)
       ) {
         this.reset()
       }

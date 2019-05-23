@@ -1,26 +1,28 @@
 <template>
   <div class="feeProposals">
-    <table class="table">
-      <thead>
-        <tr class="table__row">
-          <th class="table__head">Description</th>
-          <th class="table__head">Vote</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr class="table__row" v-for="p in filteredProposals" :key="p.idx">
-          <td class="table__data bulletpoint">{{ p.description }}</td>
-          <td class="table__data">
-            <div class="btn btn--light" @click="vote(true, p.address)"
-              >Agree</div
-            >
-            <div class="btn btn--light" @click="vote(false, p.address)"
-              >Disagree</div
-            >
-          </td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="table__wrapper">
+      <table class="table">
+        <thead>
+          <tr>
+            <th class="table__head">Description</th>
+            <th class="table__head">Vote</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="table__row" v-for="p in filteredProposals" :key="p.idx">
+            <td class="table__data">{{ p.description }}</td>
+            <td class="table__data">
+              <div class="btn btn--table" @click="vote(true, p.address)"
+                >Yes</div
+              >
+              <div class="btn btn--table" @click="vote(false, p.address)"
+                >No</div
+              >
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </template>
 

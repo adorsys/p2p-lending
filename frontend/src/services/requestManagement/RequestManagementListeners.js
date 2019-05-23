@@ -1,6 +1,5 @@
 import { RequestManagement } from './RequestManagement'
-
-// import store from '../../state'
+import store from '../../state'
 
 export const requestManagementListeners = async () => {
   const contract = await RequestManagement.get()
@@ -16,48 +15,40 @@ export const requestManagementListeners = async () => {
 
 const requestCreatedListener = (contract) => {
   let txHash = null
-  contract()
-    .events.RequestCreated()
-    .on('data', (event) => {
-      if (txHash !== event.transactionHash) {
-        txHash = event.transactionHash
-        // store.dispatch(UPDATE_REQUESTS, contract)
-      }
-    })
+  contract.events.RequestCreated().on('data', (event) => {
+    if (txHash !== event.transactionHash) {
+      txHash = event.transactionHash
+      store.dispatch('requestManagement/getRequests')
+    }
+  })
 }
 
 const requestGrantedListener = (contract) => {
   let txHash = null
-  contract()
-    .events.RequestGranted()
-    .on('data', (event) => {
-      if (txHash !== event.transactionHash) {
-        txHash = event.transactionHash
-        // store.dispatch(UPDATE_REQUESTS, contract)
-      }
-    })
+  contract.events.RequestGranted().on('data', (event) => {
+    if (txHash !== event.transactionHash) {
+      txHash = event.transactionHash
+      store.dispatch('requestManagement/getRequests')
+    }
+  })
 }
 
 const withdrawListener = (contract) => {
   let txHash = null
-  contract()
-    .events.Withdraw()
-    .on('data', (event) => {
-      if (txHash !== event.transactionHash) {
-        txHash = event.transactionHash
-        // store.dispatch(UPDATE_REQUESTS, contract)
-      }
-    })
+  contract.events.Withdraw().on('data', (event) => {
+    if (txHash !== event.transactionHash) {
+      txHash = event.transactionHash
+      store.dispatch('requestManagement/getRequests')
+    }
+  })
 }
 
 const debtPaidListener = (contract) => {
   let txHash = null
-  contract()
-    .events.DebtPaid()
-    .on('data', (event) => {
-      if (txHash !== event.transactionHash) {
-        txHash = event.transactionHash
-        // store.dispatch(UPDATE_REQUESTS, contract)
-      }
-    })
+  contract.events.DebtPaid().on('data', (event) => {
+    if (txHash !== event.transactionHash) {
+      txHash = event.transactionHash
+      store.dispatch('requestManagement/getRequests')
+    }
+  })
 }

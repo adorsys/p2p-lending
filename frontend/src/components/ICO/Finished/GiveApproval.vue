@@ -53,7 +53,7 @@ export default {
       this.invalidTarget = giveApprovalReturn.invalidTarget
       this.invalidAmount = giveApprovalReturn.invalidAmount
       // reset input on success
-      if (!this.invalidTarget && !this.invalidAmount) {
+      if (!(this.invalidTarget || this.invalidAmount)) {
         this.reset()
       }
     },
