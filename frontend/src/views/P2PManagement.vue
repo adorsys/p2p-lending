@@ -33,7 +33,6 @@ export default {
   &__content {
     grid-row: 2;
     height: 100%;
-    padding-top: 2rem;
   }
 }
 </style>

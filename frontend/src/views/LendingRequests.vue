@@ -1,6 +1,6 @@
 <template>
   <div class="lendingRequests">
-    <div class="x-large">Available Requests</div>
+    <div class="x-large">LendingRequests</div>
     <section class="lendingRequests__content">
       <OpenRequests />
     </section>

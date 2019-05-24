@@ -15,18 +15,6 @@
     font-weight: 700;
   }
 
-  &__items {
-    &:first-of-type {
-      padding-top: 1rem;
-      border-bottom: double 4px $border-color-light;
-      padding-bottom: 1rem;
-    }
-
-    &:last-of-type {
-      padding-top: 1rem;
-    }
-  }
-
   &__request-container {
     height: 100%;
     display: flex;
@@ -39,15 +27,15 @@
     color: $navigation-color-grouping;
 
     &:nth-of-type(2n) {
-      border-bottom: double 4px $border-color-light;
+      border-bottom: solid 1px $border-color-light;
     }
   }
 
   &__request-item {
-    padding-bottom: 0.7rem;
+    padding-bottom: 0.5rem;
 
     &:first-of-type {
-      padding-top: 0.7rem;
+      padding-top: 0.5rem;
     }
   }
 
@@ -56,7 +44,7 @@
     font-weight: 700;
     color: $navigation-color;
     cursor: pointer;
-    border-bottom: 2px solid transparent;
+    border-bottom: 1px solid transparent;
     transition: all 0.2s ease-in-out;
 
     &:hover {

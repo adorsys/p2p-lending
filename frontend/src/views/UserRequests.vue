@@ -4,7 +4,7 @@
     <section class="userRequests__content">
       <div class="lead">Debitor for the following requests:</div>
       <AskerRequests />
-      <div class="lead">Lender for the following requests:</div>
+      <div class="lead">Creditor for the following requests:</div>
       <LenderRequests />
     </section>
   </div>

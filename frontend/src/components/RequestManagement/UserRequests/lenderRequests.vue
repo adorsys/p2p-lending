@@ -1,14 +1,13 @@
 <template>
   <div class="lenderRequest">
     <div class="table__wrapper">
-      <table class="table">
+      <table class="table" v-if="filteredRequests.length > 0">
         <thead>
           <tr>
             <th class="table__head">Debitor</th>
             <th class="table__head">Amount</th>
             <th class="table__head">Payback</th>
             <th class="table__head">Description</th>
-            <th class="table__head">Status</th>
             <th class="table__head"></th>
           </tr>
         </thead>
@@ -18,18 +17,35 @@
             <td class="table__data">{{ r.askAmount }} ETH</td>
             <td class="table__data">{{ r.paybackAmount }} ETH</td>
             <td class="table__data">{{ r.purpose }}</td>
-            <td class="table__data">{{ r.status }}</td>
             <td class="table__data">
               <div
                 v-on:click="withdraw(r.address)"
                 class="btn btn--table"
-                v-if="r.status === 'PaidBack' || r.status === 'Ether Lent'"
+                v-if="r.status === 'Ether Lent'"
+                >Cancel</div
+              >
+              <div
+                v-on:click="withdraw(r.address)"
+                class="btn btn--table"
+                v-if="r.status === 'PaidBack'"
                 >Withdraw</div
               >
               <span v-if="r.status !== 'PaidBack' && r.status !== 'Ether Lent'"
                 >n/a</span
               >
             </td>
+          </tr>
+        </tbody>
+      </table>
+      <table class="table" v-else>
+        <thead>
+          <tr>
+            <th class="table__head">Requests</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="table__row">
+            <td class="table__data">No Requests Found</td>
           </tr>
         </tbody>
       </table>

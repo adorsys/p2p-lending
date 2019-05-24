@@ -2,11 +2,6 @@
   <div class="sidebar">
     <ul class="sidebar__container">
       <li class="sidebar__items">
-        <router-link :to="{ name: 'home' }" class="sidebar__link sidebar__title"
-          >Home</router-link
-        >
-      </li>
-      <li class="sidebar__items">
         <ul class="sidebar__request-container">
           <li class="sidebar__request sidebar__title">Lending Requests</li>
           <li class="sidebar__request">

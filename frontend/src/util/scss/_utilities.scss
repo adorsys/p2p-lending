@@ -202,7 +202,7 @@
   padding: 2rem 0;
   width: 100%;
   display: grid;
-  grid-template-columns: 10% auto 10%;
+  grid-template-columns: 5% auto 5%;
 }
 .table {
   grid-column: 2;
@@ -220,6 +220,10 @@
     text-transform: uppercase;
     padding-left: 0.25rem;
     padding-right: 0.25rem;
+
+    &--empty {
+      text-transform: none;
+    }
   }
 
   &__row {

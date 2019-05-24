@@ -1,7 +1,7 @@
 <template>
   <div class="memberProposals">
     <div class="table__wrapper">
-      <table class="table">
+      <table class="table" v-if="filteredProposals.length > 0">
         <thead>
           <tr>
             <th class="table__head">Description</th>
@@ -19,6 +19,18 @@
                 >No</div
               >
             </td>
+          </tr>
+        </tbody>
+      </table>
+      <table class="table" v-else>
+        <thead>
+          <tr>
+            <th class="table__head table__head--empty">Member Proposals</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="table__row">
+            <td class="table__data">No Proposals Found</td>
           </tr>
         </tbody>
       </table>
