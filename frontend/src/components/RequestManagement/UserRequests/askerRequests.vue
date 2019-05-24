@@ -1,7 +1,7 @@
 <template>
   <div class="askerRequest">
     <div class="table__wrapper">
-      <table class="table" v-if="filteredRequests.length > 0">
+      <table class="table">
         <thead>
           <tr>
             <th class="table__head">Amount</th>
@@ -48,16 +48,6 @@
           </tr>
         </tbody>
       </table>
-      <table class="table" v-else>
-        <thead>
-          <tr class="table__row">
-            <th class="table__head">Asker</th>
-          </tr>
-        </thead>
-        <tbody>
-          <td class="table__data">No Requests Found</td>
-        </tbody>
-      </table>
     </div>
   </div>
 </template>
@@ -66,7 +56,6 @@
 import { mapState } from 'vuex'
 import { Web3Service } from '../../../services/web3/Web3Service'
 import { RequestManagementService } from '../../../services/requestManagement/RequestManagementService'
-
 export default {
   computed: {
     ...mapState('requestManagement', ['requests']),

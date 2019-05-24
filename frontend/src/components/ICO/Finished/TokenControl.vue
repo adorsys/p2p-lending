@@ -40,7 +40,6 @@ import Transfer from './Transfer'
 import TransferFrom from './TransferFrom'
 import GiveApproval from './GiveApproval'
 import CheckAllowance from './CheckAllowance'
-
 export default {
   components: {
     Transfer,
@@ -55,11 +54,7 @@ export default {
   },
   methods: {
     setActive(id) {
-      if (this.active === id) {
-        this.active = null
-      } else {
-        this.active = id
-      }
+      this.active = this.active === id ? null : id
     },
   },
 }
@@ -88,7 +83,7 @@ export default {
   &__selectionContent {
     padding-top: 3rem;
     display: grid;
-    grid-template-columns: 20% auto 20%;
+    grid-template-columns: auto 600px auto;
 
     > div {
       grid-column: 2;

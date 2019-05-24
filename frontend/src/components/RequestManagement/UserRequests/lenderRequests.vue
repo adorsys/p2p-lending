@@ -1,7 +1,7 @@
 <template>
   <div class="lenderRequest">
     <div class="table__wrapper">
-      <table class="table" v-if="filteredRequests.length > 0">
+      <table class="table">
         <thead>
           <tr>
             <th class="table__head">Debitor</th>
@@ -9,7 +9,7 @@
             <th class="table__head">Payback</th>
             <th class="table__head">Description</th>
             <th class="table__head">Status</th>
-            <th class="table__head">Action</th>
+            <th class="table__head"></th>
           </tr>
         </thead>
         <tbody>
@@ -33,16 +33,6 @@
           </tr>
         </tbody>
       </table>
-      <table class="table" v-else>
-        <thead>
-          <tr class="table__row">
-            <th class="table__head">Lender</th>
-          </tr>
-        </thead>
-        <tbody>
-          <td class="table__data">No Requests Found</td>
-        </tbody>
-      </table>
     </div>
   </div>
 </template>
@@ -51,7 +41,6 @@
 import { mapState } from 'vuex'
 import { RequestManagementService } from '../../../services/requestManagement/RequestManagementService'
 import { Web3Service } from '../../../services/web3/Web3Service'
-
 export default {
   computed: {
     ...mapState('requestManagement', ['requests']),

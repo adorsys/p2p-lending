@@ -1,5 +1,4 @@
 @import '../../util/scss/variables';
-@import '../../util/scss/utilities';
 
 .navbar {
   position: fixed;
@@ -12,10 +11,6 @@
   padding: 0 1.8rem;
   z-index: 1;
   border-bottom: solid 2px $border-color-light;
-
-  &__link-container {
-    display: flex;
-  }
 
   &__link {
     color: $navigation-color;

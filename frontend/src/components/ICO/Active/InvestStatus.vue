@@ -12,20 +12,24 @@
 </template>
 
 <script>
-import { createNamespacedHelpers } from 'vuex'
-const { mapState } = createNamespacedHelpers('ico')
+import { mapState } from 'vuex'
 import ProgressBar from '../ProgressBar'
-
 export default {
   components: {
     ProgressBar,
   },
   computed: {
-    ...mapState(['active', 'contractBalance', 'goal', 'tokenSupply', 'symbol']),
+    ...mapState('ico', [
+      'active',
+      'contractBalance',
+      'goal',
+      'tokenSupply',
+      'symbol',
+    ]),
   },
   data() {
     return {
-      tokenText: 'Token available',
+      tokenText: null,
     }
   },
   watch: {

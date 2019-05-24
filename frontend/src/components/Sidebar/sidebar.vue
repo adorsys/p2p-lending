@@ -60,13 +60,6 @@
           </li>
         </ul>
       </li>
-      <li class="sidebar__items">
-        <router-link
-          :to="{ name: 'about' }"
-          class="sidebar__link sidebar__title"
-          >About</router-link
-        >
-      </li>
     </ul>
   </div>
 </template>

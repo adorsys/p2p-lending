@@ -6,6 +6,5 @@ export const authenticate = async () => {
     tokenHolder: (await ICOService.getTokenBalance()) > 0,
     boardMember: await ProposalManagementService.getMemberStatus(),
   }
-
   return authenticated
 }

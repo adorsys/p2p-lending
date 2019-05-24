@@ -19,7 +19,6 @@ export default {
 
 <style lang="scss">
 @import '../util/scss/_variables';
-
 .createRequest {
   height: 100%;
   display: grid;
@@ -31,7 +30,7 @@ export default {
     height: 100%;
     padding-top: 2rem;
     display: grid;
-    grid-template-columns: auto minmax(calc(60vw - 320px), calc(70vw - 320px)) auto;
+    grid-template-columns: auto 600px auto;
 
     .newRequest {
       grid-column: 2;

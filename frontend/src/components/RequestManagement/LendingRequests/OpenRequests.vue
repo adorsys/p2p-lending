@@ -1,7 +1,7 @@
 <template>
   <div class="openRequests">
     <div class="table__wrapper">
-      <table class="table" v-if="filteredRequests.length > 0">
+      <table class="table">
         <thead>
           <tr>
             <th class="table__head">Debitor</th>
@@ -27,16 +27,6 @@
               >
             </td>
           </tr>
-        </tbody>
-      </table>
-      <table class="table" v-else>
-        <thead>
-          <tr class="table__row">
-            <th class="table__head">Lending Requests</th>
-          </tr>
-        </thead>
-        <tbody>
-          <td class="table__data">No Lending Requests Found</td>
         </tbody>
       </table>
     </div>

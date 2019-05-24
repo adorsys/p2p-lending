@@ -1,10 +1,12 @@
 <template>
   <div class="userRequests">
     <div class="x-large">Your Open Requests</div>
-    <div class="lead">Debitor for the following requests:</div>
-    <AskerRequests />
-    <div class="lead">Lender for the following requests:</div>
-    <LenderRequests />
+    <section class="userRequests__content">
+      <div class="lead">Debitor for the following requests:</div>
+      <AskerRequests />
+      <div class="lead">Lender for the following requests:</div>
+      <LenderRequests />
+    </section>
   </div>
 </template>
 
@@ -19,3 +21,18 @@ export default {
   },
 }
 </script>
+
+<style lang="scss">
+.userRequests {
+  height: 100%;
+  display: grid;
+  grid-template-rows: 150px auto;
+  align-items: center;
+
+  &__content {
+    grid-row: 2;
+    height: 100%;
+    padding-top: 2rem;
+  }
+}
+</style>

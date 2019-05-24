@@ -34,7 +34,6 @@
 
 <script>
 import { ICOService } from '../../../services/icoContract/IcoService'
-
 export default {
   data() {
     return {

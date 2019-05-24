@@ -7,12 +7,10 @@
 </template>
 
 <script>
-import { createNamespacedHelpers } from 'vuex'
-const { mapState } = createNamespacedHelpers('ico')
-
+import { mapState } from 'vuex'
 export default {
   computed: {
-    ...mapState([
+    ...mapState('ico', [
       'active',
       'userInvestment',
       'userTokenBalance',

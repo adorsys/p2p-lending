@@ -11,7 +11,7 @@ const store = new Vuex.Store({
 
 export default store
 
-// dispatch all actions 'initialize' on load
+// dispatch all actions named 'initialize' on load
 for (const moduleName of Object.keys(modules)) {
   if (modules[moduleName].actions && modules[moduleName].actions.initialize) {
     store.dispatch(`${moduleName}/initialize`)

@@ -9,7 +9,7 @@ export const proposalManagementListeners = async () => {
     contractFeeListener(contract)
     membershipChangedListener(contract)
   } else {
-    throw new Error('ProposalMangementListeners failed')
+    console.error('ProposalMangementListeners failed')
   }
 }
 

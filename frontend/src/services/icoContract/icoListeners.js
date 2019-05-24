@@ -9,7 +9,7 @@ export const icoListeners = async () => {
     icoFinishedListener(contract)
     transferListener(contract)
   } else {
-    throw new Error('ICOListeners failed')
+    console.error('ICOListeners failed')
   }
 }
 

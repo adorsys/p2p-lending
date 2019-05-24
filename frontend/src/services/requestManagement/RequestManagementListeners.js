@@ -9,7 +9,7 @@ export const requestManagementListeners = async () => {
     withdrawListener(contract)
     debtPaidListener(contract)
   } else {
-    throw new Error('requestManagementListeners failed')
+    console.error('requestManagementListeners failed')
   }
 }
 

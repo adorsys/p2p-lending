@@ -10,7 +10,7 @@
     <div
       class="navbar__link"
       @click="login"
-      v-if="isInjected && !active && !boardMember && !tokenHolder"
+      v-if="isInjected && !active && !(boardMember || tokenHolder)"
       >LogIn</div
     >
     <div

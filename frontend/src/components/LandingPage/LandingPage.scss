@@ -25,11 +25,3 @@
     font-weight: 700;
   }
 }
-
-@media screen and (max-width: 1024px) {
-  .landingPage__buttons {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-evenly;
-  }
-}

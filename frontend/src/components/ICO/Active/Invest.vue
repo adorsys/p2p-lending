@@ -12,7 +12,10 @@
       />
       <label for="invest__amount">Investment (ETH)</label>
     </div>
-    <div class="btn btn--light invest__button" @click="submit">Invest</div>
+    <div class="invest__buttons">
+      <div class="btn btn--light" @click="reset">Reset</div>
+      <div class="btn btn--light" @click="submit">Invest</div>
+    </div>
   </div>
 </template>
 
@@ -32,6 +35,10 @@ export default {
         this.amount = null
       }
     },
+    async reset() {
+      this.amount = null
+      this.error = false
+    },
   },
   watch: {
     amount() {
@@ -44,8 +51,8 @@ export default {
 <style lang="scss">
 .invest {
   display: grid;
-  grid-template-columns: auto 40vw auto;
-  grid-template-rows: repeat(2, 10vh);
+  grid-template-columns: auto 600px auto;
+  grid-template-rows: repeat(2, 100px);
   align-items: center;
 
   &__input {
@@ -54,11 +61,12 @@ export default {
     width: 100%;
   }
 
-  &__button {
-    margin: 0;
+  &__buttons {
     grid-column: 2;
     grid-row: 2;
-    justify-self: end;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    justify-items: center;
   }
 }
 </style>

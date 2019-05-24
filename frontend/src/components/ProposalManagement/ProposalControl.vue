@@ -25,7 +25,6 @@ import FeeProposals from './MemberFunctionality/FeeProposals'
 import CreateMemberProposal from './TokenHolderFunctionality/CreateMemberProposal'
 import MemberProposals from './TokenHolderFunctionality/MemberProposals'
 import { mapState } from 'vuex'
-
 export default {
   computed: {
     ...mapState('proposalManagement', ['contractFee']),
@@ -47,7 +46,7 @@ export default {
   &__createFeeProposal {
     padding: 3rem 0;
     display: grid;
-    grid-template-columns: 20% auto 20%;
+    grid-template-columns: auto 600px auto;
 
     > div {
       grid-column: 2;
@@ -57,7 +56,7 @@ export default {
   &__createMemberProposal {
     padding: 3rem 0;
     display: grid;
-    grid-template-columns: 20% auto 20%;
+    grid-template-columns: auto 600px auto;
 
     > div {
       grid-column: 2;
