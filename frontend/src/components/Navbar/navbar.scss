@@ -1,88 +1,30 @@
 @import '../../util/scss/variables';
 
 .navbar {
-  background-color: $background-color;
-  border-bottom: $border-width solid $border-color;
   position: fixed;
   top: 0;
-  left: 0;
-  margin: 0;
-  padding: 0;
+  height: 50px;
   width: 100%;
-  text-align: left;
-  list-style: none;
-}
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.8rem;
+  z-index: 1;
+  border-bottom: solid 2px $border-color-light;
 
-.navbar__icon {
-  float: left;
-  margin-top: 5px;
-  margin-bottom: 5px;
-  margin-left: 0.5em;
-  height: 34px;
-}
+  &__link {
+    color: $navigation-color;
+    font-size: 1.5rem;
+    font-weight: 700;
+    transition: color 0.2s ease-in-out;
+    cursor: pointer;
 
-.navbar__title {
-  float: left;
-  height: $navbar-height;
-  line-height: $navbar-height;
-  white-space: nowrap;
-  font-size: 1.2rem;
-  margin-left: 0.5em;
-  font-weight: 800;
-}
+    &:hover {
+      color: $navigation-color-hover;
+    }
 
-.navbar__title--first {
-  font-size: 1.3rem;
-  letter-spacing: 0.2px;
-  color: $link-text-color;
-}
-
-.navbar__title--second {
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  font-size: 1.7rem;
-  color: $link-text-color-darkened;
-}
-
-.navbar__right {
-  float: right;
-  margin-right: 7px;
-  margin-left: 10px;
-  height: $navbar-height;
-  line-height: $navbar-height;
-  white-space: nowrap;
-  font-size: 1.2rem;
-}
-
-.navbar__right--auth {
-  text-decoration: none;
-  cursor: pointer;
-  color: $link-text-color-darkened;
-  font-weight: 600;
-  font-size: 1.4rem;
-  padding: $padding-standard;
-}
-
-.navbar__right--auth:hover {
-  background-color: $navbar-hover-color;
-}
-
-.navbar__right--link {
-  text-decoration: none;
-  color: $link-text-color-darkened;
-}
-
-.navbar__right--network {
-  color: $link-text-color-darkened;
-  font-weight: 600;
-}
-
-.navbar__right--metamaskActive {
-  color: green;
-  font-weight: 600;
-}
-
-.navbar__right--metamaskInactive {
-  color: red;
-  font-weight: 600;
+    &--title {
+      font-size: 2.4rem;
+    }
+  }
 }

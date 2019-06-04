@@ -3,9 +3,7 @@
 // https://github.com/ethereum/EIPs/blob/master/EIPS/eip-20.md
 pragma solidity ^0.5.0; // Solidity compiler version
 
-
 contract EIP20Interface {
-  
     /// total amount of tokens
     uint256 public totalSupply;
 

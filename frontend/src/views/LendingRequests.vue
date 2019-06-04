@@ -1,45 +1,32 @@
 <template>
-  <div class="home">
-    <div class="title">Lending Requests</div>
-    <hr class="separator">
-    <hr class="separator">
-    <OpenRequests :contract="requestManagementContract"/>
+  <div class="lendingRequests">
+    <div class="x-large">LendingRequests</div>
+    <section class="lendingRequests__content">
+      <OpenRequests />
+    </section>
   </div>
 </template>
 
 <script>
-import OpenRequests from '@/components/RequestManagement/LendingRequests/openLendingRequests'
-
-import { mapState } from 'vuex'
-import { UPDATE_REQUESTS } from '@/util/constants/types'
-
+import OpenRequests from '../components/RequestManagement/LendingRequests/OpenRequests'
 export default {
-  computed: mapState({
-    requestManagementContract: state => state.requestManagementInstance
-  }),
   components: {
-    OpenRequests
+    OpenRequests,
   },
-  watch: {
-    requestManagementContract: {
-      handler: function(contractInstance) {
-        if (contractInstance) {
-          this.$store.dispatch(UPDATE_REQUESTS, contractInstance)
-        }
-      }
-    }
-  }
 }
 </script>
 
-
 <style lang="scss">
-.home {
-  text-align: center;
-}
+.lendingRequests {
+  height: 100%;
+  display: grid;
+  grid-template-rows: 150px auto;
+  align-items: center;
 
-.subtitle--description {
-  text-decoration: none;
-  margin-bottom: 0.5em;
+  &__content {
+    grid-row: 2;
+    height: 100%;
+    padding-top: 2rem;
+  }
 }
 </style>

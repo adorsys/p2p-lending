@@ -1,58 +1,43 @@
 <template>
-  <div>
-    <ul class="navbar">
-      <li class="navbar__icon">
-        <img src="@/assets/menu.svg" @click="toggleSidebar">
-      </li>
-      <li class="navbar__title">
-        <span class="navbar__title--first">p2p</span>
-        <span class="navbar__title--second">Lending</span>
-      </li>
-      <li class="navbar__right">
-        <span class="navbar__right--auth" v-if="!tokenHolder && !boardMember" @click="logIn">LogIn</span>
-        <span class="navbar__right--auth" v-if="tokenHolder || boardMember" @click="logOut">
-          <router-link :to="{ name: 'home' }" class="navbar__right--link">LogOut</router-link>
-        </span>
-      </li>
-      <li class="navbar__right navbar__right--network" v-if="network !== null">
-        <span>{{ network }}</span>
-      </li>
-      <li class="navbar__right">
-        <span class="navbar__right--metamaskActive" v-if="isInjected">Connected</span>
-        <span class="navbar__right--metamaskInactive" v-if="!isInjected">Connected</span>
-      </li>
-    </ul>
-    <div class="routerview__slotted">
-      <slot name="sidebar">
-        <slot name="sidebar-overlay"></slot>
-      </slot>
+  <nav class="navbar bg-light">
+    <div>
+      <router-link
+        :to="{ name: 'home' }"
+        class="navbar__link navbar__link--title"
+        >p2pLending</router-link
+      >
     </div>
-  </div>
+    <div
+      class="navbar__link"
+      @click="login"
+      v-if="isInjected && !active && !(boardMember || tokenHolder)"
+      >LogIn</div
+    >
+    <div
+      class="navbar__link"
+      @click="logout"
+      v-if="isInjected && !active && (boardMember || tokenHolder)"
+      >LogOut</div
+    >
+  </nav>
 </template>
 
 <script>
-import { mapState } from 'vuex'
-import { NETWORKS } from '@/util/constants/networks'
-import { AUTHENTICATE, LOGOUT } from '@/util/constants/types'
-
+import { mapState, mapActions } from 'vuex'
 export default {
-  computed: mapState({
-    isInjected: state => state.web3.isInjected,
-    network: state => NETWORKS[state.web3.networkID],
-    tokenHolder: state => state.tokenHolder,
-    boardMember: state => state.boardMember
-  }),
+  computed: {
+    ...mapState('auth', ['tokenHolder', 'boardMember', 'isInjected']),
+    ...mapState('ico', ['active']),
+  },
   methods: {
-    toggleSidebar() {
-      this.$parent.$emit('toggleSidebar')
+    ...mapActions('auth', ['logIn', 'logOut']),
+    login() {
+      this.logIn()
     },
-    logIn() {
-      this.$store.dispatch(AUTHENTICATE)
+    logout() {
+      this.logOut()
     },
-    logOut() {
-      this.$store.dispatch(LOGOUT)
-    }
-  }
+  },
 }
 </script>
 

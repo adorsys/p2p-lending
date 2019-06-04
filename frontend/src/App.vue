@@ -1,25 +1,38 @@
 <template>
   <div id="app">
-    <Sidebar>
-      <router-view slot="router-view"/>
-    </Sidebar>
-    <Navbar/>
+    <Navbar />
+    <div
+      class="content content--hasWeb3"
+      v-if="isInjected && !invalidNetwork"
+      v-bind:class="{ tokenSale: active }"
+    >
+      <Sidebar v-if="!active" />
+      <section>
+        <router-view />
+      </section>
+    </div>
+    <div class="content" v-else>
+      <ErrorContent />
+    </div>
   </div>
 </template>
 
 <script>
-import Navbar from '@/components/Navbar/navbar'
-import Sidebar from '@/components/Sidebar/sidebar'
-import { INIT_CONNECTION } from '@/util/constants/types'
+import { mapState } from 'vuex'
+import Navbar from './components/Navbar/navbar'
+import Sidebar from './components/Sidebar/sidebar'
+import ErrorContent from './components/LandingPage/ErrorContent'
 
 export default {
   components: {
     Navbar,
-    Sidebar
+    Sidebar,
+    ErrorContent,
   },
-  beforeCreate() {
-    this.$store.dispatch(INIT_CONNECTION)
-  }
+  computed: {
+    ...mapState('auth', ['isInjected', 'invalidNetwork']),
+    ...mapState('ico', ['active']),
+  },
 }
 </script>
 

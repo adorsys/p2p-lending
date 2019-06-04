@@ -1,0 +1,250 @@
+@import 'variables';
+
+// mixins
+@mixin set-background($color) {
+  background-color: $color;
+  color: set-text-color($color);
+}
+
+@mixin set-shadow-and-border($input) {
+  box-shadow: 0 0 12px -6px rgba($color: invert($input), $alpha: 0.3);
+  border: 1px solid rgba($color: $secondary-color, $alpha: 0.2);
+}
+
+// functions
+@function set-text-color($color) {
+  @if (lightness($color) > 50) {
+    @return $secondary-dark-color;
+  } @else {
+    @return $primary-font-color;
+  }
+}
+
+// text-styles
+.x-large {
+  color: scale-color($secondary-dark-color, $lightness: -10%);
+  font-size: 4rem;
+  line-height: 1.2;
+  font-weight: 700;
+  padding: 1rem 0;
+}
+
+.large {
+  color: scale-color($secondary-dark-color, $lightness: -10%);
+  font-size: 3rem;
+  line-height: 1.4;
+  font-weight: 700;
+  padding: 1rem 0;
+}
+
+.lead {
+  font-size: 1.8rem;
+  padding: 1rem 0;
+}
+
+.bulletpoint {
+  font-size: 1.5rem;
+  padding: 0.2rem 0;
+}
+
+.company {
+  color: $adorsys-color;
+  font-size: 2.4rem;
+  padding: 0;
+}
+
+.link {
+  color: $link-color;
+  font-weight: 700;
+}
+
+// buttons
+.btn {
+  all: unset;
+  display: inline-block;
+  width: 160px;
+  height: 32px;
+  padding: 4px 0;
+  cursor: pointer;
+  border-radius: 2px;
+  margin: 0.5rem;
+  font-size: 1.2rem;
+  font-weight: 700;
+
+  &--table {
+    @include set-background($primary-light-color);
+    @include set-shadow-and-border($primary-light-color);
+    transition: all 0.2s ease-in-out;
+
+    &:hover {
+      @include set-background(
+        scale-color($primary-light-color, $lightness: -5%)
+      );
+      @include set-shadow-and-border(
+        scale-color($primary-light-color, $lightness: -20%)
+      );
+    }
+    width: 125px;
+    height: 24px;
+    padding-top: 0;
+    padding-bottom: 6px;
+  }
+
+  &--primary {
+    @include set-background($primary-color);
+    @include set-shadow-and-border($primary-light-color);
+    transition: all 0.2s ease-in-out;
+
+    &:hover {
+      @include set-background(scale-color($primary-color, $lightness: -20%));
+      @include set-shadow-and-border(
+        scale-color($primary-color, $lightness: -20%)
+      );
+    }
+  }
+
+  &--light {
+    @include set-background($primary-light-color);
+    @include set-shadow-and-border($primary-light-color);
+    transition: all 0.2s ease-in-out;
+
+    &:hover {
+      @include set-background(
+        scale-color($primary-light-color, $lightness: -5%)
+      );
+      @include set-shadow-and-border(
+        scale-color($primary-light-color, $lightness: -20%)
+      );
+    }
+  }
+
+  &--dark {
+    @include set-background($primary-dark-color);
+    @include set-shadow-and-border($primary-dark-color);
+    transition: all 0.2s ease-in-out;
+
+    &:hover {
+      @include set-background(
+        scale-color($primary-dark-color, $lightness: 20%)
+      );
+      @include set-shadow-and-border(
+        scale-color($primary-dark-color, $lightness: 20%)
+      );
+    }
+  }
+}
+
+// background(s)
+.bg {
+  &-primary {
+    @include set-background($primary-color);
+  }
+  &-light {
+    @include set-background($primary-light-color);
+  }
+  &-dark {
+    @include set-background($primary-dark-color);
+  }
+  &-white {
+    @include set-background(#f3f3f3);
+    border: #ccc 1px solid;
+  }
+}
+
+// form layout
+.input-group {
+  position: relative;
+  width: 100%;
+}
+
+.form-control {
+  z-index: 1;
+  width: 100%;
+  height: 50px;
+  font-size: 1.6rem;
+  color: $secondary-dark-color;
+  border: none;
+  border-bottom: 1px solid $border-color;
+  background-color: transparent;
+  transition: all 0.2s ease-out;
+
+  & + label {
+    position: absolute;
+    top: 7px;
+    left: 0;
+    font-size: 1.6rem;
+    color: scale-color($primary-dark-color, $lightness: -25%);
+    transition: all 0.2s ease-out;
+    cursor: text;
+  }
+
+  &.invalidInput,
+  &.invalidInput + label {
+    color: rgba($color: darkred, $alpha: 0.7);
+  }
+
+  &:focus {
+    outline: none;
+    border-width: 2px;
+    border-color: $secondary-color;
+  }
+
+  &:focus + label,
+  &.hasContent + label {
+    top: -25px;
+    color: $navigation-color-hover;
+    font-size: 1.2rem;
+  }
+}
+
+// table layout
+.table__wrapper {
+  padding: 2rem 0;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 5% auto 5%;
+}
+.table {
+  grid-column: 2;
+  border-collapse: collapse;
+  box-shadow: 0 0 12px -6px rgba($color: $primary-font-color, $alpha: 0.3);
+  border: 1px solid rgba($color: $primary-dark-color, $alpha: 0.3);
+
+  &__head {
+    height: 65px;
+    width: 150px;
+    border-bottom: 1px solid $primary-dark-color;
+    font-size: 1.4rem;
+    font-weight: 400;
+    color: $adorsys-color;
+    text-transform: uppercase;
+    padding-left: 0.25rem;
+    padding-right: 0.25rem;
+
+    &--empty {
+      text-transform: none;
+    }
+  }
+
+  &__row {
+    height: 55px;
+    font-size: 0.9rem;
+
+    &:last-of-type {
+      border-bottom: none;
+    }
+
+    &:hover {
+      background-color: rgba($color: $primary-color, $alpha: 0.7);
+    }
+  }
+
+  &__data {
+    padding-left: 0.25rem;
+    padding-right: 0.25rem;
+
+    &.trusted {
+      color: green;
+    }
+  }
+}

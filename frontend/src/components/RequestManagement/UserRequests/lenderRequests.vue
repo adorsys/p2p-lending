@@ -1,94 +1,98 @@
 <template>
-  <div class="lenderRequest__management">
-    <div class="subtitle subtitle--lenderRequest">Lender For</div>
-    <table class="table" v-if="lenderRequests.length !== 0">
-      <thead>
-        <tr>
-          <th class="table__head">Asker</th>
-          <th class="table__head">Amount Asked</th>
-          <th class="table__head">Payback Amount (includes Fees)</th>
-          <th class="table__head">Description</th>
-          <th class="table__head">Status</th>
-          <th class="table__head">Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr class="table__row" v-for="p in lenderRequests" :key="p.idx">
-          <td class="table__data table__data--asker">{{ p.asker }}</td>
-          <td class="table__data">{{ p.askAmount }} ETH</td>
-          <td class="table__data table__data--payback">{{ p.paybackAmount }} ETH</td>
-          <td class="table__data">{{ p.purpose }}</td>
-          <td class="table__data table__data--status">{{ p.status }}</td>
-          <td class="table__data table__data--buttons">
-            <div
-              v-on:click="withdraw(p.address)"
-              class="button button--table button--lenderTable"
-              v-if="p.status === 'PaidBack' || p.status === 'Ether Lent'"
-            >Withdraw</div>
-            <span v-if="p.status !== 'PaidBack' && p.status !== 'Ether Lent'">n/a</span>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    <table class="table" v-if="lenderRequests.length === 0">
-      <thead>
-        <tr class="table__row">
-          <th class="table__head">Lender</th>
-        </tr>
-      </thead>
-      <tbody>
-        <td class="table__data table__data--empty">No Requests Found</td>
-      </tbody>
-    </table>
+  <div class="lenderRequest">
+    <div class="table__wrapper">
+      <table class="table" v-if="filteredRequests.length > 0">
+        <thead>
+          <tr>
+            <th class="table__head">Debitor</th>
+            <th class="table__head">Amount</th>
+            <th class="table__head">Payback</th>
+            <th class="table__head">Description</th>
+            <th class="table__head"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="table__row" v-for="r in filteredRequests" :key="r.idx">
+            <td class="table__data">{{ r.asker }}</td>
+            <td class="table__data">{{ r.askAmount }} ETH</td>
+            <td class="table__data">{{ r.paybackAmount }} ETH</td>
+            <td class="table__data">{{ r.purpose }}</td>
+            <td class="table__data">
+              <div
+                v-on:click="withdraw(r.address)"
+                class="btn btn--table"
+                v-if="r.status === 'Ether Lent'"
+                >Cancel</div
+              >
+              <div
+                v-on:click="withdraw(r.address)"
+                class="btn btn--table"
+                v-if="r.status === 'PaidBack'"
+                >Withdraw</div
+              >
+              <span v-if="r.status !== 'PaidBack' && r.status !== 'Ether Lent'"
+                >n/a</span
+              >
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <table class="table" v-else>
+        <thead>
+          <tr>
+            <th class="table__head">Requests</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="table__row">
+            <td class="table__data">No Requests Found</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </template>
 
 <script>
 import { mapState } from 'vuex'
-
+import { RequestManagementService } from '../../../services/requestManagement/RequestManagementService'
+import { Web3Service } from '../../../services/web3/Web3Service'
 export default {
-  computed: mapState({
-    allRequests: state => state.allRequests
-  }),
-  props: ['contract'],
+  computed: {
+    ...mapState('requestManagement', ['requests']),
+  },
   data() {
     return {
-      lenderRequests: []
+      filteredRequests: [],
     }
   },
   methods: {
-    getLenderRequests() {
-      this.lenderRequests = []
-      const account = this.$store.state.web3.coinbase
-      this.allRequests.forEach(element => {
-        if (
-          String(account).toUpperCase() === String(element.lender).toUpperCase()
-        ) {
-          this.lenderRequests.push(element)
-        }
-      })
+    async getRequests() {
+      this.filteredRequests = []
+      const user = await Web3Service.getUser()
+      if (user) {
+        const locale = navigator.userLanguage || navigator.language
+        this.requests.forEach((element) => {
+          if (
+            String(user).toLocaleUpperCase(locale) ===
+            String(element.lender).toLocaleUpperCase(locale)
+          ) {
+            this.filteredRequests.push(element)
+          }
+        })
+      }
     },
-    async withdraw(address) {
-      await this.contract()
-        .methods.withdraw(address)
-        .send({ from: this.$store.state.web3.coinbase })
-    }
+    withdraw(address) {
+      RequestManagementService.withdraw(address)
+    },
   },
   watch: {
-    allRequests: {
-      handler: function() {
-        this.getLenderRequests()
-      }
-    }
+    requests() {
+      this.getRequests()
+    },
   },
   mounted() {
-    if (this.allRequests.length !== 0 && this.contract !== null) {
-      this.getLenderRequests()
-    }
-  }
+    this.getRequests()
+  },
 }
 </script>
-
-<style lang="scss">
-@import './lenderRequests.scss';
-</style>

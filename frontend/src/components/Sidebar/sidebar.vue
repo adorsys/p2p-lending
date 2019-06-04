@@ -1,61 +1,73 @@
 <template>
-  <div>
-    <div class="content">
-      <slot name="router-view"></slot>
-    </div>
-    <transition>
-      <div class="sidebar" v-if="isShowing">
-        <ul class="sidebar__menu">
-          <li class="sidebar__menu--title">Navigation</li>
-          <li class="sidebar__menu--link sidebar__menu--firstlink" @click="isShowing = false">
-            <router-link
-              :to="{ name: 'home' }"
-              class="sidebar__menu--router sidebar__menu--firstItem"
-            >Lending Requests</router-link>
-          </li>
-          <li class="sidebar__menu--link" @click="isShowing = false">
-            <router-link :to="{ name: 'userrequests' }" class="sidebar__menu--router">User Requests</router-link>
-          </li>
-          <li
-            class="sidebar__menu--link"
-            v-if="this.$store.state.tokenHolder || this.$store.state.boardMember"
-            @click="isShowing = false"
-          >
-            <router-link
-              :to="{ name: 'p2pManagement' }"
-              class="sidebar__menu--router"
-            >p2p-Management</router-link>
-          </li>
-          <li class="sidebar__menu--link" @click="isShowing = false">
-            <router-link :to="{ name: 'ico' }" class="sidebar__menu--router">ICO</router-link>
-          </li>
-          <li class="sidebar__menu--link" @click="isShowing = false">
-            <router-link :to="{ name: 'about' }" class="sidebar__menu--router">About</router-link>
+  <div class="sidebar">
+    <ul class="sidebar__container">
+      <li class="sidebar__items">
+        <ul class="sidebar__request-container">
+          <li class="sidebar__request sidebar__title">Lending Requests</li>
+          <li class="sidebar__request">
+            <ul class="sidebar__request-items">
+              <li class="sidebar__request-item">
+                <router-link
+                  :to="{ name: 'createRequest' }"
+                  class="sidebar__link"
+                  >Create New Request</router-link
+                >
+              </li>
+              <li class="sidebar__request-item">
+                <router-link
+                  :to="{ name: 'lendingRequests' }"
+                  class="sidebar__link"
+                  >View All Requests</router-link
+                >
+              </li>
+              <li class="sidebar__request-item">
+                <router-link
+                  :to="{ name: 'userRequests' }"
+                  class="sidebar__link"
+                  >View Your Requests</router-link
+                >
+              </li>
+            </ul>
           </li>
         </ul>
-      </div>
-    </transition>
-    <transition>
-      <div class="sidebar__overlay" v-if="isShowing" @click="$parent.$emit('toggleSidebar')"></div>
-    </transition>
+      </li>
+      <li class="sidebar__items">
+        <ul class="sidebar__container">
+          <li class="sidebar__request sidebar__title">Management</li>
+          <li class="sidebar__request">
+            <ul class="sidebar__request-items">
+              <li class="sidebar__request-item">
+                <router-link :to="{ name: 'ico' }" class="sidebar__link"
+                  >Token Management</router-link
+                >
+              </li>
+              <li
+                class="sidebar__request-item"
+                v-if="boardMember || tokenHolder"
+              >
+                <router-link
+                  :to="{ name: 'p2pManagement' }"
+                  class="sidebar__link"
+                  >Board Management</router-link
+                >
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+    </ul>
   </div>
 </template>
 
 <script>
+import { mapState } from 'vuex'
 export default {
-  data() {
-    return {
-      isShowing: false
-    }
+  computed: {
+    ...mapState('auth', ['boardMember', 'tokenHolder']),
   },
-  mounted() {
-    this.$parent.$on('toggleSidebar', () => {
-      this.isShowing = !this.isShowing
-    })
-  }
 }
 </script>
 
 <style lang="scss">
-@import '@/components/Sidebar/sidebar.scss';
+@import 'Sidebar';
 </style>

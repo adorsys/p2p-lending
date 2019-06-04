@@ -84,7 +84,9 @@ contract("ProposalManagement", accounts => {
                 true,
                 contractFeeProposal,
                 nonMember,
-                { from: nonMember }
+                {
+                    from: nonMember
+                }
             );
         } catch (error) {
             assert(
@@ -97,7 +99,7 @@ contract("ProposalManagement", accounts => {
     it("negative vote for contractFeeProposal has expected results", async () => {
         // negative vote for contractFeeProposal
         let proposal = (await proposalManagement.getProposals.call())[0];
-        let vote = await proposalManagement.vote(false, proposal, firstVoter, {
+        let vote = await proposalManagement.vote(false, proposal, {
             from: firstVoter
         });
 
@@ -114,11 +116,6 @@ contract("ProposalManagement", accounts => {
             "ProposalExecuted",
             "second event should be ProposalExecuted"
         );
-        assert.strictEqual(
-            vote.logs[0].args.executedProposal,
-            proposal,
-            "execute should log the correct proposal"
-        );
 
         // contractFee does NOT get changed
         let newFee = parseInt(await proposalManagement.contractFee.call());
@@ -132,7 +129,7 @@ contract("ProposalManagement", accounts => {
     it("positive vote for contractFeeProposal has expected results", async () => {
         // positive vote for contractFeeProposal
         let proposal = (await proposalManagement.getProposals.call())[0];
-        let vote = await proposalManagement.vote(true, proposal, firstVoter, {
+        let vote = await proposalManagement.vote(true, proposal, {
             from: firstVoter
         });
 
@@ -149,11 +146,6 @@ contract("ProposalManagement", accounts => {
             "ProposalExecuted",
             "second event should be ProposalExecuted"
         );
-        assert.strictEqual(
-            vote.logs[0].args.executedProposal,
-            proposal,
-            "execute should log the correct proposal"
-        );
 
         // NewContractFee event gets triggered with expected parameters
         assert.strictEqual(
@@ -161,20 +153,9 @@ contract("ProposalManagement", accounts => {
             "NewContractFee",
             "third event should be NewContractFee"
         );
-        assert.strictEqual(
-            parseInt(vote.logs[1].args.oldFee, 10),
-            parseInt(web3.utils.toWei("1", "ether"), 10),
-            "old Fee should be 1 ETH"
-        );
-
-        assert.strictEqual(
-            parseInt(vote.logs[1].args.newFee, 10),
-            parseInt(web3.utils.toWei("0.2", "ether"), 10),
-            "new Fee should be 0.2 ETH"
-        );
 
         // contract fee get changed to expected new fee
-        let newFee = parseInt(await proposalManagement.contractFee.call());
+        let newFee = parseInt(await proposalManagement.contractFee.call(), 10);
         assert.strictEqual(
             newFee,
             parseInt(web3.utils.toWei("0.2", "ether"), 10),

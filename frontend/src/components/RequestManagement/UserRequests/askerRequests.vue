@@ -1,120 +1,113 @@
 <template>
-  <div class="askerRequest__management">
-    <div class="subtitle subtitle--askerRequest">Your Requests</div>
-    <table class="table" v-if="askerRequests.length !== 0">
-      <thead>
-        <tr>
-          <th class="table__head">Amount Asked</th>
-          <th class="table__head">Payback Amount (includes Fees)</th>
-          <th class="table__head">Description</th>
-          <th class="table__head">Status</th>
-          <th class="table__head">Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr class="table__row" v-for="p in askerRequests" :key="p.idx">
-          <td class="table__data">{{ p.askAmount }} ETH</td>
-          <td class="table__data table__data--payback">{{ p.paybackAmount }} ETH</td>
-          <td class="table__data">{{ p.purpose }}</td>
-          <td class="table__data table__data--status">{{ p.status }}</td>
-          <td class="table__data table__data--buttons">
-            <div
-              v-on:click="cancel(p.address)"
-              class="button button--table button--askerTable"
-              v-if="p.status === 'Waiting'"
-            >Cancel</div>
-            <div
-              v-on:click="withdraw(p.address)"
-              class="button button--table button--askerTable"
-              v-if="p.status === 'Ether Lent'"
-            >Withdraw</div>
-            <div
-              v-on:click="deposit(p.address, p.paybackAmount)"
-              class="button button--table button--askerTable"
-              v-if="p.status === 'Withdrawn'"
-            >Deposit</div>
-            <span
-              v-if="p.status !== 'Withdrawn' && p.status !== 'Ether Lent' && p.status !== 'Waiting'"
-            >n/a</span>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    <table class="table" v-if="askerRequests.length === 0">
-      <thead>
-        <tr class="table__row">
-          <th class="table__head">Asker</th>
-        </tr>
-      </thead>
-      <tbody>
-        <td class="table__data table__data--empty">No Requests Found</td>
-      </tbody>
-    </table>
+  <div class="askerRequest">
+    <div class="table__wrapper">
+      <table class="table" v-if="filteredRequests.length > 0">
+        <thead>
+          <tr>
+            <th class="table__head">Amount</th>
+            <th class="table__head">Payback</th>
+            <th class="table__head">Description</th>
+            <th class="table__head"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="table__row" v-for="r in filteredRequests" :key="r.idx">
+            <td class="table__data">{{ r.askAmount }} ETH</td>
+            <td class="table__data">{{ r.paybackAmount }} ETH</td>
+            <td class="table__data">{{ r.purpose }}</td>
+            <td class="table__data">
+              <div
+                v-on:click="cancel(r.address)"
+                class="btn btn--table"
+                v-if="r.status === 'Waiting'"
+                >Cancel</div
+              >
+              <div
+                v-on:click="withdraw(r.address)"
+                class="btn btn--table"
+                v-if="r.status === 'Ether Lent'"
+                >Withdraw</div
+              >
+              <div
+                v-on:click="payback(r.address)"
+                class="btn btn--table"
+                v-if="r.status === 'Withdrawn'"
+                >Deposit</div
+              >
+              <span
+                v-if="
+                  r.status !== 'Withdrawn' &&
+                    r.status !== 'Ether Lent' &&
+                    r.status !== 'Waiting'
+                "
+                >n/a</span
+              >
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <table class="table" v-else>
+        <thead>
+          <tr>
+            <th class="table__head">Requests</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="table__row">
+            <td class="table__data">No Requests Found</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </template>
 
 <script>
 import { mapState } from 'vuex'
-
+import { Web3Service } from '../../../services/web3/Web3Service'
+import { RequestManagementService } from '../../../services/requestManagement/RequestManagementService'
 export default {
-  computed: mapState({
-    allRequests: state => state.allRequests
-  }),
-  props: ['contract'],
+  computed: {
+    ...mapState('requestManagement', ['requests']),
+  },
   data() {
     return {
-      askerRequests: [],
-      requestGrantedListenerInstance: null,
-      withdrawListenerInstance: null,
-      debtPaidListenerInstance: null
+      filteredRequests: [],
     }
   },
   methods: {
-    async withdraw(address) {
-      await this.contract()
-        .methods.withdraw(address)
-        .send({ from: this.$store.state.web3.coinbase })
+    withdraw(address) {
+      RequestManagementService.withdraw(address)
     },
-    async deposit(address, payback) {
-      const amountToSettle = this.$store.state.web3
-        .web3Instance()
-        .utils.toWei(String(payback), 'Ether')
-      await this.contract()
-        .methods.deposit(address)
-        .send({ value: amountToSettle, from: this.$store.state.web3.coinbase })
+    payback(address) {
+      RequestManagementService.payback(address)
     },
-    async cancel(address) {
-      await this.contract()
-        .methods.cancelRequest(address)
-        .send({ from: this.$store.state.web3.coinbase })
+    cancel(address) {
+      RequestManagementService.cancel(address)
     },
-    getAskerRequests() {
-      this.askerRequests = []
-      const account = this.$store.state.web3.coinbase
-      this.allRequests.forEach(element => {
-        if (
-          String(account).toUpperCase() === String(element.asker).toUpperCase()
-        ) {
-          this.askerRequests.push(element)
-        }
-      })
-    }
+    async getRequests() {
+      this.filteredRequests = []
+      const user = await Web3Service.getUser()
+      if (user) {
+        const locale = navigator.userLanguage || navigator.language
+        this.requests.forEach((element) => {
+          if (
+            String(user).toLocaleUpperCase(locale) ===
+            String(element.asker).toLocaleUpperCase(locale)
+          ) {
+            this.filteredRequests.push(element)
+          }
+        })
+      }
+    },
   },
   watch: {
-    allRequests: {
-      handler: function() {
-        this.getAskerRequests()
-      }
-    }
+    requests() {
+      this.getRequests()
+    },
   },
   mounted() {
-    if (this.allRequests.length !== 0 && this.contract !== null) {
-      this.getAskerRequests()
-    }
-  }
+    this.getRequests()
+  },
 }
 </script>
-
-<style lang="scss">
-@import './askerRequests';
-</style>

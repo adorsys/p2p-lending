@@ -1,0 +1,27 @@
+@import '../../util/scss/variables';
+@import '../../util/scss/utilities';
+
+.landingPage {
+  height: 100%;
+  color: $secondary-dark-color;
+  display: flex;
+  flex-direction: column;
+  width: 90%;
+  margin: auto;
+  align-items: center;
+  justify-content: center;
+
+  &__buttons {
+    margin: 1rem;
+  }
+
+  &__problems {
+    list-style-type: square;
+    text-align: left;
+  }
+
+  &__invest {
+    color: $link-color;
+    font-weight: 700;
+  }
+}
