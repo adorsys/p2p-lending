@@ -15,7 +15,10 @@ export default {
 </script>
 
 <style lang="scss">
+@import '../util/scss/variables';
+
 .home {
+  min-height: $content-height;
   display: flex;
   justify-content: center;
   align-items: center;

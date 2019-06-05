@@ -8,21 +8,19 @@
   box-sizing: border-box;
 }
 
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-family: 'Roboto Condensed', sans-serif;
+  background-color: $bg-body;
+}
+
 a {
   text-decoration: none;
 }
 
 ul {
   list-style: none;
-}
-
-// general style
-#app {
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  font-family: 'Roboto Condensed', sans-serif;
-  background-color: $bg-body;
-  min-height: 100vh;
 }
 
 .navbar {
@@ -56,8 +54,7 @@ ul {
 
 .content {
   position: relative;
-  top: $navbar-height;
-  min-height: $content-height;
+  top: 100px;
 
   > .errorContent {
     height: $content-height;

@@ -32,7 +32,7 @@
 .btn {
   all: unset;
   height: 50px;
-  width: 280px;
+  width: 320px;
   background-color: $bg-blue;
   outline: none;
   cursor: pointer;
@@ -147,9 +147,9 @@
   }
 
   &--icoDetails {
-    height: 326px;
+    height: 100%;
     width: 100%;
-    grid-template-rows: repeat(5, 65px);
+    grid-template-rows: repeat(5, 1fr);
   }
 
   &--icoFinished {
