@@ -72,25 +72,3 @@ export default {
   },
 }
 </script>
-
-<style lang="scss">
-.giveApproval {
-  display: grid;
-  grid-template-rows: repeat(3, minmax(80px, 10vh));
-
-  &__target {
-    grid-row: 1;
-  }
-
-  &__amount {
-    grid-row: 2;
-  }
-
-  &__buttons {
-    grid-row: 3;
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    justify-items: center;
-  }
-}
-</style>

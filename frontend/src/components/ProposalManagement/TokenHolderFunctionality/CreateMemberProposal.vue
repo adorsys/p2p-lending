@@ -51,21 +51,3 @@ export default {
   },
 }
 </script>
-
-<style lang="scss">
-.createMemberProposal {
-  display: grid;
-  grid-template-rows: repeat(2, minmax(80px, 10vh));
-
-  &__address {
-    grid-row: 1;
-  }
-
-  &__buttons {
-    grid-row: 2;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    justify-items: center;
-  }
-}
-</style>

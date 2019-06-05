@@ -19,13 +19,3 @@ export default {
   },
 }
 </script>
-
-<style lang="scss">
-@import '../../util/scss/variables';
-.icoStats {
-  > .lead {
-    color: $navigation-color-grouping;
-    padding: 0.25rem 0;
-  }
-}
-</style>

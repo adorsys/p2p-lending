@@ -33,30 +33,3 @@ export default {
   },
 }
 </script>
-
-<style lang="scss">
-@import '../../util/scss/variables';
-
-.progressBar {
-  overflow: hidden;
-  width: 100%;
-
-  span {
-    display: block;
-  }
-
-  &__bg {
-    background: $primary-color;
-    border-radius: 10px;
-  }
-
-  &__status {
-    width: 0;
-    background: $adorsys-color;
-    border-top-left-radius: 10px;
-    border-bottom-left-radius: 10px;
-    padding: 24px 0;
-    transition: width 0.3s ease-out;
-  }
-}
-</style>

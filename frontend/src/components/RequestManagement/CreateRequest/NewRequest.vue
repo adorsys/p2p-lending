@@ -104,7 +104,3 @@ export default {
   },
 }
 </script>
-
-<style lang="scss">
-@import 'NewRequest';
-</style>

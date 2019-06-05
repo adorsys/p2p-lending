@@ -38,25 +38,3 @@ export default {
   },
 }
 </script>
-
-<style lang="scss">
-.ico {
-  height: 100%;
-  display: grid;
-  grid-template-rows: 150px auto;
-  align-items: center;
-
-  &__content {
-    grid-row: 2;
-    height: 100%;
-  }
-
-  > section {
-    grid-row: 1 / 3;
-  }
-
-  &__invest {
-    padding: 1rem 0;
-  }
-}
-</style>

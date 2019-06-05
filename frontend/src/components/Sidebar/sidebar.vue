@@ -67,7 +67,3 @@ export default {
   },
 }
 </script>
-
-<style lang="scss">
-@import 'Sidebar';
-</style>

@@ -1,15 +1,14 @@
 <template>
   <div id="app">
-    <Navbar />
-    <div
-      class="content content--hasWeb3"
-      v-if="isInjected && !invalidNetwork"
-      v-bind:class="{ tokenSale: active }"
-    >
-      <Sidebar v-if="!active" />
-      <section>
-        <router-view />
-      </section>
+    <nav class="navbar">
+      <div class="navbar__left">
+        <router-link :to="{ name: 'home' }" class="navbar__title"
+          >p2p lending</router-link
+        >
+      </div>
+    </nav>
+    <div class="content" v-if="isInjected && !invalidNetwork">
+      <router-view />
     </div>
     <div class="content" v-else>
       <ErrorContent />
@@ -19,14 +18,10 @@
 
 <script>
 import { mapState } from 'vuex'
-import Navbar from './components/Navbar/navbar'
-import Sidebar from './components/Sidebar/sidebar'
-import ErrorContent from './components/LandingPage/ErrorContent'
+import ErrorContent from './components/ErrorContent'
 
 export default {
   components: {
-    Navbar,
-    Sidebar,
     ErrorContent,
   },
   computed: {

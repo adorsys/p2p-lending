@@ -50,21 +50,3 @@ export default {
   },
 }
 </script>
-
-<style lang="scss">
-.createContractFeeProposal {
-  display: grid;
-  grid-template-rows: repeat(2, minmax(80px, 10vh));
-
-  &__newFee {
-    grid-row: 1;
-  }
-
-  &__buttons {
-    grid-row: 2;
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    justify-items: center;
-  }
-}
-</style>

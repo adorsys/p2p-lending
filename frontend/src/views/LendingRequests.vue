@@ -15,18 +15,3 @@ export default {
   },
 }
 </script>
-
-<style lang="scss">
-.lendingRequests {
-  height: 100%;
-  display: grid;
-  grid-template-rows: 150px auto;
-  align-items: center;
-
-  &__content {
-    grid-row: 2;
-    height: 100%;
-    padding-top: 2rem;
-  }
-}
-</style>

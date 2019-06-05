@@ -47,26 +47,3 @@ export default {
   },
 }
 </script>
-
-<style lang="scss">
-.invest {
-  display: grid;
-  grid-template-columns: auto 600px auto;
-  grid-template-rows: repeat(2, 100px);
-  align-items: center;
-
-  &__input {
-    grid-column: 2;
-    grid-row: 1;
-    width: 100%;
-  }
-
-  &__buttons {
-    grid-column: 2;
-    grid-row: 2;
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    justify-items: center;
-  }
-}
-</style>

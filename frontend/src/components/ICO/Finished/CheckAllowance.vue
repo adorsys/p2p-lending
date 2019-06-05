@@ -61,25 +61,3 @@ export default {
   },
 }
 </script>
-
-<style lang="scss">
-.checkAllowance {
-  display: grid;
-  grid-template-rows: repeat(3, minmax(80px, 10vh));
-
-  &__target {
-    grid-row: 1;
-  }
-
-  &__buttons {
-    grid-row: 2;
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    justify-items: center;
-  }
-
-  &__allowance {
-    grid-row: 3;
-  }
-}
-</style>

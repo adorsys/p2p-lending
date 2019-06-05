@@ -95,29 +95,3 @@ export default {
   },
 }
 </script>
-
-<style lang="scss">
-.transferFrom {
-  display: grid;
-  grid-template-rows: repeat(4, minmax(80px, 10vh));
-
-  &__origin {
-    grid-row: 1;
-  }
-
-  &__recipient {
-    grid-row: 2;
-  }
-
-  &__amount {
-    grid-row: 3;
-  }
-
-  &__buttons {
-    grid-row: 4;
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    justify-items: center;
-  }
-}
-</style>

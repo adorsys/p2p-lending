@@ -39,28 +39,3 @@ export default {
   },
 }
 </script>
-
-<style lang="scss">
-@import '../../util/scss/variables';
-.proposalControl {
-  &__createFeeProposal {
-    padding: 3rem 0;
-    display: grid;
-    grid-template-columns: auto 600px auto;
-
-    > div {
-      grid-column: 2;
-    }
-  }
-
-  &__createMemberProposal {
-    padding: 3rem 0;
-    display: grid;
-    grid-template-columns: auto 600px auto;
-
-    > div {
-      grid-column: 2;
-    }
-  }
-}
-</style>

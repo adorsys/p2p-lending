@@ -59,35 +59,3 @@ export default {
   },
 }
 </script>
-
-<style lang="scss">
-@import '../../../util/scss/variables';
-.tokenControl {
-  display: flex;
-  flex-direction: column;
-
-  &__selections {
-    padding-top: 2rem;
-    display: flex;
-    justify-content: center;
-
-    .btn--selection {
-      width: 12rem;
-    }
-
-    .isActive {
-      background-color: rgba($secondary-light-color, 0.4);
-    }
-  }
-
-  &__selectionContent {
-    padding-top: 3rem;
-    display: grid;
-    grid-template-columns: auto 600px auto;
-
-    > div {
-      grid-column: 2;
-    }
-  }
-}
-</style>

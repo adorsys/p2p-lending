@@ -1,59 +1,68 @@
 @import 'variables';
+@import 'utilities';
 
+// reset general styles
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-body {
-  font-family: 'Montserrat', sans-serif;
-  font-size: 1rem;
-  line-height: 1.6;
-  text-align: center;
-  background-color: $primary-light-color;
-  height: 100vh;
-  width: 100vw;
+a {
+  text-decoration: none;
 }
 
+ul {
+  list-style: none;
+}
+
+// general style
 #app {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  height: 100%;
+  font-family: 'Roboto Condensed', sans-serif;
+  background-color: $bg-body;
+  min-height: 100vh;
+}
+
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: $navbar-height;
   width: 100%;
-  display: grid;
-  grid-template-rows: 50px calc(100vh - 50px);
+  background-color: $bg-white;
+  box-shadow: 0 4px 20px 0 rgba(255, 255, 255, $alpha: 0.5);
+  z-index: 998;
 
-  > .content {
-    grid-row: 2;
-    height: 100%;
-    width: 100%;
-    display: grid;
+  &__left {
+    height: 53px;
+    width: 240px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    left: 2px;
+    top: 14px;
+  }
 
-    &--hasWeb3 {
-      grid-template-columns: $sidebar-width calc(100vw - 320px);
-
-      > section {
-        grid-column: 2;
-      }
-    }
-
-    &.tokenSale {
-      > section {
-        grid-column: 1 / 3;
-      }
-    }
+  &__title {
+    text-transform: uppercase;
+    color: $primary-text-color;
+    font-size: 28px;
+    font-weight: 700;
   }
 }
 
-// remove number input spinner for input type='number'
-input[type='number']::-webkit-inner-spin-button,
-input[type='number']::-webkit-outer-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
+.content {
+  position: relative;
+  top: $navbar-height;
+  min-height: $content-height;
 
-a {
-  text-decoration: none;
-  color: $navigation-color;
+  > .errorContent {
+    height: $content-height;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 }
