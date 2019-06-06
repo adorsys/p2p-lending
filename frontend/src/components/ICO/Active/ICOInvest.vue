@@ -28,8 +28,7 @@ export default {
   },
   methods: {
     async submit() {
-      const investment = parseFloat(this.amount)
-      this.error = !(await ICOService.invest(investment))
+      this.error = !(await ICOService.invest(this.amount))
       if (!this.error) {
         this.amount = ''
       }

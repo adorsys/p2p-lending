@@ -7,6 +7,7 @@
     <ICOInfo class="ico__info" />
     <ICOProgress class="ico__progress" v-if="active" />
     <ICOInvest class="ico__invest" v-if="active" />
+    <ICOControl class="ico__control" v-if="!active" />
   </div>
 </template>
 
@@ -15,6 +16,7 @@ import { mapState } from 'vuex'
 import ICOInfo from '../components/ICO/ICOInfo'
 import ICOProgress from '../components/ICO/Active/ICOProgress'
 import ICOInvest from '../components/ICO/Active/ICOInvest'
+import ICOControl from '../components/ICO/Finished/ICOControl'
 
 export default {
   computed: {
@@ -24,6 +26,7 @@ export default {
     ICOInfo,
     ICOProgress,
     ICOInvest,
+    ICOControl,
   },
   data() {
     return {
@@ -97,6 +100,11 @@ export default {
   &__invest {
     grid-row: 3;
     grid-column: 3;
+  }
+
+  &__control {
+    grid-row: 3 / 5;
+    grid-column: 2 / 4;
   }
 }
 </style>

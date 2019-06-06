@@ -83,16 +83,14 @@ export const ICOService = {
     return store.state.ico.userTokenBalance
   },
   invest: async (amount) => {
-    if (amount > 0) {
+    const amnt = parseFloat(amount)
+    if (amnt > 0) {
       const contract = await ICO.get()
       if (contract) {
         try {
           const user = await Web3Service.getUser()
           if (user) {
-            const amountInWei = await Web3Service.convertToWei(
-              String(amount),
-              'ether'
-            )
+            const amountInWei = await Web3Service.convertToWei(amount, 'ether')
             await contract.methods
               .participate()
               .send({ from: user, value: amountInWei })
@@ -106,8 +104,9 @@ export const ICOService = {
     return false
   },
   transfer: async (amount, recipient) => {
+    const amnt = parseFloat(amount)
     const transferReturn = {
-      invalidAmount: !(amount > 0),
+      invalidAmount: !(amnt > 0),
       invalidRecipient: !(await Web3Service.isValidAddress(recipient)),
     }
     if (!transferReturn.invalidAmount && !transferReturn.invalidRecipient) {
@@ -116,10 +115,7 @@ export const ICOService = {
         try {
           const user = await Web3Service.getUser()
           if (user) {
-            const amountInWei = await Web3Service.convertToWei(
-              String(amount),
-              'ether'
-            )
+            const amountInWei = await Web3Service.convertToWei(amount, 'ether')
             await contract.methods
               .transfer(recipient, amountInWei)
               .send({ from: user })
@@ -132,9 +128,10 @@ export const ICOService = {
     return transferReturn
   },
   giveApproval: async (amount, target) => {
+    const amnt = parseFloat(amount)
     const giveApprovalReturn = {
       invalidTarget: !(await Web3Service.isValidAddress(target)),
-      invalidAmount: !(amount > 0),
+      invalidAmount: !(amnt > 0),
     }
     if (
       !giveApprovalReturn.invalidTarget &&
@@ -148,15 +145,11 @@ export const ICOService = {
             const userBalanceInWei = await contract.methods
               .balanceOf(user)
               .call()
-
             const userBalance = await Web3Service.convertFromWei(
               userBalanceInWei,
               'ether'
             )
-            const amountInWei = await Web3Service.convertToWei(
-              String(amount),
-              'ether'
-            )
+            const amountInWei = await Web3Service.convertToWei(amount, 'ether')
             if (userBalance >= amount) {
               await contract.methods
                 .approve(target, amountInWei)
@@ -175,7 +168,7 @@ export const ICOService = {
   checkAllowance: async (owner) => {
     const checkAllowanceReturn = {
       invalidOwner: !(await Web3Service.isValidAddress(owner)),
-      allowance: 0,
+      allowance: '',
     }
     if (!checkAllowanceReturn.invalidOwner) {
       const contract = await ICO.get()
@@ -186,9 +179,8 @@ export const ICOService = {
             const allowance = await contract.methods
               .allowance(owner, user)
               .call()
-            checkAllowanceReturn.allowance = await Web3Service.convertFromWei(
-              allowance,
-              'ether'
+            checkAllowanceReturn.allowance = String(
+              await Web3Service.convertFromWei(allowance, 'ether')
             )
           }
         } catch (error) {
@@ -199,9 +191,9 @@ export const ICOService = {
     return checkAllowanceReturn
   },
   transferFrom: async (amount, origin, recipient) => {
+    const amnt = parseFloat(amount)
     const transferFromReturn = {
-      invalidAmount:
-        (await ICOService.checkAllowance(origin)).allowance < amount,
+      invalidAmount: (await ICOService.checkAllowance(origin)).allowance < amnt,
       invalidOrigin: !(await Web3Service.isValidAddress(origin)),
       invalidRecipient: !(await Web3Service.isValidAddress(recipient)),
     }

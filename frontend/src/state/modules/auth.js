@@ -3,7 +3,7 @@ import store from '../../state'
 import { Web3Service } from '../../services/web3/Web3Service'
 import { accountListener } from '../../services/web3/web3Listeners'
 import { authenticate } from '../../services/authenticate'
-import data from '../../../../build/contracts/Migrations.json'
+import data from '../../../../build/contracts/RequestManagement.json'
 
 export default {
   namespaced: true,

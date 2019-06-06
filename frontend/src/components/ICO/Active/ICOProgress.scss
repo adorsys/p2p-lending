@@ -52,25 +52,26 @@
 
   &__progress {
     @include circle($piechart-size);
-    clip: rect(0, $piechart-size, $piechart-size, #{$piechart-size/2});
+    clip: rect(0, $piechart-size, $piechart-size, #{$piechart-size / 2});
     &-fill {
       @include circle($piechart-size);
-      clip: rect(0, #{$piechart-size/2}, $piechart-size, 0);
+      clip: rect(0, #{$piechart-size / 2}, $piechart-size, 0);
       background: $piechart-fill-color;
+      transition: transform 0.3s ease-out;
       transform: rotate(60deg);
     }
 
     .gt-50 & {
       clip: rect(0, #{$piechart-size/2}, $piechart-size, 0);
       &-fill {
-        clip: rect(0, $piechart-size, $piechart-size, #{$piechart-size/2});
+        clip: rect(0, $piechart-size, $piechart-size, #{$piechart-size / 2});
         background: $piechart-empty-color;
       }
     }
   }
 
   &__textInfo {
-    @include circle(#{$piechart-size / 1.1});
+    @include circle(#{$piechart-size / 1.11});
     background: $bg-white;
     display: grid;
     grid-template-rows: 52px 42px 62px;

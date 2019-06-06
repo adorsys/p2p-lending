@@ -1,6 +1,17 @@
 <template>
   <div class="checkAllowance">
-    <div class="input-group checkAllowance__target">
+    <span
+      class="checkAllowance__description"
+      v-bind:class="{
+        allowanceContent: amount.length > 0 && address.length > 0,
+      }"
+    >
+      You are allowed to spend
+      <strong>{{ amount }} TrustToken</strong>
+      for the account:
+      <strong>{{ address }}</strong>
+    </span>
+    <div class="input-group checkAllowance__targetInput">
       <input
         type="text"
         id="checkAllowance__target"
@@ -11,47 +22,36 @@
           invalidInput: invalidTarget,
         }"
       />
-      <label for="checkAllowance__target">Target Address</label>
+      <label for="checkAllowance__target">Check Allowance for (Address)</label>
     </div>
-    <div class="checkAllowance__buttons">
-      <div class="btn btn--light" @click="reset">Reset</div>
-      <div class="btn btn--light" @click="checkAllowance">Check</div>
-    </div>
-    <div class="checkAllowance__allowance" v-if="allowance !== null">
-      <div class="lead">Current Allowance: {{ allowance }} {{ symbol }}</div>
-    </div>
+    <div class="checkAllowance__button btn btn--management" @click="check"
+      >Check</div
+    >
   </div>
 </template>
 
 <script>
 import { ICOService } from '../../../services/icoContract/IcoService'
-import { mapState } from 'vuex'
 export default {
-  computed: {
-    ...mapState('ico', ['symbol']),
-  },
   data() {
     return {
+      amount: '',
+      address: '',
       target: '',
       invalidTarget: false,
-      allowance: null,
     }
   },
   methods: {
-    async checkAllowance() {
+    async check() {
       const checkAllowanceReturn = await ICOService.checkAllowance(this.target)
-      // update error states
-      this.allowance =
-        checkAllowanceReturn.allowance > 0 ? checkAllowanceReturn.allowance : 0
+      // update error state
       this.invalidTarget = checkAllowanceReturn.invalidOwner
-      // reset input on success
       if (!this.invalidTarget) {
+        this.amount = checkAllowanceReturn.allowance
+        this.address = this.target
         this.target = ''
+        this.invalidTarget = false
       }
-    },
-    reset() {
-      this.target = ''
-      this.allowance = null
     },
   },
   watch: {
@@ -61,3 +61,7 @@ export default {
   },
 }
 </script>
+
+<style lang="scss">
+@import 'CheckAllowance';
+</style>
