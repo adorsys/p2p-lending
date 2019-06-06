@@ -49,12 +49,7 @@
 
   &--form {
     width: 140px;
-  }
-
-  &--management {
-    width: 140px;
     font-size: 24px;
-    line-height: 29px;
     font-weight: 400;
   }
 }
@@ -155,6 +150,17 @@
   &--icoFinished {
     height: 433px;
     width: 100%;
+  }
+
+  &--newRequest {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    height: 669px;
+    width: 669px;
+    grid-template-rows: repeat(4, 1fr);
+    align-items: center;
   }
 
   &__title-section {

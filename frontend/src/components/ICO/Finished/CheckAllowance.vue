@@ -24,9 +24,7 @@
       />
       <label for="checkAllowance__target">Check Allowance for (Address)</label>
     </div>
-    <div class="checkAllowance__button btn btn--management" @click="check"
-      >Check</div
-    >
+    <div class="checkAllowance__button btn btn--form" @click="check">Check</div>
   </div>
 </template>
 

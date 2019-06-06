@@ -50,11 +50,36 @@ ul {
     font-size: 28px;
     font-weight: 700;
   }
+
+  &__right {
+    height: 53px;
+    width: 240px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 14px;
+    font-size: 20px;
+    color: $primary-text-color;
+
+    &--allRequests {
+      right: 251px;
+    }
+
+    &--userRequests {
+      right: 33px;
+    }
+  }
+
+  &__active {
+    font-weight: 700;
+  }
 }
 
 .content {
   position: relative;
   top: 100px;
+  min-height: $content-height;
 
   > .errorContent {
     height: $content-height;

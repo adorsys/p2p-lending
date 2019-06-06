@@ -31,7 +31,7 @@
       />
       <label for="approveUser__target">Account to approve (Address)</label>
     </div>
-    <div class="approveUser__button btn btn--management" @click="approve"
+    <div class="approveUser__button btn btn--form" @click="approve"
       >Approve</div
     >
   </div>

@@ -63,9 +63,7 @@
         <label for="sendToken__target">To Account (Address)</label>
       </div>
     </div>
-    <div class="sendToken__button btn btn--management" @click="submit"
-      >Send</div
-    >
+    <div class="sendToken__button btn btn--form" @click="submit">Send</div>
   </div>
 </template>
 
