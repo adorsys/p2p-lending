@@ -2,7 +2,7 @@
   <div class="userRequests">
     <div class="userRequests__title">Requests</div>
     <div class="table__wrapper">
-      <table class="table">
+      <table class="table" v-if="filteredRequests.length > 0">
         <thead>
           <tr>
             <th class="table__head table__head--id"></th>
@@ -62,6 +62,18 @@
                 >n/a</div
               >
             </td>
+          </tr>
+        </tbody>
+      </table>
+      <table class="table" v-else>
+        <thead>
+          <tr>
+            <th class="table__head table__head--empty">Requests</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="table__row">
+            <td class="table__data table__data--empty">No Requests Found</td>
           </tr>
         </tbody>
       </table>

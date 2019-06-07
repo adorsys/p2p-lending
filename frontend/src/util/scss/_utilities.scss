@@ -197,7 +197,8 @@
 
   &__head {
     padding-left: 25px;
-    width: 200px;
+    min-width: 100px;
+    max-width: 125px;
     height: 60px;
     padding-top: 12px;
     text-align: left;
@@ -207,20 +208,30 @@
     color: $primary-text-color;
     opacity: 0.35;
 
+    &--empty {
+      text-align: center;
+    }
+
     &--id {
-      width: 50px;
+      min-width: 50px;
+      max-width: 50px;
     }
 
     &--purpose {
-      width: 230px;
+      width: 125px;
+    }
+
+    &:nth-of-type(2) {
+      width: 392px;
     }
 
     &--state {
       width: 125px;
     }
 
-    &:last-of-type {
-      padding-left: 50px;
+    &--option {
+      min-width: 135px;
+      max-width: 135px;
     }
   }
 
@@ -241,17 +252,17 @@
       color: #ababab;
     }
 
-    &:last-of-type {
-      padding-left: 50px;
+    &--empty {
+      text-align: center;
     }
   }
 
   &__status {
-    &--active {
+    &--trusted {
       color: #75e000;
     }
 
-    &--inactive {
+    &--untrusted {
       color: #f58323;
     }
   }

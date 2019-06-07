@@ -166,7 +166,6 @@ export const RequestManagementService = {
             String(payback),
             'ether'
           )
-          console.log(paybackInWei)
           if (!(payback > 0)) {
             return false
           }
