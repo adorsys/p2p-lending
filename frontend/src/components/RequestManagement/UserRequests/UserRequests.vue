@@ -28,10 +28,13 @@
               <div
                 class="btn btn--table"
                 @click="cancel(item.address)"
-                v-if="
-                  (item.isLender && item.status === 'Ether Lent') ||
-                    (item.isAsker && item.status === 'Waiting')
-                "
+                v-if="item.isAsker && item.status === 'Waiting'"
+                >Cancel</div
+              >
+              <div
+                class="btn btn--table"
+                @click="withdraw(item.address)"
+                v-if="item.isLender && item.status === 'Ether Lent'"
                 >Cancel</div
               >
               <div
@@ -83,8 +86,8 @@
 
 <script>
 import { mapState } from 'vuex'
-import { Web3Service } from '../../services/web3/Web3Service'
-import { RequestManagementService } from '../../services/requestManagement/RequestManagementService'
+import { Web3Service } from '../../../services/web3/Web3Service'
+import { RequestManagementService } from '../../../services/requestManagement/RequestManagementService'
 
 export default {
   computed: {

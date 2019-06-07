@@ -30,7 +30,7 @@ const router = new Router({
           name: 'allRequests',
           component: () =>
             import(
-              /* webpackChunkName: "AllRequests" */ './components/RequestManagement/AllRequests'
+              /* webpackChunkName: "AllRequests" */ './components/RequestManagement/AllRequests/AllRequests'
             ),
         },
         {
@@ -38,7 +38,7 @@ const router = new Router({
           name: 'userRequests',
           component: () =>
             import(
-              /* webpackChunkName: "UserRequests" */ './components/RequestManagement/UserRequests'
+              /* webpackChunkName: "UserRequests" */ './components/RequestManagement/UserRequests/UserRequests'
             ),
         },
       ],

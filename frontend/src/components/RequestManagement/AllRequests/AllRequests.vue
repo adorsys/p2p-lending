@@ -67,8 +67,8 @@
 
 <script>
 import { mapState } from 'vuex'
-import { Web3Service } from '../../services/web3/Web3Service'
-import { RequestManagementService } from '../../services/requestManagement/RequestManagementService'
+import { Web3Service } from '../../../services/web3/Web3Service'
+import { RequestManagementService } from '../../../services/requestManagement/RequestManagementService'
 
 export default {
   computed: {
