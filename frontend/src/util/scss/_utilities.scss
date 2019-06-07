@@ -52,6 +52,13 @@
     font-size: 24px;
     font-weight: 400;
   }
+
+  &--table {
+    height: 28px;
+    width: 86px;
+    font-size: 16px;
+    font-weight: 400;
+  }
 }
 
 // form layout
@@ -172,6 +179,80 @@
     > div {
       text-align: center;
       align-self: center;
+    }
+  }
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  border-radius: 4px;
+  background-color: $bg-white;
+
+  &__wrapper {
+    border: 1px solid #dfdfdf;
+    border-radius: 4px;
+    box-shadow: 0 24px 30px 0 $card-shadow;
+  }
+
+  &__head {
+    padding-left: 25px;
+    width: 200px;
+    height: 60px;
+    padding-top: 12px;
+    text-align: left;
+    border-bottom: 1px solid #dfdfdf;
+    font-size: 16px;
+    font-weight: 600;
+    color: $primary-text-color;
+    opacity: 0.35;
+
+    &--id {
+      width: 50px;
+    }
+
+    &--purpose {
+      width: 230px;
+    }
+
+    &--state {
+      width: 125px;
+    }
+
+    &:last-of-type {
+      padding-left: 50px;
+    }
+  }
+
+  &__row {
+    border-bottom: 1px solid #dfdfdf;
+    &:last-of-type {
+      border: none;
+    }
+  }
+
+  &__data {
+    padding-left: 25px;
+    height: 70px;
+    font-size: 18px;
+    color: #2c2e2f;
+
+    &--id {
+      color: #ababab;
+    }
+
+    &:last-of-type {
+      padding-left: 50px;
+    }
+  }
+
+  &__status {
+    &--active {
+      color: #75e000;
+    }
+
+    &--inactive {
+      color: #f58323;
     }
   }
 }

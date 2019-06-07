@@ -77,6 +77,7 @@ export default {
     grid-row: 1;
     grid-column: 3;
     width: 100%;
+    font-size: 38px;
     border-bottom: 2px solid #dfdfdf;
     margin-bottom: 29px;
     display: flex;
@@ -113,6 +114,7 @@ export default {
     grid-row: 2;
     grid-column: 3;
     transition: all 0.3s ease-in-out;
+    width: 100%;
   }
 
   &__createForm {
