@@ -79,6 +79,7 @@ ul {
 .content {
   position: relative;
   top: 100px;
+  min-height: $content-height;
 
   > .errorContent {
     height: $content-height;

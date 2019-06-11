@@ -1,4 +1,3 @@
-import router from '../../router'
 import store from '../../state'
 import { ICO } from './ICO'
 
@@ -28,8 +27,8 @@ const icoFinishedListener = (contract) => {
   contract.events.ICOFinished().on('data', (event) => {
     if (txHash !== event.transactionHash) {
       txHash = event.transactionHash
+      store.dispatch('auth/logOut')
       store.dispatch('ico/updateIco')
-      router.push({ name: 'home' })
     }
   })
 }

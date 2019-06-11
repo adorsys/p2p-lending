@@ -29,6 +29,7 @@
         class="navbar__right navbar__right--firstItem"
         v-if="
           $route.matched.some((record) => record.name === 'ico') &&
+            !active &&
             (tokenHolder || boardMember)
         "
         v-bind:class="{
@@ -41,6 +42,7 @@
         class="navbar__right navbar__right--secondItem"
         v-if="
           $route.matched.some((record) => record.name === 'ico') &&
+            !active &&
             (tokenHolder || boardMember)
         "
         v-bind:class="{

@@ -23,7 +23,7 @@
       float: left;
       margin-right: 16px;
       margin-top: 1px;
-      background-image: url('../../../assets/square-regular.svg');
+      background-image: url('../../../assets/square.svg');
       background-repeat: no-repeat;
       background-position: left center;
       // transition does not work in Firefox, IE
@@ -31,7 +31,7 @@
     }
 
     input[type='checkbox']:checked + label::before {
-      background-image: url('../../../assets/check-square-solid.svg');
+      background-image: url('../../../assets/square_checked.svg');
     }
 
     label {

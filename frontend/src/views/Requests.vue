@@ -105,7 +105,7 @@ export default {
       content: '';
       float: right;
       margin-left: 17px;
-      background-image: url('../assets/plus-circle-solid.svg');
+      background-image: url('../assets/circle_create.svg');
       background-repeat: no-repeat;
     }
   }
