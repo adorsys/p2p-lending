@@ -155,7 +155,7 @@
   }
 
   &--icoFinished {
-    height: 433px;
+    min-height: 465px;
     width: 100%;
   }
 
@@ -193,6 +193,15 @@
     border: 1px solid #dfdfdf;
     border-radius: 4px;
     box-shadow: 0 24px 30px 0 $card-shadow;
+    transition: opacity 0.3s ease-out;
+
+    &--hide {
+      opacity: 0;
+    }
+
+    &--show {
+      opacity: 1;
+    }
   }
 
   &__head {
@@ -250,10 +259,15 @@
 
     &--id {
       color: #ababab;
+      width: 50px;
     }
 
     &--empty {
       text-align: center;
+    }
+
+    &--option {
+      width: 150px;
     }
   }
 

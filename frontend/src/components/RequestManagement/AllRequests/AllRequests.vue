@@ -3,8 +3,16 @@
     <div class="allRequests__title-wrapper">
       <div class="allRequests__title">Requests</div>
       <div class="allRequests__sortOptions">
-        <div class="allRequests__sortOption" @click="getRequests">All</div>
-        <div class="allRequests__sortOption" @click="getTrustedRequests"
+        <div
+          class="allRequests__sortOption"
+          @click="getRequests"
+          v-bind:class="{ 'allRequests__sortOption--active': !trustedRequests }"
+          >All</div
+        >
+        <div
+          class="allRequests__sortOption"
+          @click="getTrustedRequests"
+          v-bind:class="{ 'allRequests__sortOption--active': trustedRequests }"
           >Trusted</div
         >
       </div>
@@ -77,6 +85,7 @@ export default {
   data() {
     return {
       filteredRequests: [],
+      trustedRequests: false,
     }
   },
   methods: {
@@ -98,24 +107,42 @@ export default {
           }
         })
       }
+      this.trustedRequests = false
     },
     async getTrustedRequests() {
-      const requestCopy = [...this.filteredRequests]
       this.filteredRequests = []
-      requestCopy.forEach((element) => {
-        if (element.verifiedAsker) {
-          this.filteredRequests.push(element)
-        }
-      })
+      const user = await Web3Service.getUser()
+      if (user) {
+        const locale = navigator.userLanguage || navigator.language
+        this.requests.forEach((element) => {
+          if (
+            !element.lent &&
+            element.verifiedAsker &&
+            String(user).toLocaleUpperCase(locale) !==
+              String(element.asker).toLocaleUpperCase(locale)
+          ) {
+            this.filteredRequests.push(element)
+          }
+        })
+      }
+      this.trustedRequests = true
     },
   },
   watch: {
     requests() {
-      this.getRequests()
+      if (this.trustedRequests) {
+        this.getTrustedRequests()
+      } else {
+        this.getRequests()
+      }
     },
   },
   mounted() {
-    this.getRequests()
+    if (this.trustedRequests) {
+      this.getTrustedRequests()
+    } else {
+      this.getRequests()
+    }
   },
 }
 </script>

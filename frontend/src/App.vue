@@ -8,25 +8,45 @@
       </div>
       <router-link
         :to="{ name: 'allRequests' }"
-        class="navbar__right navbar__right--allRequests"
+        class="navbar__right navbar__right--firstItem"
         v-if="$route.matched.some((record) => record.name === 'requests')"
         v-bind:class="{
-          navbar__active: $route.matched.some(
-            (record) => record.name === 'allRequests'
-          ),
+          navbar__active: $route.name === 'allRequests',
         }"
         >Open Lending Requests</router-link
       >
       <router-link
         :to="{ name: 'userRequests' }"
-        class="navbar__right navbar__right--userRequests"
+        class="navbar__right navbar__right--secondItem"
         v-if="$route.matched.some((record) => record.name === 'requests')"
         v-bind:class="{
-          navbar__active: $route.matched.some(
-            (record) => record.name === 'userRequests'
-          ),
+          navbar__active: $route.name === 'userRequests',
         }"
         >My Requests</router-link
+      >
+      <router-link
+        :to="{ name: 'ico' }"
+        class="navbar__right navbar__right--firstItem"
+        v-if="
+          $route.matched.some((record) => record.name === 'ico') &&
+            (tokenHolder || boardMember)
+        "
+        v-bind:class="{
+          navbar__active: $route.name === 'ico',
+        }"
+        >Token Management</router-link
+      >
+      <router-link
+        :to="{ name: 'memberArea' }"
+        class="navbar__right navbar__right--secondItem"
+        v-if="
+          $route.matched.some((record) => record.name === 'ico') &&
+            (tokenHolder || boardMember)
+        "
+        v-bind:class="{
+          navbar__active: $route.name === 'memberArea',
+        }"
+        >Member Area</router-link
       >
     </nav>
     <div class="content" v-if="isInjected && !invalidNetwork">
@@ -47,7 +67,12 @@ export default {
     ErrorContent,
   },
   computed: {
-    ...mapState('auth', ['isInjected', 'invalidNetwork']),
+    ...mapState('auth', [
+      'isInjected',
+      'invalidNetwork',
+      'tokenHolder',
+      'boardMember',
+    ]),
     ...mapState('ico', ['active']),
   },
 }

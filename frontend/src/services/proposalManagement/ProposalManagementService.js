@@ -50,7 +50,8 @@ export const ProposalManagementService = {
     return false
   },
   createContractFeeProposal: async (proposedFee) => {
-    if (!(proposedFee > 0) || !proposedFee) {
+    const fee = parseFloat(proposedFee)
+    if (!(fee > 0)) {
       return false
     }
     // prevent non member call
@@ -63,10 +64,7 @@ export const ProposalManagementService = {
       try {
         const user = await Web3Service.getUser()
         if (user) {
-          const feeInWei = await Web3Service.convertToWei(
-            String(proposedFee),
-            'ether'
-          )
+          const feeInWei = await Web3Service.convertToWei(proposedFee, 'ether')
           await contract.methods
             .createContractFeeProposal(feeInWei)
             .send({ from: user })
@@ -85,16 +83,21 @@ export const ProposalManagementService = {
     }
     // check if proposal for memberAddress exists already
     // Array.propotype.some() returns when first truthy element was found
-    memberProposalReturn.invalidAddress = store.state.proposalManagement.proposals.some(
-      (element) => {
-        return (
-          String(element.memberAddress).toLowerCase() ===
-          String(memberAddress).toLowerCase()
-        )
-      }
-    )
-    // return on invalid address found
-    if (memberProposalReturn.invalidAddress) {
+    if (!memberProposalReturn.invalidAddress) {
+      memberProposalReturn.invalidAction = store.state.proposalManagement.proposals.some(
+        (element) => {
+          return (
+            String(element.memberAddress).toLowerCase() ===
+            String(memberAddress).toLowerCase()
+          )
+        }
+      )
+    }
+    // skip contract call on invalid address or invalid action
+    if (
+      memberProposalReturn.invalidAddress ||
+      memberProposalReturn.invalidAction
+    ) {
       return memberProposalReturn
     }
     if (memberAddress.length > 0) {

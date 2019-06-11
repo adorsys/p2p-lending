@@ -36,16 +36,23 @@ export default {
   },
   data() {
     return {
-      percent: null,
+      percent: 0,
     }
   },
   methods: {
     updateProgressBar() {
-      const percent = (this.contractBalance / this.goal) * 100
-      this.percent = Math.round(percent)
+      const progress_fill = document.querySelector('.ppc__progress-fill')
+      let percent = this.percent
+      if (this.goal > 0 && this.contractBalance > 0) {
+        percent = (this.contractBalance / this.goal) * 100
+        this.percent = Math.round(percent)
+      }
+      if (this.percent > 0) {
+        progress_fill.style.transition = 'transform 0.3s ease-out'
+      }
       const deg = (360 * percent) / 100
       const rot = 'rotate(' + deg + 'deg)'
-      document.querySelector('.ppc__progress-fill').style.transform = rot
+      progress_fill.style.transform = rot
     },
   },
   mounted() {

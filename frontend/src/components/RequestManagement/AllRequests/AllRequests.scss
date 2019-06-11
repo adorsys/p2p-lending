@@ -28,5 +28,9 @@
     font-size: 16px;
     columns: #5a5c60;
     cursor: pointer;
+
+    &--active {
+      font-weight: 700;
+    }
   }
 }

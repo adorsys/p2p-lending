@@ -1,13 +1,14 @@
 <template>
   <div class="ico">
-    <div class="ico__header">
+    <div class="ico__header" v-if="getManagement()">
       <div class="title ico__title">{{ title }}</div>
       <div class="ico__status" v-if="active">Active</div>
     </div>
-    <ICOInfo class="ico__info" />
-    <ICOProgress class="ico__progress" v-if="active" />
-    <ICOInvest class="ico__invest" v-if="active" />
-    <ICOControl class="ico__control" v-if="!active" />
+    <ICOInfo class="ico__info" v-if="getManagement()" />
+    <ICOProgress class="ico__progress" v-if="getManagement() && active" />
+    <ICOInvest class="ico__invest" v-if="getManagement() && active" />
+    <ICOControl class="ico__control" v-if="getManagement() && !active" />
+    <router-view class="ico__management" v-else />
   </div>
 </template>
 
@@ -33,10 +34,20 @@ export default {
       title: null,
     }
   },
+  methods: {
+    getManagement() {
+      if (this.$route.matched.some((record) => record.name === 'memberArea')) {
+        return false
+      } else {
+        return true
+      }
+    },
+  },
   mounted() {
     this.active
       ? (this.title = 'Initial Coin Offering')
       : (this.title = 'Management')
+    this.$store.dispatch('auth/logIn')
   },
   watch: {
     active(status) {
@@ -105,6 +116,13 @@ export default {
   &__control {
     grid-row: 3 / 5;
     grid-column: 2 / 4;
+  }
+
+  &__management {
+    grid-row: 2 / 5;
+    grid-column: 2 / 4;
+    align-self: start;
+    justify-self: start;
   }
 }
 </style>

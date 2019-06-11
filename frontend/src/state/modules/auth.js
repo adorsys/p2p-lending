@@ -1,5 +1,4 @@
 import router from '../../router'
-import store from '../../state'
 import { Web3Service } from '../../services/web3/Web3Service'
 import { accountListener } from '../../services/web3/web3Listeners'
 import { authenticate } from '../../services/authenticate'
@@ -64,15 +63,9 @@ export default {
       state.boardMember = payload.boardMember
     },
     LOGOUT(state) {
-      const routeName = router.currentRoute.name
+      router.push({ name: 'home' })
       state.tokenHolder = false
       state.boardMember = false
-      if (
-        routeName === 'p2pManagement' ||
-        (routeName === 'ico' && !store.state.ico.active)
-      ) {
-        router.push({ name: 'home' })
-      }
     },
   },
 }

@@ -62,11 +62,11 @@ ul {
     font-size: 20px;
     color: $primary-text-color;
 
-    &--allRequests {
+    &--firstItem {
       right: 251px;
     }
 
-    &--userRequests {
+    &--secondItem {
       right: 33px;
     }
   }
@@ -79,7 +79,6 @@ ul {
 .content {
   position: relative;
   top: 100px;
-  min-height: $content-height;
 
   > .errorContent {
     height: $content-height;

@@ -31,16 +31,6 @@
           v-bind:class="{ activeSelect: active === 2 }"
         ></div>
       </div>
-      <div
-        class="icoControl__selection"
-        v-bind:class="{ activeSelect: active === 3 }"
-      >
-        <span @click="select(3)">DAO</span>
-        <div
-          class="icoControl__bottomBorder"
-          v-bind:class="{ activeSelect: active === 3 }"
-        ></div>
-      </div>
     </div>
     <div class="icoControl__area">
       <SendToken v-if="active === 0" />
@@ -51,10 +41,14 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import SendToken from './SendToken'
 import ApproveUser from './ApproveUser'
 import CheckAllowance from './CheckAllowance'
 export default {
+  computed: {
+    ...mapState('auth', ['tokenHolder', 'boardMember']),
+  },
   components: {
     SendToken,
     ApproveUser,

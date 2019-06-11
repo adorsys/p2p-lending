@@ -18,6 +18,16 @@ const router = new Router({
       path: '/ico',
       name: 'ico',
       component: () => import(/* webpackChunkName: "ICO" */ './views/ICO.vue'),
+      children: [
+        {
+          path: 'memberArea',
+          name: 'memberArea',
+          component: () =>
+            import(
+              /* webpackChunkName: "memberArea" */ './components/ProposalManagement/MemberControl'
+            ),
+        },
+      ],
     },
     {
       path: '/requests',
