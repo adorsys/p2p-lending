@@ -3,17 +3,16 @@ import { ICO } from './ICO'
 
 export const icoListeners = async () => {
   const contract = await ICO.get()
-  if (contract) {
-    participatedListener(contract)
-    icoFinishedListener(contract)
-    transferListener(contract)
-  } else {
-    console.error('ICOListeners failed')
+  if (!contract) {
+    throw new Error('ICOListeners failed')
   }
+  participatedListener(contract)
+  icoFinishedListener(contract)
+  transferListener(contract)
 }
 
 const participatedListener = (contract) => {
-  let txHash = null
+  let txHash
   contract.events.Participated().on('data', (event) => {
     if (txHash !== event.transactionHash) {
       txHash = event.transactionHash
@@ -23,7 +22,7 @@ const participatedListener = (contract) => {
 }
 
 const icoFinishedListener = (contract) => {
-  let txHash = null
+  let txHash
   contract.events.ICOFinished().on('data', (event) => {
     if (txHash !== event.transactionHash) {
       txHash = event.transactionHash
@@ -34,7 +33,7 @@ const icoFinishedListener = (contract) => {
 }
 
 const transferListener = (contract) => {
-  let txHash = null
+  let txHash
   contract.events.Transfer().on('data', (event) => {
     if (txHash !== event.transactionHash) {
       txHash = event.transactionHash

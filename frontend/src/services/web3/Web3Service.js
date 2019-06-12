@@ -3,66 +3,80 @@ import { getWeb3 } from './getWeb3'
 export const Web3Service = {
   web3Active: async () => {
     const web3 = await getWeb3.get()
-    if (web3) {
-      return await web3.eth.net.isListening()
+    if (!web3) {
+      return false
     }
-    return false
+    return await web3.eth.net.isListening()
   },
+
   getCurrentNetwork: async () => {
     const web3 = await getWeb3.get()
-    if (web3) {
-      return await web3.givenProvider.networkVersion
+    if (!web3) {
+      return null
     }
-    return null
+    return await web3.givenProvider.networkVersion
   },
+
   getNetworkName: (networkId) => {
-    if (NETWORKS.hasOwnProperty(networkId)) {
-      return NETWORKS[networkId]
+    if (!NETWORKS.hasOwnProperty(networkId)) {
+      return null
     }
-    return null
+    return NETWORKS[networkId]
   },
+
   getUser: async () => {
     const web3 = await getWeb3.get()
-    if (web3) {
-      return await web3.eth.getCoinbase()
+    if (!web3) {
+      return null
     }
-    return null
+    return await web3.eth.getCoinbase()
   },
+
   isValidAddress: async (address) => {
     const web3 = await getWeb3.get()
-    if (web3) {
-      return web3.utils.isAddress(address)
+    if (!web3) {
+      return false
     }
-    return false
+    return web3.utils.isAddress(address)
   },
+
   initializeContract: async (abi, address) => {
-    if (abi && address) {
-      const web3 = await getWeb3.get()
-      if (web3) {
-        return await new web3.eth.Contract(abi, address)
-      }
+    const web3 = await getWeb3.get()
+    if (!web3) {
+      return null
     }
-    return null
+
+    const contract = await new web3.eth.Contract(abi, address)
+
+    return contract
   },
+
   convertToWei: async (amount, from) => {
     const unit = String(from).toLowerCase()
-    if (validUnits.includes(unit)) {
-      const web3 = await getWeb3.get()
-      if (web3) {
-        return web3.utils.toWei(String(amount), unit)
-      }
+    if (!validUnits.includes(unit)) {
+      return null
     }
-    return null
+
+    const web3 = await getWeb3.get()
+    if (!web3) {
+      return null
+    }
+
+    return web3.utils.toWei(String(amount), unit)
   },
+
   convertFromWei: async (amount, to) => {
     const unit = String(to).toLowerCase()
-    if (validUnits.includes(unit)) {
-      const web3 = await getWeb3.get()
-      if (web3) {
-        return parseFloat(web3.utils.fromWei(String(amount), unit))
-      }
+    if (!validUnits.includes(unit)) {
+      return null
     }
-    return null
+
+    const web3 = await getWeb3.get()
+    if (!web3) {
+      return null
+    }
+
+    return parseFloat(web3.utils.fromWei(String(amount), unit))
   },
 }
 

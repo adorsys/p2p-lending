@@ -36,6 +36,7 @@ export default {
   },
   data() {
     return {
+      loaded: false,
       percent: 0,
     }
   },
@@ -45,11 +46,19 @@ export default {
       let percent = this.percent
       if (this.goal > 0 && this.contractBalance > 0) {
         percent = (this.contractBalance / this.goal) * 100
-        this.percent = Math.round(percent)
       }
-      if (this.percent > 0) {
+
+      if (this.loaded) {
         progress_fill.style.transition = 'transform 0.3s ease-out'
       }
+
+      const roundedPercent = Math.round(percent)
+      // prevent flickering when crop gt50 style is added
+      if (this.percent < 50 && roundedPercent >= 50) {
+        progress_fill.style.transition = ''
+      }
+      this.percent = roundedPercent
+
       const deg = (360 * percent) / 100
       const rot = 'rotate(' + deg + 'deg)'
       progress_fill.style.transform = rot
@@ -57,6 +66,7 @@ export default {
   },
   mounted() {
     this.updateProgressBar()
+    this.loaded = true
   },
   watch: {
     contractBalance() {

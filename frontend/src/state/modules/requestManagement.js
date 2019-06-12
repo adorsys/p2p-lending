@@ -7,8 +7,11 @@ export default {
     requests: [],
   },
   actions: {
-    initializeRequestManagement() {
+    initializeRequestManagement({ dispatch }) {
       requestManagementListeners()
+      dispatch('auth/logIn', null, {
+        root: true,
+      })
     },
     async getRequests({ commit }) {
       const requests = await RequestManagementService.getRequests()
