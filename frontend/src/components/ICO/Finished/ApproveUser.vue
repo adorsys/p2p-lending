@@ -54,9 +54,11 @@ export default {
         this.amount,
         this.target
       )
+
       // update error states
       this.invalidAmount = giveApprovalReturn.invalidAmount
       this.invalidTarget = giveApprovalReturn.invalidTarget
+
       // reset input on success
       if (!(this.invalidAmount || this.invalidTarget)) {
         this.target = ''

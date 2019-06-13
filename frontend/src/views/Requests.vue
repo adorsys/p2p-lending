@@ -41,11 +41,11 @@ export default {
   },
   methods: {
     setTitle() {
+      this.title = 'My Requests'
+
       const route = this.$route.name
       if (route === 'allRequests') {
         this.title = 'Open Lending Requests'
-      } else {
-        this.title = 'My Requests'
       }
     },
     close() {

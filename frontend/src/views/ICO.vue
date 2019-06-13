@@ -38,15 +38,16 @@ export default {
     getManagement() {
       if (this.$route.matched.some((record) => record.name === 'memberArea')) {
         return false
-      } else {
-        return true
       }
+      return true
     },
   },
   mounted() {
     this.active
       ? (this.title = 'Initial Coin Offering')
       : (this.title = 'Management')
+
+    // authenticate user on load
     this.$store.dispatch('auth/logIn')
   },
   watch: {

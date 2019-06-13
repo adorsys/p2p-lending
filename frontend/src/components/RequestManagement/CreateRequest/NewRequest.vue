@@ -58,6 +58,7 @@
 
 <script>
 import { RequestManagementService } from '../../../services/requestManagement/RequestManagementService'
+
 export default {
   data() {
     return {
@@ -76,10 +77,12 @@ export default {
         this.payback,
         this.description
       )
+
       // update error states
       this.invalidCredit = createRequestReturn.invalidCredit
       this.invalidPayback = createRequestReturn.invalidPayback
       this.invalidDescription = createRequestReturn.invalidDescription
+
       // reset input on success
       if (
         !(this.invalidCredit || this.invalidPayback || this.invalidDescription)
@@ -90,6 +93,8 @@ export default {
         this.invalidCredit = false
         this.invalidPayback = false
         this.invalidDescription = false
+
+        // close create request overlay
         this.$emit('closeRequestCreation')
       }
     },

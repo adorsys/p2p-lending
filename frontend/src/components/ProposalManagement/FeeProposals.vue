@@ -34,6 +34,7 @@
 import { mapState } from 'vuex'
 import { Web3Service } from '../../services/web3/Web3Service'
 import { ProposalManagementService } from '../../services/proposalManagement/ProposalManagementService'
+
 export default {
   computed: {
     ...mapState('proposalManagement', ['proposals']),
@@ -49,17 +50,20 @@ export default {
     },
     filterFeeProposals() {
       this.contractFeeProposals = []
+
       this.proposals.forEach(async (element) => {
         if (parseFloat(element.propType) === 1) {
           const fee = await Web3Service.convertFromWei(
             element.proposalFee,
             'ether'
           )
+
           const description = 'Change Contract Fee to ' + fee + ' ETH'
           const proposal = {
             address: element.proposalAddress,
             description: description,
           }
+
           this.contractFeeProposals.push(proposal)
         }
       })

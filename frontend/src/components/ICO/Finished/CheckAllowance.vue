@@ -30,6 +30,7 @@
 
 <script>
 import { ICOService } from '../../../services/icoContract/IcoService'
+
 export default {
   data() {
     return {
@@ -42,8 +43,10 @@ export default {
   methods: {
     async check() {
       const checkAllowanceReturn = await ICOService.checkAllowance(this.target)
+
       // update error state
       this.invalidTarget = checkAllowanceReturn.invalidOwner
+
       if (!this.invalidTarget) {
         this.amount = checkAllowanceReturn.allowance
         this.address = this.target

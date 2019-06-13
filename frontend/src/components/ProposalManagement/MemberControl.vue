@@ -90,6 +90,7 @@ export default {
       this.invalidFee = !(await ProposalManagementService.createContractFeeProposal(
         this.feeInput
       ))
+
       if (!this.invalidFee) {
         this.feeInput = ''
       }
@@ -99,9 +100,11 @@ export default {
         this.memberInput,
         adding
       )
+
       this.invalidAddress =
         memberProposalReturn.invalidAddress ||
         memberProposalReturn.invalidAction
+
       if (!this.invalidAddress) {
         this.memberInput = ''
       }

@@ -45,6 +45,7 @@ import { mapState } from 'vuex'
 import SendToken from './SendToken'
 import ApproveUser from './ApproveUser'
 import CheckAllowance from './CheckAllowance'
+
 export default {
   computed: {
     ...mapState('auth', ['tokenHolder', 'boardMember']),

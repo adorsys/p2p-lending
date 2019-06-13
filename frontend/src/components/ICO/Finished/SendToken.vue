@@ -69,6 +69,7 @@
 
 <script>
 import { ICOService } from '../../../services/icoContract/IcoService'
+
 export default {
   data() {
     return {
@@ -84,6 +85,7 @@ export default {
   methods: {
     async submit() {
       let transferReturn
+
       // transfer for another account
       if (this.fromActive) {
         transferReturn = await ICOService.transferFrom(
@@ -91,6 +93,7 @@ export default {
           this.origin,
           this.target
         )
+
         // update error states
         this.invalidAmount = transferReturn.invalidAmount
         this.invalidOrigin = transferReturn.invalidOrigin
@@ -98,10 +101,12 @@ export default {
       } else {
         // transfer from own account
         transferReturn = await ICOService.transfer(this.amount, this.target)
+
         // update error states
         this.invalidAmount = transferReturn.invalidAmount
         this.invalidTarget = transferReturn.invalidRecipient
       }
+
       // reset input on success
       if (!(this.invalidAmount || this.invalidOrigin || this.invalidTarget)) {
         this.amount = ''

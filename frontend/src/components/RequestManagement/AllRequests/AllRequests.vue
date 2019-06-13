@@ -94,55 +94,59 @@ export default {
     },
     async getRequests() {
       this.filteredRequests = []
+
       const user = await Web3Service.getUser()
-      if (user) {
-        const locale = navigator.userLanguage || navigator.language
-        this.requests.forEach((element) => {
-          if (
-            element.lent === false &&
-            String(user).toLocaleUpperCase(locale) !==
-              String(element.asker).toLocaleUpperCase(locale)
-          ) {
-            this.filteredRequests.push(element)
-          }
-        })
+      if (!user) {
+        return
       }
+
+      const locale = navigator.userLanguage || navigator.language
+      const comparableAddress = String(user).toLocaleUpperCase(locale)
+
+      this.requests.forEach((element) => {
+        if (
+          !element.lent &&
+          comparableAddress !== String(element.asker).toLocaleUpperCase(locale)
+        ) {
+          this.filteredRequests.push(element)
+        }
+      })
+
+      // reflect display option internally
       this.trustedRequests = false
     },
     async getTrustedRequests() {
       this.filteredRequests = []
+
       const user = await Web3Service.getUser()
-      if (user) {
-        const locale = navigator.userLanguage || navigator.language
-        this.requests.forEach((element) => {
-          if (
-            !element.lent &&
-            element.verifiedAsker &&
-            String(user).toLocaleUpperCase(locale) !==
-              String(element.asker).toLocaleUpperCase(locale)
-          ) {
-            this.filteredRequests.push(element)
-          }
-        })
+      if (!user) {
+        return
       }
+
+      const locale = navigator.userLanguage || navigator.language
+      const comparableAddress = String(user).toLocaleUpperCase(locale)
+
+      this.requests.forEach((element) => {
+        if (
+          !element.lent &&
+          element.verifiedAsker &&
+          comparableAddress !== String(element.asker).toLocaleUpperCase(locale)
+        ) {
+          this.filteredRequests.push(element)
+        }
+      })
+
+      // reflect display option internally
       this.trustedRequests = true
     },
   },
   watch: {
     requests() {
-      if (this.trustedRequests) {
-        this.getTrustedRequests()
-      } else {
-        this.getRequests()
-      }
+      this.trustedRequests ? this.getTrustedRequests() : this.getRequests()
     },
   },
   mounted() {
-    if (this.trustedRequests) {
-      this.getTrustedRequests()
-    } else {
-      this.getRequests()
-    }
+    this.trustedRequests ? this.getTrustedRequests() : this.getRequests()
   },
 }
 </script>

@@ -3,10 +3,9 @@
     <div class="card card--threeRows">
       <div class="card__title-section">
         <div class="title">p2p Lending</div>
-        <div class="subtitle"
-          >Invest in a decentralized platform tackling the following
-          problems:</div
-        >
+        <div class="subtitle">
+          Invest in a decentralized platform tackling the following problems:
+        </div>
       </div>
       <ul class="landingPage__bulletpoints">
         <li class="landingPage__bulletpoint">Proof of Identity</li>
@@ -35,10 +34,9 @@
     <div class="card card--twoRows">
       <div class="card__title-section">
         <div class="title">Management</div>
-        <div class="subtitle"
-          >If you want to participate in the management of the DAO, this
-          way.</div
-        >
+        <div class="subtitle">
+          If you want to participate in the management of the DAO, this way.
+        </div>
       </div>
       <router-link :to="{ name: 'ico' }" class="btn"
         >Management Area</router-link
@@ -49,6 +47,7 @@
 
 <script>
 import { mapState } from 'vuex'
+
 export default {
   name: 'LandingPage',
   computed: {

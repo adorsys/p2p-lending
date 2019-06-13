@@ -101,26 +101,30 @@ export default {
   methods: {
     async getRequests() {
       this.filteredRequests = []
+
       const user = await Web3Service.getUser()
-      if (user) {
-        const locale = navigator.userLanguage || navigator.language
-        this.requests.forEach((element) => {
-          if (
-            String(user).toLocaleUpperCase(locale) ===
-            String(element.asker).toLocaleUpperCase(locale)
-          ) {
-            element.isAsker = true
-            this.filteredRequests.push(element)
-          }
-          if (
-            String(user).toLocaleUpperCase(locale) ===
-            String(element.lender).toLocaleUpperCase(locale)
-          ) {
-            element.isLender = true
-            this.filteredRequests.push(element)
-          }
-        })
+      if (!user) {
+        return
       }
+
+      const locale = navigator.userLanguage || navigator.language
+      const comparableAddress = String(user).toLocaleUpperCase(locale)
+
+      this.requests.forEach((element) => {
+        if (
+          comparableAddress === String(element.asker).toLocaleUpperCase(locale)
+        ) {
+          element.isAsker = true
+          this.filteredRequests.push(element)
+        }
+
+        if (
+          comparableAddress === String(element.lender).toLocaleUpperCase(locale)
+        ) {
+          element.isLender = true
+          this.filteredRequests.push(element)
+        }
+      })
     },
     cancel(address) {
       RequestManagementService.cancel(address)

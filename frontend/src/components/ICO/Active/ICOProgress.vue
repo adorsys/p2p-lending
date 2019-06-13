@@ -30,6 +30,7 @@
 
 <script>
 import { mapState } from 'vuex'
+
 export default {
   computed: {
     ...mapState('ico', ['goal', 'contractBalance']),
@@ -57,8 +58,8 @@ export default {
       if (this.percent < 50 && roundedPercent >= 50) {
         progress_fill.style.transition = ''
       }
-      this.percent = roundedPercent
 
+      this.percent = roundedPercent
       const deg = (360 * percent) / 100
       const rot = 'rotate(' + deg + 'deg)'
       progress_fill.style.transform = rot

@@ -20,28 +20,34 @@ export default {
         invalidNetwork: true,
         currentNetwork: null,
       }
-      if (payload.injected) {
-        // prevent load on wrong network
-        const network = await Web3Service.getCurrentNetwork()
-        const deployedNetwork = Object.keys(data.networks)
-        payload.currentNetwork = Web3Service.getNetworkName(deployedNetwork[0])
-        if (data.networks.hasOwnProperty(network)) {
-          payload.invalidNetwork = false
-          dispatch('ico/initializeIco', null, {
-            root: true,
-          })
-          dispatch('proposalManagement/initializeProposalManagement', null, {
-            root: true,
-          })
-          dispatch('requestManagement/initializeRequestManagement', null, {
-            root: true,
-          })
-          dispatch('requestManagement/getRequests', null, {
-            root: true,
-          })
-          accountListener()
-        }
+
+      if (!payload.injected) {
+        commit('INITIALIZE', payload)
+        return
       }
+
+      // prevent load on wrong network
+      const network = await Web3Service.getCurrentNetwork()
+      const deployedNetwork = Object.keys(data.networks)
+      payload.currentNetwork = Web3Service.getNetworkName(deployedNetwork[0])
+
+      if (data.networks.hasOwnProperty(network)) {
+        payload.invalidNetwork = false
+        dispatch('ico/initializeIco', null, {
+          root: true,
+        })
+        dispatch('proposalManagement/initializeProposalManagement', null, {
+          root: true,
+        })
+        dispatch('requestManagement/initializeRequestManagement', null, {
+          root: true,
+        })
+        dispatch('requestManagement/getRequests', null, {
+          root: true,
+        })
+        accountListener()
+      }
+
       commit('INITIALIZE', payload)
     },
     async logIn({ commit }) {

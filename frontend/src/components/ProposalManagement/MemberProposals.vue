@@ -33,6 +33,7 @@
 <script>
 import { mapState } from 'vuex'
 import { ProposalManagementService } from '../../services/proposalManagement/ProposalManagementService'
+
 export default {
   computed: {
     ...mapState('proposalManagement', ['proposals']),
@@ -45,16 +46,19 @@ export default {
   methods: {
     filterProposals() {
       this.memberProposals = []
+
       this.proposals.forEach(async (element) => {
         const proposalType = parseFloat(element.propType)
         const proposal = {
           address: element.proposalAddress,
           description: null,
         }
+
         if (proposalType === 2) {
           proposal.description = 'Add Member: ' + element.memberAddress
           this.memberProposals.push(proposal)
         }
+
         if (proposalType === 3) {
           proposal.description = 'Remove Member: ' + element.memberAddress
           this.memberProposals.push(proposal)

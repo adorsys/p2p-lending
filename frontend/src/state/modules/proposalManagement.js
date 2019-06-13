@@ -16,6 +16,8 @@ export default {
       if (payload.contractFee) {
         proposalManagementListeners()
         commit('INITIALIZE_PROPOSAL_MANAGEMENT', payload)
+
+        // authentication on load
         dispatch('auth/logIn', null, {
           root: true,
         })

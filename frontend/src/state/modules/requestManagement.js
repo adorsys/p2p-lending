@@ -7,19 +7,16 @@ export default {
     requests: [],
   },
   actions: {
-    initializeRequestManagement({ dispatch }) {
+    initializeRequestManagement() {
       requestManagementListeners()
-      dispatch('auth/logIn', null, {
-        root: true,
-      })
     },
     async getRequests({ commit }) {
       const requests = await RequestManagementService.getRequests()
-      commit('GETREQUESTS', requests)
+      commit('GET_REQUESTS', requests)
     },
   },
   mutations: {
-    GETREQUESTS(state, requests) {
+    GET_REQUESTS(state, requests) {
       state.requests = requests
     },
   },
