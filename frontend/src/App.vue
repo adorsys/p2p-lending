@@ -1,15 +1,58 @@
 <template>
   <div id="app">
-    <Navbar />
-    <div
-      class="content content--hasWeb3"
-      v-if="isInjected && !invalidNetwork"
-      v-bind:class="{ tokenSale: active }"
-    >
-      <Sidebar v-if="!active" />
-      <section>
-        <router-view />
-      </section>
+    <nav class="navbar">
+      <div class="navbar__left">
+        <router-link :to="{ name: 'home' }" class="navbar__title"
+          >p2p lending</router-link
+        >
+      </div>
+      <router-link
+        :to="{ name: 'allRequests' }"
+        class="navbar__right navbar__right--firstItem"
+        v-if="$route.matched.some((record) => record.name === 'requests')"
+        v-bind:class="{
+          navbar__active: $route.name === 'allRequests',
+        }"
+        >Open Lending Requests</router-link
+      >
+      <router-link
+        :to="{ name: 'userRequests' }"
+        class="navbar__right navbar__right--secondItem"
+        v-if="$route.matched.some((record) => record.name === 'requests')"
+        v-bind:class="{
+          navbar__active: $route.name === 'userRequests',
+        }"
+        >My Requests</router-link
+      >
+      <router-link
+        :to="{ name: 'ico' }"
+        class="navbar__right navbar__right--firstItem"
+        v-if="
+          $route.matched.some((record) => record.name === 'ico') &&
+            !active &&
+            (tokenHolder || boardMember)
+        "
+        v-bind:class="{
+          navbar__active: $route.name === 'ico',
+        }"
+        >Token Management</router-link
+      >
+      <router-link
+        :to="{ name: 'memberArea' }"
+        class="navbar__right navbar__right--secondItem"
+        v-if="
+          $route.matched.some((record) => record.name === 'ico') &&
+            !active &&
+            (tokenHolder || boardMember)
+        "
+        v-bind:class="{
+          navbar__active: $route.name === 'memberArea',
+        }"
+        >Member Area</router-link
+      >
+    </nav>
+    <div class="content" v-if="isInjected && !invalidNetwork">
+      <router-view />
     </div>
     <div class="content" v-else>
       <ErrorContent />
@@ -19,18 +62,19 @@
 
 <script>
 import { mapState } from 'vuex'
-import Navbar from './components/Navbar/navbar'
-import Sidebar from './components/Sidebar/sidebar'
-import ErrorContent from './components/LandingPage/ErrorContent'
+import ErrorContent from './components/ErrorContent'
 
 export default {
   components: {
-    Navbar,
-    Sidebar,
     ErrorContent,
   },
   computed: {
-    ...mapState('auth', ['isInjected', 'invalidNetwork']),
+    ...mapState('auth', [
+      'isInjected',
+      'invalidNetwork',
+      'tokenHolder',
+      'boardMember',
+    ]),
     ...mapState('ico', ['active']),
   },
 }

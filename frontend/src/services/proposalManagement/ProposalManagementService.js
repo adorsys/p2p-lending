@@ -5,155 +5,183 @@ import store from '../../state'
 export const ProposalManagementService = {
   getProposals: async () => {
     const proposals = []
+
     const contract = await ProposalManagement.get()
-    if (contract) {
-      try {
-        const props = await contract.methods.getProposals().call()
-        if (props.length > 0) {
-          await Promise.all(
-            props.map(async (element) => {
-              const prop = await contract.methods
-                .getProposalParameters(element)
-                .call()
-              proposals.push(prop)
-            })
-          )
-        }
-      } catch (error) {
-        console.error(error)
-      }
+    if (!contract) {
+      return proposals
     }
+
+    const rawProposals = await contract.methods.getProposals().call()
+    if (rawProposals.length <= 0) {
+      return proposals
+    }
+
+    // get data for all existing proposals
+    await Promise.all(
+      rawProposals.map(async (element) => {
+        const prop = await contract.methods
+          .getProposalParameters(element)
+          .call()
+        proposals.push(prop)
+      })
+    )
+
     return proposals
   },
+
   getContractFee: async () => {
     const contract = await ProposalManagement.get()
-    if (contract) {
-      const fee = await contract.methods.contractFee().call()
-      return await Web3Service.convertFromWei(fee, 'ether')
+    if (!contract) {
+      return null
     }
+
+    const rawFee = await contract.methods.contractFee().call()
+    const contractFee = await Web3Service.convertFromWei(rawFee, 'ether')
+
+    return contractFee
   },
-  getMemberStatus: async (address) => {
+
+  getMemberStatus: async (user) => {
     const contract = await ProposalManagement.get()
-    if (contract) {
-      try {
-        if (address == null) {
-          address = await Web3Service.getUser()
-        }
-        if (address) {
-          const memberId = await contract.methods.memberId(address).call()
-          return memberId > 0
-        }
-      } catch (error) {
-        console.error(error)
-      }
+    if (!contract) {
+      return false
     }
-    return false
+
+    // no user given as parameter -> get current active user
+    if (!user) {
+      user = await Web3Service.getUser()
+    }
+
+    // return early if getUser() provided no user
+    if (!user) {
+      return false
+    }
+
+    const memberId = await contract.methods.memberId(user).call()
+
+    return memberId > 0
   },
+
   createContractFeeProposal: async (proposedFee) => {
-    if (!(proposedFee > 0) || !proposedFee) {
+    if (parseFloat(proposedFee) <= 0) {
       return false
     }
-    // prevent non member call
-    const isMember = await ProposalManagementService.getMemberStatus()
-    if (!isMember) {
+
+    const callerIsMember = await ProposalManagementService.getMemberStatus()
+    if (!callerIsMember) {
       return false
     }
+
     const contract = await ProposalManagement.get()
-    if (contract) {
-      try {
-        const user = await Web3Service.getUser()
-        if (user) {
-          const feeInWei = await Web3Service.convertToWei(
-            String(proposedFee),
-            'ether'
-          )
-          await contract.methods
-            .createContractFeeProposal(feeInWei)
-            .send({ from: user })
-          return true
-        }
-      } catch (error) {
-        console.error(error)
-      }
+    if (!contract) {
+      return false
     }
-    return false
+
+    const user = await Web3Service.getUser()
+    if (!user) {
+      return false
+    }
+
+    const feeInWei = await Web3Service.convertToWei(proposedFee, 'ether')
+    contract.methods.createContractFeeProposal(feeInWei).send({ from: user })
+
+    return true
   },
-  createMemberProposal: async (memberAddress, action) => {
+
+  createMemberProposal: async (memberAddress, adding) => {
     const memberProposalReturn = {
-      invalidAddress: !(await Web3Service.isValidAddress(memberAddress)),
-      invalidAction: true,
+      invalidAddress: false,
+      invalidAction: false,
     }
-    // check if proposal for memberAddress exists already
-    // Array.propotype.some() returns when first truthy element was found
-    memberProposalReturn.invalidAddress = store.state.proposalManagement.proposals.some(
-      (element) => {
-        return (
-          String(element.memberAddress).toLowerCase() ===
-          String(memberAddress).toLowerCase()
-        )
-      }
-    )
-    // return on invalid address found
-    if (memberProposalReturn.invalidAddress) {
+
+    const memberAddressIsValid = await Web3Service.isValidAddress(memberAddress)
+    if (!memberAddressIsValid) {
+      memberProposalReturn.invalidAddress = true
       return memberProposalReturn
     }
-    if (memberAddress.length > 0) {
-      const memberStatus = await ProposalManagementService.getMemberStatus(
-        memberAddress
-      )
-      /**
-       * action is valid for memberAddress
-       * action === true -> addMember -> memberStatus === false
-       * action === false -> removeMember -> memberStatus === true
-       */
-      memberProposalReturn.invalidAction = memberStatus ? action : !action
-    }
-    if (
-      !memberProposalReturn.invalidAddress &&
-      !memberProposalReturn.invalidAction
-    ) {
-      // prevent call from non member
-      const calleeIsMember = await ProposalManagementService.getMemberStatus()
-      if (!calleeIsMember) {
-        return memberProposalReturn
+
+    // check if proposal for memberAddress exists already
+    // Array.propotype.some() returns when first truthy element was found
+
+    const locale = navigator.userLanguage || navigator.language
+    const inputAddress = String(memberAddress).toLocaleUpperCase(locale)
+
+    const invalidAction = store.state.proposalManagement.proposals.some(
+      (element) => {
+        const elementMemberAddress = String(
+          element.memberAddress
+        ).toLocaleUpperCase(locale)
+
+        return inputAddress === elementMemberAddress
       }
-      const contract = await ProposalManagement.get()
-      if (contract) {
-        try {
-          const user = await Web3Service.getUser()
-          if (user) {
-            await contract.methods
-              .createMemberProposal(memberAddress, action)
-              .send({ from: user })
-          }
-        } catch (error) {
-          console.error(error)
-        }
-      }
+    )
+
+    if (invalidAction) {
+      memberProposalReturn.invalidAction = true
+      return memberProposalReturn
     }
+
+    const isMember = await ProposalManagementService.getMemberStatus(
+      memberAddress
+    )
+
+    // action: add member -> member must not exist
+    if (adding && isMember) {
+      memberProposalReturn.invalidAction = true
+      return memberProposalReturn
+    }
+
+    // action: remove member -> member must exist
+    if (!adding && !isMember) {
+      memberProposalReturn.invalidAction = true
+      return memberProposalReturn
+    }
+
+    const calleeIsMember = await ProposalManagementService.getMemberStatus()
+    if (!calleeIsMember) {
+      return memberProposalReturn
+    }
+
+    const contract = await ProposalManagement.get()
+    if (!contract) {
+      return memberProposalReturn
+    }
+
+    const user = await Web3Service.getUser()
+    if (!user) {
+      return memberProposalReturn
+    }
+
+    contract.methods
+      .createMemberProposal(memberAddress, adding)
+      .send({ from: user })
+
     return memberProposalReturn
   },
+
   vote: async (stance, address) => {
-    if (!(await Web3Service.isValidAddress(address))) {
+    const validAddress = await Web3Service.isValidAddress(address)
+    if (!validAddress) {
       return false
     }
-    // prevent call from non member
+
     const calleeIsMember = await ProposalManagementService.getMemberStatus()
     if (!calleeIsMember) {
       return false
     }
+
     const contract = await ProposalManagement.get()
-    if (contract) {
-      try {
-        const user = await Web3Service.getUser()
-        if (user) {
-          await contract.methods.vote(stance, address).send({ from: user })
-          return true
-        }
-      } catch (error) {
-        console.error(error)
-      }
+    if (!contract) {
+      return false
     }
-    return false
+
+    const user = await Web3Service.getUser()
+    if (!user) {
+      return false
+    }
+
+    contract.methods.vote(stance, address).send({ from: user })
+
+    return true
   },
 }

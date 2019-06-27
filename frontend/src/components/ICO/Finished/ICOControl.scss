@@ -1,0 +1,47 @@
+@import '../../../util/scss/variables';
+
+.icoControl {
+  display: grid;
+  grid-template-rows: 76px repeat(3, 1fr);
+  grid-template-columns: 1fr;
+  width: 100%;
+  justify-items: center;
+
+  &__selections {
+    width: 90%;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    column-gap: 30px;
+    align-items: center;
+    border-bottom: 2px solid #dfdfdf;
+  }
+
+  &__selection {
+    color: $primary-text-color;
+    font-size: 20px;
+    line-height: 60px;
+    font-weight: 700;
+
+    > span {
+      cursor: pointer;
+      opacity: 0.3;
+    }
+  }
+
+  &__bottomBorder {
+    position: relative;
+    top: -15px;
+    width: 40px;
+    border-bottom: 4px solid $bg-blue;
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out;
+  }
+}
+
+.activeSelect {
+  opacity: 1;
+
+  > span {
+    opacity: 1;
+  }
+}

@@ -3,18 +3,18 @@ import store from '../../state'
 
 export const requestManagementListeners = async () => {
   const contract = await RequestManagement.get()
-  if (contract) {
-    requestCreatedListener(contract)
-    requestGrantedListener(contract)
-    withdrawListener(contract)
-    debtPaidListener(contract)
-  } else {
-    console.error('requestManagementListeners failed')
+  if (!contract) {
+    throw new Error('requestManagementListeners failed')
   }
+
+  requestCreatedListener(contract)
+  requestGrantedListener(contract)
+  withdrawListener(contract)
+  debtPaidListener(contract)
 }
 
 const requestCreatedListener = (contract) => {
-  let txHash = null
+  let txHash
   contract.events.RequestCreated().on('data', (event) => {
     if (txHash !== event.transactionHash) {
       txHash = event.transactionHash
@@ -24,7 +24,7 @@ const requestCreatedListener = (contract) => {
 }
 
 const requestGrantedListener = (contract) => {
-  let txHash = null
+  let txHash
   contract.events.RequestGranted().on('data', (event) => {
     if (txHash !== event.transactionHash) {
       txHash = event.transactionHash
@@ -34,7 +34,7 @@ const requestGrantedListener = (contract) => {
 }
 
 const withdrawListener = (contract) => {
-  let txHash = null
+  let txHash
   contract.events.Withdraw().on('data', (event) => {
     if (txHash !== event.transactionHash) {
       txHash = event.transactionHash
@@ -44,11 +44,12 @@ const withdrawListener = (contract) => {
 }
 
 const debtPaidListener = (contract) => {
-  let txHash = null
+  let txHash
   contract.events.DebtPaid().on('data', (event) => {
     if (txHash !== event.transactionHash) {
       txHash = event.transactionHash
       store.dispatch('requestManagement/getRequests')
+      store.dispatch('ico/updateIco')
     }
   })
 }

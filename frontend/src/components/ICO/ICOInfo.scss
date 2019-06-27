@@ -1,0 +1,47 @@
+@import '../../util/scss/variables';
+
+.icoInfo {
+  grid-template-columns: repeat(3, 1fr);
+
+  &__wrapper {
+    width: 100%;
+    margin: 21px 0;
+    display: grid;
+    grid-template-columns: 30% 70%;
+    justify-items: center;
+    align-items: center;
+    border-right: 2px solid #dfdfdf;
+
+    &:last-of-type {
+      border: none;
+    }
+  }
+
+  &__icon {
+    width: 40px;
+    height: 40px;
+    justify-self: end;
+
+    &--coins {
+      height: 50px;
+      width: 50px;
+    }
+  }
+
+  &__info {
+    justify-self: start;
+    margin-left: 20px;
+    font-size: 20px;
+    font-weight: 400;
+    color: $primary-text-color;
+  }
+
+  &__info-title {
+    opacity: 0.5;
+    margin-bottom: 5px;
+  }
+
+  &__info-count {
+    margin-top: 5px;
+  }
+}

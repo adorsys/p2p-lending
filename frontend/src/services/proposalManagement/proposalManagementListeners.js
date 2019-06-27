@@ -3,18 +3,18 @@ import store from '../../state'
 
 export const proposalManagementListeners = async () => {
   const contract = await ProposalManagement.get()
-  if (contract) {
-    proposalCreatedListener(contract)
-    proposalExecutedListener(contract)
-    contractFeeListener(contract)
-    membershipChangedListener(contract)
-  } else {
-    console.error('ProposalMangementListeners failed')
+  if (!contract) {
+    throw new Error('ProposalManagementListeners failed')
   }
+
+  proposalCreatedListener(contract)
+  proposalExecutedListener(contract)
+  contractFeeListener(contract)
+  membershipChangedListener(contract)
 }
 
 const proposalCreatedListener = (contract) => {
-  let txHash = null
+  let txHash
   contract.events.ProposalCreated().on('data', (event) => {
     if (txHash !== event.transactionHash) {
       txHash = event.transactionHash
@@ -24,7 +24,7 @@ const proposalCreatedListener = (contract) => {
 }
 
 const proposalExecutedListener = (contract) => {
-  let txHash = null
+  let txHash
   contract.events.ProposalExecuted().on('data', (event) => {
     if (txHash !== event.transactionHash) {
       txHash = event.transactionHash
@@ -34,7 +34,7 @@ const proposalExecutedListener = (contract) => {
 }
 
 const contractFeeListener = (contract) => {
-  let txHash = null
+  let txHash
   contract.events.NewContractFee().on('data', (event) => {
     if (txHash !== event.transactionHash) {
       txHash = event.transactionHash
@@ -44,12 +44,12 @@ const contractFeeListener = (contract) => {
 }
 
 const membershipChangedListener = (contract) => {
-  let txHash = null
+  let txHash
   contract.events.MembershipChanged().on('data', (event) => {
     if (txHash !== event.transactionHash) {
       txHash = event.transactionHash
       store.dispatch('auth/logIn')
-      if (!store.state.auth.tokenHolder && !store.state.auth.bordMember) {
+      if (!(store.state.auth.tokenHolder || store.state.auth.bordMember)) {
         store.dispatch('auth/logOut')
       }
     }

@@ -1,153 +1,63 @@
 @import 'variables';
 
-// mixins
-@mixin set-background($color) {
-  background-color: $color;
-  color: set-text-color($color);
+// circle progress (pie chart)
+@mixin circle($size) {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  left: calc(50% - #{$size / 2});
+  top: calc(50% - #{$size / 2});
+  width: $size;
+  height: $size;
 }
 
-@mixin set-shadow-and-border($input) {
-  box-shadow: 0 0 12px -6px rgba($color: invert($input), $alpha: 0.3);
-  border: 1px solid rgba($color: $secondary-color, $alpha: 0.2);
+// text style(s)
+.title {
+  color: $primary-text-color;
+  font-size: 32px;
+  line-height: 60px;
+  font-weight: 600;
 }
 
-// functions
-@function set-text-color($color) {
-  @if (lightness($color) > 50) {
-    @return $secondary-dark-color;
-  } @else {
-    @return $primary-font-color;
-  }
+.subtitle {
+  width: 90%;
+  color: $primary-text-color;
+  font-size: 20px;
+  line-height: 24px;
+  opacity: 0.58;
+  align-self: start;
 }
 
-// text-styles
-.x-large {
-  color: scale-color($secondary-dark-color, $lightness: -10%);
-  font-size: 4rem;
-  line-height: 1.2;
-  font-weight: 700;
-  padding: 1rem 0;
-}
-
-.large {
-  color: scale-color($secondary-dark-color, $lightness: -10%);
-  font-size: 3rem;
-  line-height: 1.4;
-  font-weight: 700;
-  padding: 1rem 0;
-}
-
-.lead {
-  font-size: 1.8rem;
-  padding: 1rem 0;
-}
-
-.bulletpoint {
-  font-size: 1.5rem;
-  padding: 0.2rem 0;
-}
-
-.company {
-  color: $adorsys-color;
-  font-size: 2.4rem;
-  padding: 0;
-}
-
-.link {
-  color: $link-color;
-  font-weight: 700;
-}
-
-// buttons
+// button(s)
 .btn {
   all: unset;
-  display: inline-block;
-  width: 160px;
-  height: 32px;
-  padding: 4px 0;
+  height: 50px;
+  width: 320px;
+  background-color: $bg-blue;
+  outline: none;
   cursor: pointer;
-  border-radius: 2px;
-  margin: 0.5rem;
-  font-size: 1.2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: $bg-white;
+  font-size: 20px;
+  line-height: 20px;
+  letter-spacing: 0.23px;
   font-weight: 700;
+  box-shadow: 0 5px 15px 0 rgba(0, 0, 0, 0.1);
+  border-radius: 3px;
+
+  &--form {
+    width: 140px;
+    font-size: 24px;
+    font-weight: 400;
+  }
 
   &--table {
-    @include set-background($primary-light-color);
-    @include set-shadow-and-border($primary-light-color);
-    transition: all 0.2s ease-in-out;
-
-    &:hover {
-      @include set-background(
-        scale-color($primary-light-color, $lightness: -5%)
-      );
-      @include set-shadow-and-border(
-        scale-color($primary-light-color, $lightness: -20%)
-      );
-    }
-    width: 125px;
-    height: 24px;
-    padding-top: 0;
-    padding-bottom: 6px;
-  }
-
-  &--primary {
-    @include set-background($primary-color);
-    @include set-shadow-and-border($primary-light-color);
-    transition: all 0.2s ease-in-out;
-
-    &:hover {
-      @include set-background(scale-color($primary-color, $lightness: -20%));
-      @include set-shadow-and-border(
-        scale-color($primary-color, $lightness: -20%)
-      );
-    }
-  }
-
-  &--light {
-    @include set-background($primary-light-color);
-    @include set-shadow-and-border($primary-light-color);
-    transition: all 0.2s ease-in-out;
-
-    &:hover {
-      @include set-background(
-        scale-color($primary-light-color, $lightness: -5%)
-      );
-      @include set-shadow-and-border(
-        scale-color($primary-light-color, $lightness: -20%)
-      );
-    }
-  }
-
-  &--dark {
-    @include set-background($primary-dark-color);
-    @include set-shadow-and-border($primary-dark-color);
-    transition: all 0.2s ease-in-out;
-
-    &:hover {
-      @include set-background(
-        scale-color($primary-dark-color, $lightness: 20%)
-      );
-      @include set-shadow-and-border(
-        scale-color($primary-dark-color, $lightness: 20%)
-      );
-    }
-  }
-}
-
-// background(s)
-.bg {
-  &-primary {
-    @include set-background($primary-color);
-  }
-  &-light {
-    @include set-background($primary-light-color);
-  }
-  &-dark {
-    @include set-background($primary-dark-color);
-  }
-  &-white {
-    @include set-background(#f3f3f3);
-    border: #ccc 1px solid;
+    height: 28px;
+    width: 86px;
+    font-size: 16px;
+    font-weight: 400;
   }
 }
 
@@ -160,22 +70,24 @@
 .form-control {
   z-index: 1;
   width: 100%;
-  height: 50px;
-  font-size: 1.6rem;
-  color: $secondary-dark-color;
+  height: 35px;
+  font-size: 22px;
+  color: $primary-text-color;
   border: none;
-  border-bottom: 1px solid $border-color;
+  border-bottom: 1px solid $primary-text-color;
   background-color: transparent;
   transition: all 0.2s ease-out;
+  opacity: 0.9;
 
   & + label {
     position: absolute;
-    top: 7px;
+    top: 5px;
     left: 0;
-    font-size: 1.6rem;
-    color: scale-color($primary-dark-color, $lightness: -25%);
+    font-size: 22px;
+    color: $primary-text-color;
     transition: all 0.2s ease-out;
     cursor: text;
+    opacity: 0.7;
   }
 
   &.invalidInput,
@@ -186,65 +98,202 @@
   &:focus {
     outline: none;
     border-width: 2px;
-    border-color: $secondary-color;
+    border-color: $bg-blue;
   }
 
   &:focus + label,
   &.hasContent + label {
-    top: -25px;
-    color: $navigation-color-hover;
-    font-size: 1.2rem;
+    top: -18px;
+    color: $bg-blue;
+    font-size: 16px;
   }
 }
 
-// table layout
-.table__wrapper {
-  padding: 2rem 0;
-  width: 100%;
-  display: grid;
-  grid-template-columns: 5% auto 5%;
+// rectangle bulletpoint(s)
+.rectangle {
+  width: 20px;
+  height: 20px;
+  margin-right: 15px;
+  margin-bottom: 13px;
+
+  &--blue {
+    background-color: $status-blue;
+  }
+
+  &--gray {
+    background-color: $status-gray;
+  }
 }
+
+.card {
+  margin: 0 10px;
+  width: 400px;
+  height: 465px;
+  border-radius: 4px;
+  background-color: $bg-white;
+  box-shadow: 0 0 20px 0 $card-shadow;
+  display: grid;
+  justify-items: center;
+
+  &--twoRows {
+    grid-template-rows: 355px 110px;
+  }
+
+  &--threeRows {
+    grid-template-rows: 145px 210px 110px;
+  }
+
+  &--icoInfo {
+    height: 150px;
+    width: 100%;
+  }
+
+  &--icoDetails {
+    height: 100%;
+    width: 100%;
+    grid-template-rows: repeat(5, 1fr);
+  }
+
+  &--icoFinished {
+    min-height: 465px;
+    width: 100%;
+  }
+
+  &--newRequest {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    height: 669px;
+    width: 669px;
+    grid-template-rows: repeat(4, 1fr);
+    align-items: center;
+  }
+
+  &__title-section {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    > div {
+      text-align: center;
+      align-self: center;
+    }
+  }
+}
+
 .table {
-  grid-column: 2;
+  width: 100%;
   border-collapse: collapse;
-  box-shadow: 0 0 12px -6px rgba($color: $primary-font-color, $alpha: 0.3);
-  border: 1px solid rgba($color: $primary-dark-color, $alpha: 0.3);
+  border-radius: 4px;
+  background-color: $bg-white;
+
+  &__wrapper {
+    border: 1px solid #dfdfdf;
+    border-radius: 4px;
+    box-shadow: 0 24px 30px 0 $card-shadow;
+    transition: opacity 0.3s ease-out;
+
+    &--hide {
+      opacity: 0;
+    }
+
+    &--show {
+      opacity: 1;
+    }
+  }
 
   &__head {
-    height: 65px;
-    width: 150px;
-    border-bottom: 1px solid $primary-dark-color;
-    font-size: 1.4rem;
-    font-weight: 400;
-    color: $adorsys-color;
-    text-transform: uppercase;
-    padding-left: 0.25rem;
-    padding-right: 0.25rem;
+    padding-left: 25px;
+    min-width: 100px;
+    max-width: 125px;
+    height: 60px;
+    padding-top: 12px;
+    text-align: left;
+    border-bottom: 1px solid #dfdfdf;
+    font-size: 16px;
+    font-weight: 600;
+    color: $primary-text-color;
+    opacity: 0.35;
 
     &--empty {
-      text-transform: none;
+      text-align: center;
+    }
+
+    &--id {
+      min-width: 50px;
+      max-width: 50px;
+    }
+
+    &--purpose {
+      width: 125px;
+    }
+
+    &:nth-of-type(2) {
+      width: 392px;
+    }
+
+    &--state {
+      width: 125px;
+    }
+
+    &--option {
+      min-width: 135px;
+      max-width: 135px;
     }
   }
 
   &__row {
-    height: 55px;
-    font-size: 0.9rem;
-
+    border-bottom: 1px solid #dfdfdf;
     &:last-of-type {
-      border-bottom: none;
-    }
-
-    &:hover {
-      background-color: rgba($color: $primary-color, $alpha: 0.7);
+      border: none;
     }
   }
 
   &__data {
-    padding-left: 0.25rem;
-    padding-right: 0.25rem;
+    padding-left: 25px;
+    height: 70px;
+    font-size: 18px;
+    color: #2c2e2f;
 
-    &.trusted {
-      color: green;
+    &--id {
+      color: #ababab;
+      width: 50px;
+    }
+
+    &--empty {
+      text-align: center;
+    }
+
+    &--option {
+      width: 150px;
+    }
+  }
+
+  &__status {
+    &--trusted {
+      color: #75e000;
+    }
+
+    &--untrusted {
+      color: #f58323;
+    }
+  }
+}
+
+// layout changes for mobile device(s)
+@media (max-width: 900px) {
+  .card {
+    margin: 10px 0;
+  }
+}
+
+@media only screen and (min-device-width: 320px) and (max-device-width: 480px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: portrait) {
+  .card {
+    &--firstPhase,
+    &--secondPhase {
+      width: 350px;
     }
   }
 }

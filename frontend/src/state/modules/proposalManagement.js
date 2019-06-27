@@ -8,7 +8,7 @@ export default {
     proposals: [],
   },
   actions: {
-    async initializeProposalManagement({ commit }) {
+    async initializeProposalManagement({ commit, dispatch }) {
       const payload = {
         proposals: await ProposalManagementService.getProposals(),
         contractFee: await ProposalManagementService.getContractFee(),
@@ -16,6 +16,11 @@ export default {
       if (payload.contractFee) {
         proposalManagementListeners()
         commit('INITIALIZE_PROPOSAL_MANAGEMENT', payload)
+
+        // authentication on load
+        dispatch('auth/logIn', null, {
+          root: true,
+        })
       }
     },
     async updateFee({ commit }) {

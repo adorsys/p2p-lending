@@ -1,0 +1,39 @@
+@import '../../../util/scss/variables';
+
+.checkAllowance {
+  width: 813px;
+  height: 350px;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 75px 186px 89px;
+  align-items: end;
+
+  &__description {
+    margin-top: 80px;
+    grid-row: 1;
+    font-size: 22px;
+    line-height: 32px;
+    color: $primary-text-color;
+    opacity: 0;
+    transition: opacity 0.2s ease-out;
+    align-self: center;
+  }
+
+  .allowanceContent {
+    opacity: 1;
+  }
+
+  &__targetInput {
+    // width: 572px;
+    width: 100%;
+    grid-row: 2;
+    margin-bottom: 32px;
+    justify-self: end;
+  }
+
+  &__button {
+    grid-row: 3;
+    justify-self: end;
+    align-self: start;
+  }
+}

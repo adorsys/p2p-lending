@@ -1,0 +1,107 @@
+@import '../../../util/scss/variables';
+@import '../../../util/scss/utilities';
+
+.icoProgress {
+  grid-template-columns: repeat(2, 1fr);
+
+  &__title {
+    grid-column: 1;
+    grid-row: 2;
+    font-size: 20px;
+    color: $primary-text-color;
+    font-weight: 700;
+    margin-left: 63.5px;
+    justify-self: start;
+    align-self: center;
+  }
+
+  &__details {
+    grid-column: 1;
+    grid-row: 3;
+    font-size: 18px;
+    color: $status-text;
+    margin-left: 63.5px;
+    justify-self: start;
+  }
+
+  &__total {
+    margin-top: 10px;
+    display: flex;
+  }
+
+  &__goal {
+    display: flex;
+  }
+}
+
+// progress pie chart
+.ppc {
+  grid-column: 2;
+  grid-row: 1 / 6;
+  align-self: center;
+  justify-self: center;
+  width: $piechart-size;
+  height: $piechart-size;
+  border-radius: 50%;
+  background-color: $piechart-empty-color;
+  position: relative;
+
+  &.gt-50 {
+    background-color: $piechart-fill-color;
+  }
+
+  &__progress {
+    @include circle($piechart-size);
+    clip: rect(0, $piechart-size, $piechart-size, #{$piechart-size / 2});
+    &-fill {
+      @include circle($piechart-size);
+      clip: rect(0, #{$piechart-size / 2}, $piechart-size, 0);
+      background: $piechart-fill-color;
+      transform: rotate(60deg);
+    }
+
+    .gt-50 & {
+      clip: rect(0, #{$piechart-size/2}, $piechart-size, 0);
+      &-fill {
+        clip: rect(0, $piechart-size, $piechart-size, #{$piechart-size / 2});
+        background: $piechart-empty-color;
+      }
+    }
+  }
+
+  &__textInfo {
+    @include circle(#{$piechart-size / 1.11});
+    background: $bg-white;
+    display: grid;
+    grid-template-rows: 52px 42px 62px;
+    align-content: center;
+  }
+
+  &__percentInfoWrapper {
+    grid-row: 2;
+    display: flex;
+    justify-content: center;
+  }
+
+  &__percentValue {
+    font-size: 42px;
+    font-weight: 400;
+    color: $primary-text-color;
+  }
+
+  &__percentSign {
+    font-size: 26px;
+    color: $primary-text-color;
+    font-weight: 700;
+    margin-top: 4px;
+  }
+
+  &__etherDetails {
+    grid-row: 3;
+    justify-self: center;
+    font-size: 16px;
+    color: $primary-text-color;
+    opacity: 0.4;
+    margin-top: 2px;
+  }
+}

@@ -1,0 +1,36 @@
+@import '../../../util/scss/variables';
+
+.allRequests {
+  width: 100%;
+
+  &__title-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 24.26px;
+  }
+
+  &__title {
+    color: $primary-text-color;
+    font-size: 20px;
+    font-weight: 700;
+    opacity: 0.9;
+  }
+
+  &__sortOptions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 108px;
+  }
+
+  &__sortOption {
+    font-size: 16px;
+    columns: #5a5c60;
+    cursor: pointer;
+
+    &--active {
+      font-weight: 700;
+    }
+  }
+}

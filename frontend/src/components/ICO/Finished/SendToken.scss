@@ -1,0 +1,84 @@
+@import '../../../util/scss/variables';
+
+.sendToken {
+  width: 813px;
+  height: 350px;
+  display: grid;
+  grid-template-columns: 175px auto 572px;
+  grid-template-rows: 75px 186px 89px;
+
+  &__transferToggle {
+    align-self: end;
+    grid-column: 1 / 4;
+
+    input[type='checkbox'] {
+      display: none;
+    }
+
+    input[type='checkbox'] + label::before {
+      width: 24px;
+      height: 24px;
+      display: block;
+      content: '';
+      float: left;
+      margin-right: 16px;
+      margin-top: 1px;
+      background-image: url('../../../assets/square.svg');
+      background-repeat: no-repeat;
+      background-position: left center;
+      // transition does not work in Firefox, IE
+      transition: background-image 0.3s ease-out;
+    }
+
+    input[type='checkbox']:checked + label::before {
+      background-image: url('../../../assets/square_checked.svg');
+    }
+
+    label {
+      font-size: 22px;
+      color: $primary-text-color;
+    }
+  }
+
+  &__amountInputWrapper {
+    grid-column: 1;
+    grid-row: 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin-bottom: 32px;
+  }
+
+  &__dummy {
+    opacity: 0;
+  }
+
+  &__addressInputs {
+    grid-row: 2;
+    grid-column: 3;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin: 32px 0;
+  }
+
+  &__originInput {
+    grid-row: 1;
+    opacity: 0;
+    transition: opacity 0.2s ease-out;
+  }
+
+  .displayFrom {
+    opacity: 1;
+  }
+
+  &__targetInput {
+    grid-row: 2;
+  }
+
+  &__button {
+    grid-row: 3;
+    grid-column: 3;
+    justify-self: end;
+  }
+}

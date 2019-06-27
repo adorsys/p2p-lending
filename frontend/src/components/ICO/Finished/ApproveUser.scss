@@ -1,0 +1,36 @@
+@import '../../../util/scss/variables';
+
+.approveUser {
+  width: 813px;
+  height: 350px;
+  display: grid;
+  grid-template-columns: 175px auto 572px;
+  grid-template-rows: 75px 186px 89px;
+  align-items: end;
+
+  &__description {
+    grid-row: 1;
+    grid-column: 1 / 4;
+    font-size: 22px;
+    color: $primary-text-color;
+  }
+
+  &__amountInput {
+    grid-column: 1;
+    grid-row: 2;
+    margin-bottom: 32px;
+  }
+
+  &__targetInput {
+    grid-column: 3;
+    grid-row: 2;
+    margin-bottom: 32px;
+  }
+
+  &__button {
+    grid-column: 3;
+    grid-row: 3;
+    justify-self: end;
+    align-self: start;
+  }
+}

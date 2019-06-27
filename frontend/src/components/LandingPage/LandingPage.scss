@@ -1,27 +1,27 @@
 @import '../../util/scss/variables';
-@import '../../util/scss/utilities';
 
 .landingPage {
-  height: 100%;
-  color: $secondary-dark-color;
+  // display multiple cards as row
   display: flex;
-  flex-direction: column;
-  width: 90%;
-  margin: auto;
-  align-items: center;
-  justify-content: center;
 
-  &__buttons {
-    margin: 1rem;
+  &__bulletpoints {
+    padding-top: 20px;
+    width: 300px;
   }
 
-  &__problems {
-    list-style-type: square;
-    text-align: left;
+  &__bulletpoint {
+    margin-bottom: 14px;
+    padding-left: 30px;
+    background-image: url(../../assets/circle_checked.svg);
+    background-repeat: no-repeat;
+    background-position: left center;
+    background-size: 18px;
+    font-size: 20px;
   }
+}
 
-  &__invest {
-    color: $link-color;
-    font-weight: 700;
+@media (max-width: 900px) {
+  .landingPage {
+    flex-direction: column;
   }
 }

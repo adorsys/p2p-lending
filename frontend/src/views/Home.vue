@@ -6,6 +6,7 @@
 
 <script>
 import LandingPage from '../components/LandingPage/LandingPage'
+
 export default {
   name: 'home',
   components: {
@@ -15,8 +16,12 @@ export default {
 </script>
 
 <style lang="scss">
+@import '../util/scss/variables';
+
 .home {
-  height: 100%;
-  width: 100%;
+  min-height: $content-height;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 </style>

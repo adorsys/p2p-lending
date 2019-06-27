@@ -1,9 +1,8 @@
 import router from '../../router'
-import store from '../../state'
 import { Web3Service } from '../../services/web3/Web3Service'
 import { accountListener } from '../../services/web3/web3Listeners'
 import { authenticate } from '../../services/authenticate'
-import data from '../../../../build/contracts/Migrations.json'
+import data from '../../../../build/contracts/RequestManagement.json'
 
 export default {
   namespaced: true,
@@ -21,28 +20,34 @@ export default {
         invalidNetwork: true,
         currentNetwork: null,
       }
-      if (payload.injected) {
-        // prevent load on wrong network
-        const network = await Web3Service.getCurrentNetwork()
-        const deployedNetwork = Object.keys(data.networks)
-        payload.currentNetwork = Web3Service.getNetworkName(deployedNetwork[0])
-        if (data.networks.hasOwnProperty(network)) {
-          payload.invalidNetwork = false
-          dispatch('ico/initializeIco', null, {
-            root: true,
-          })
-          dispatch('proposalManagement/initializeProposalManagement', null, {
-            root: true,
-          })
-          dispatch('requestManagement/initializeRequestManagement', null, {
-            root: true,
-          })
-          dispatch('requestManagement/getRequests', null, {
-            root: true,
-          })
-          accountListener()
-        }
+
+      if (!payload.injected) {
+        commit('INITIALIZE', payload)
+        return
       }
+
+      // prevent load on wrong network
+      const network = await Web3Service.getCurrentNetwork()
+      const deployedNetwork = Object.keys(data.networks)
+      payload.currentNetwork = Web3Service.getNetworkName(deployedNetwork[0])
+
+      if (data.networks.hasOwnProperty(network)) {
+        payload.invalidNetwork = false
+        dispatch('ico/initializeIco', null, {
+          root: true,
+        })
+        dispatch('proposalManagement/initializeProposalManagement', null, {
+          root: true,
+        })
+        dispatch('requestManagement/initializeRequestManagement', null, {
+          root: true,
+        })
+        dispatch('requestManagement/getRequests', null, {
+          root: true,
+        })
+        accountListener()
+      }
+
       commit('INITIALIZE', payload)
     },
     async logIn({ commit }) {
@@ -64,15 +69,9 @@ export default {
       state.boardMember = payload.boardMember
     },
     LOGOUT(state) {
-      const routeName = router.currentRoute.name
+      router.push({ name: 'home' })
       state.tokenHolder = false
       state.boardMember = false
-      if (
-        routeName === 'p2pManagement' ||
-        (routeName === 'ico' && !store.state.ico.active)
-      ) {
-        router.push({ name: 'home' })
-      }
     },
   },
 }

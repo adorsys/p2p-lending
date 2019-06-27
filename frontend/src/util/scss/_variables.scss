@@ -1,28 +1,23 @@
-// colors
-$primary-color: #f5f5f5;
-$primary-light-color: #ffffff;
-$primary-dark-color: #c7c7c7;
-$primary-font-color: #000000;
+// size(s)
+$navbar-height: 100px;
+$content-height: calc(100vh - 152px);
+$piechart-size: 156px;
 
-$secondary-color: #607d8b;
-$secondary-light-color: #8eacbb;
-$secondary-dark-color: #34515e;
-$secondary-font-color: #000000;
+// color(s)
+$primary-text-color: #292929;
 
-// adorsys theme
-$adorsys-color: #054f72;
+$card-shadow: rgba(225, 225, 225, 0.5);
 
-$navigation-color: $secondary-dark-color;
-$navigation-color-grouping: scale-color(
-  $color: $secondary-dark-color,
-  $lightness: -30%,
-);
-$navigation-color-hover: scale-color($secondary-dark-color, $lightness: 10%);
+$bg-body: #fafafa;
+$bg-white: #ffffff;
+$bg-blue: #3b82ba;
+$bg-active: #92e76d;
+$bg-gray: #bababa;
 
-$border-color: $primary-dark-color;
-$border-color-light: scale-color($primary-dark-color, $lightness: 30%);
+$piechart-fill-color: #3b82ba;
+$piechart-empty-color: #f0f0f0;
 
-$link-color: #1565c0;
+$status-blue: #0984bf;
+$status-gray: #ebebeb;
 
-// measurements
-$sidebar-width: 320px;
+$status-text: #2c2e2f;

@@ -1,0 +1,28 @@
+@import '../../../util/scss/variables';
+
+.icoInvest {
+  grid-template-columns: auto 349px auto;
+  justify-items: center;
+  align-items: center;
+
+  &__title {
+    grid-row: 2;
+    grid-column: 2;
+    justify-self: start;
+    font-size: 20px;
+    color: $primary-text-color;
+    font-weight: 700;
+  }
+
+  &__input {
+    grid-row: 3;
+    grid-column: 2;
+  }
+
+  &__button {
+    grid-row: 4;
+    grid-column: 2;
+    align-self: end;
+    justify-self: end;
+  }
+}
